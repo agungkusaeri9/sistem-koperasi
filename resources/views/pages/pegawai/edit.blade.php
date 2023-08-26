@@ -19,7 +19,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='name' class='mb-2'>Nama</label>
+                            <label for='name' class='mb-2'>Nama <span class="text-danger">*</span></label>
                             <input type='text' name='name' class='form-control @error('name') is-invalid @enderror'
                                 value='{{ $user->name ?? old('name') }}'>
                             @error('name')
@@ -29,7 +29,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='email' class='mb-2'>Email</label>
+                            <label for='email' class='mb-2'>Email <span class="text-danger">*</span></label>
                             <input type='text' name='email' class='form-control @error('email') is-invalid @enderror'
                                 value='{{ $user->email ?? old('email') }}'>
                             @error('email')
@@ -39,7 +39,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='role' class='mb-2'>Role</label>
+                            <label for='role' class='mb-2'>Role <span class="text-danger">*</span></label>
                             <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
                                 <option value="" selected>Pilih</option>
                                 <option @selected($user->role === 'super admin') value="super admin">Super Admin</option>
@@ -52,7 +52,8 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='password' class='mb-2'>Password</label>
+                            <label for='password' class='mb-2'>Password <span class="text-danger">Abaikan jika tidak ingin
+                                    merubah password</span></label>
                             <input type='password' name='password'
                                 class='form-control @error('password') is-invalid @enderror' value='{{ old('password') }}'>
                             @error('password')
@@ -62,7 +63,8 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='password_confirmation' class='mb-2'>Konfirmasi Password</label>
+                            <label for='password_confirmation' class='mb-2'>Konfirmasi Password <span
+                                    class="text-danger">Abaikan jika tidak ingin merubah password</span></label>
                             <input type='password' name='password_confirmation'
                                 class='form-control @error('password_confirmation') is-invalid @enderror'
                                 value='{{ old('password_confirmation') }}'>
@@ -73,7 +75,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='is_active' class='mb-2'>Status</label>
+                            <label for='is_active' class='mb-2'>Status <span class="text-danger">*</span></label>
                             <select name="is_active" id="is_active"
                                 class="form-control @error('is_active') is-invalid @enderror">
                                 <option value="" selected>Pilih Status</option>
