@@ -42,8 +42,8 @@
                             <label for='role' class='mb-2'>Role <span class="text-danger">*</span></label>
                             <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
                                 <option value="" selected>Pilih</option>
-                                <option @selected($user->role === 'super admin') value="super admin">Super Admin</option>
-                                <option @selected($user->role === 'admin') value="admin">Admin</option>
+                                <option @selected($item->role === 'super admin') value="super admin">Super Admin</option>
+                                <option @selected($item->role === 'admin') value="admin">Admin</option>
                             </select>
                             @error('role')
                                 <div class='invalid-feedback'>
@@ -79,8 +79,8 @@
                             <select name="is_active" id="is_active"
                                 class="form-control @error('is_active') is-invalid @enderror">
                                 <option value="" selected>Pilih Status</option>
-                                <option @selected($user->is_active == 0) value="0">Tidak Aktif</option>
-                                <option @selected($user->is_active == 1) value="1">Aktif</option>
+                                <option @selected($item->is_active == 0) value="0">Tidak Aktif</option>
+                                <option @selected($item->is_active == 1) value="1">Aktif</option>
                             </select>
                             @error('is_active')
                                 <div class='invalid-feedback'>

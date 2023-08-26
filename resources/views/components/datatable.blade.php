@@ -6,13 +6,6 @@
     <script src="{{ asset('assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
     <script src="{{ asset('assets/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
     @if ($serverside == false)
         <script>
             $('#dtTable').DataTable({

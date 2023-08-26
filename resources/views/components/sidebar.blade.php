@@ -15,10 +15,13 @@
             </a>
             <div class="collapse" id="master_data">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('pegawai.index') }}"> Pegawai </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pegawai.index') }}"> Pegawai </a>
                     </li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html">
-                            Register </a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('metode-pembayaran.index') }}">
+                            Metode Pembayaran </a>
+                    </li>
                 </ul>
             </div>
         </li>

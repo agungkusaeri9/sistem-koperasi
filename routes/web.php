@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,4 +29,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // pegawai
     Route::resource('pegawai', PegawaiController::class);
+
+    // metode-pembayaran
+    Route::resource('metode-pembayaran', MetodePembayaranController::class);
 });

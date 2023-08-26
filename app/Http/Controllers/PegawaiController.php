@@ -39,7 +39,7 @@ class PegawaiController extends Controller
 
         DB::beginTransaction();
         try {
-            $data = request()->only(['name', 'email', 'role']);
+            $data = request()->only(['name', 'email', 'role', 'is_active']);
             $data['password'] = bcrypt(request('password'));
             request()->file('avatar') ? $data['avatar'] = request()->file('avatar')->store('users', 'public') : NULL;
             User::create($data);
@@ -57,7 +57,7 @@ class PegawaiController extends Controller
         $items = User::where('id', '!=', auth()->id())->where('id', $id)->firstOrFail();
         return view('pages.pegawai.edit', [
             'title' => 'Edit User',
-            'user' => $items
+            'item' => $items
         ]);
     }
 
