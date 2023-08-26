@@ -6,27 +6,21 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        {{-- <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false"
-                aria-controls="auth">
-                <i class="icon-head menu-icon"></i>
-                <span class="menu-title">User Pages</span>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#master_data" aria-expanded="false"
+                aria-controls="master_data">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Master Data</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="auth">
+            <div class="collapse" id="master_data">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('pegawai.index') }}"> Pegawai </a>
                     </li>
                     <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html">
                             Register </a></li>
                 </ul>
             </div>
-        </li> --}}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('users.index') }}">
-                <i class="icon-head menu-icon"></i>
-                <span class="menu-title">Users</span>
-            </a>
         </li>
     </ul>
 </nav>

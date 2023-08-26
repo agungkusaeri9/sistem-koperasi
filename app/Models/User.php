@@ -54,4 +54,21 @@ class User extends Authenticatable
             return asset('assets/images/faces/face28.jpg');
         }
     }
+    public function isActive()
+    {
+        if ($this->is_active) {
+            return '<span class="badge badge-success">Aktif</span>';
+        } else {
+            return '<span class="badge badge-danger">Tidak Aktif</span>';
+        }
+    }
+
+    public function scopePegawai($query)
+    {
+        $query->whereNotIn('role', ['anggota']);
+    }
+    public function scopeAnggota($query)
+    {
+        $query->whereIn('role', ['anggota']);
+    }
 }

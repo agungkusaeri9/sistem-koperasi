@@ -4,9 +4,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5">Tambah User</h4>
-                    <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+                    <h4 class="card-title mb-5">Edit Pegawai</h4>
+                    <form action="{{ route('pegawai.update', $user->id) }}" method="post" enctype="multipart/form-data">
                         @csrf
+                        @method('patch')
                         <div class='form-group mb-3'>
                             <label for='avatar' class='mb-2'>Avatar</label>
                             <input type='file' name='avatar' class='form-control @error('avatar') is-invalid @enderror'
@@ -18,9 +19,9 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='name' class='mb-2'>Name</label>
+                            <label for='name' class='mb-2'>Nama</label>
                             <input type='text' name='name' class='form-control @error('name') is-invalid @enderror'
-                                value='{{ old('name') }}'>
+                                value='{{ $user->name ?? old('name') }}'>
                             @error('name')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
@@ -30,7 +31,7 @@
                         <div class='form-group mb-3'>
                             <label for='email' class='mb-2'>Email</label>
                             <input type='text' name='email' class='form-control @error('email') is-invalid @enderror'
-                                value='{{ old('email') }}'>
+                                value='{{ $user->email ?? old('email') }}'>
                             @error('email')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
@@ -41,9 +42,8 @@
                             <label for='role' class='mb-2'>Role</label>
                             <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
                                 <option value="" selected>Pilih</option>
-                                <option value="super admin">Super Admin</option>
-                                <option value="admin">Admin</option>
-                                <option value="anggota">Anggota</option>
+                                <option @selected($user->role === 'super admin') value="super admin">Super Admin</option>
+                                <option @selected($user->role === 'admin') value="admin">Admin</option>
                             </select>
                             @error('role')
                                 <div class='invalid-feedback'>
@@ -62,7 +62,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='password_confirmation' class='mb-2'>Password Confirmation</label>
+                            <label for='password_confirmation' class='mb-2'>Konfirmasi Password</label>
                             <input type='password' name='password_confirmation'
                                 class='form-control @error('password_confirmation') is-invalid @enderror'
                                 value='{{ old('password_confirmation') }}'>
@@ -72,9 +72,23 @@
                                 </div>
                             @enderror
                         </div>
+                        <div class='form-group mb-3'>
+                            <label for='is_active' class='mb-2'>Status</label>
+                            <select name="is_active" id="is_active"
+                                class="form-control @error('is_active') is-invalid @enderror">
+                                <option value="" selected>Pilih Status</option>
+                                <option @selected($user->is_active == 0) value="0">Tidak Aktif</option>
+                                <option @selected($user->is_active == 1) value="1">Aktif</option>
+                            </select>
+                            @error('is_active')
+                                <div class='invalid-feedback'>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('users.index') }}" class="btn btn-warning">Batal</a>
-                            <button class="btn btn-primary">Tambah User</button>
+                            <a href="{{ route('pegawai.index') }}" class="btn btn-warning">Batal</a>
+                            <button class="btn btn-primary">Update Pegawai</button>
                         </div>
                     </form>
                 </div>

@@ -11,9 +11,10 @@ class Datatable extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public $serverside;
+    public function __construct($serverside = false)
     {
-        //
+        $this->serverside = $serverside;
     }
 
     /**
@@ -21,6 +22,8 @@ class Datatable extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.datatable');
+        return view('components.datatable', [
+            'title' => $this->serverside
+        ]);
     }
 }
