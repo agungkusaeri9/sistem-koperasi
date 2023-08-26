@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
@@ -28,8 +29,11 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // pegawai
-    Route::resource('pegawai', PegawaiController::class);
+    Route::resource('pegawai', PegawaiController::class)->except('show');
 
     // metode-pembayaran
-    Route::resource('metode-pembayaran', MetodePembayaranController::class);
+    Route::resource('metode-pembayaran', MetodePembayaranController::class)->except('show');
+
+    // jabatan
+    Route::resource('jabatan', JabatanController::class)->except('show');
 });

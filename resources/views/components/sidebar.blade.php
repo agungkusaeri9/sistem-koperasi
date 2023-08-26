@@ -22,6 +22,10 @@
                         <a class="nav-link" href="{{ route('metode-pembayaran.index') }}">
                             Metode Pembayaran </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('jabatan.index') }}">
+                            Jabatan </a>
+                    </li>
                 </ul>
             </div>
         </li>
