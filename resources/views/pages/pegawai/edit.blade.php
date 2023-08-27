@@ -5,7 +5,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Edit Pegawai</h4>
-                    <form action="{{ route('pegawai.update', $user->id) }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('pegawai.update', $item->id) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('patch')
                         <div class='form-group mb-3'>
@@ -21,7 +21,7 @@
                         <div class='form-group mb-3'>
                             <label for='name' class='mb-2'>Nama <span class="text-danger">*</span></label>
                             <input type='text' name='name' class='form-control @error('name') is-invalid @enderror'
-                                value='{{ $user->name ?? old('name') }}'>
+                                value='{{ $item->name ?? old('name') }}'>
                             @error('name')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
@@ -31,7 +31,7 @@
                         <div class='form-group mb-3'>
                             <label for='email' class='mb-2'>Email <span class="text-danger">*</span></label>
                             <input type='text' name='email' class='form-control @error('email') is-invalid @enderror'
-                                value='{{ $user->email ?? old('email') }}'>
+                                value='{{ $item->email ?? old('email') }}'>
                             @error('email')
                                 <div class='invalid-feedback'>
                                     {{ $message }}

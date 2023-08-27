@@ -8,11 +8,11 @@
             <div class="row w-100 mx-0">
                 <div class="col-lg-4 mx-auto">
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                        <div class="brand-logo">
-                            <img src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+                        <div class="brand-logo text-center">
+                            <img src="{{ $pengaturan ? $pengaturan->logo() : asset('assets/images/logo.svg') }}"
+                                alt="logo">
                         </div>
-                        <h4>Hello! let's get started</h4>
-                        <h6 class="font-weight-light">Sign in to continue.</h6>
+                        <h6 class="font-weight-light text-center">Silahkan login terlebih dahulu.</h6>
                         <form class="pt-3" method="post">
                             @csrf
                             <div class="form-group">
@@ -36,20 +36,20 @@
                                 @enderror
                             </div>
                             <div class="mt-3">
-                                <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN
-                                    IN</button>
+                                <button
+                                    class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">LOGIN</button>
                             </div>
                             <div class="my-2 d-flex justify-content-between align-items-center">
                                 <div class="form-check">
                                     <label class="form-check-label text-muted">
-                                        <input type="checkbox" class="form-check-input">
-                                        Keep me signed in
+                                        <input type="checkbox" class="form-check-input" name="rememberme">
+                                        Ingat Saya
                                     </label>
                                 </div>
 
                             </div>
                             <div class="text-center mt-4 font-weight-light">
-                                Don't have an account? <a href="{{ route('register') }}" class="text-primary">Create</a>
+                                Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
                             </div>
                         </form>
                     </div>

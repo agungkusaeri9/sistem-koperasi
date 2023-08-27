@@ -26,8 +26,18 @@
                         <a class="nav-link" href="{{ route('jabatan.index') }}">
                             Jabatan </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('agama.index') }}">
+                            Agama </a>
+                    </li>
                 </ul>
             </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('pengaturan.index') }}">
+                <i class="icon-cog menu-icon"></i>
+                <span class="menu-title">Pengaturan</span>
+            </a>
         </li>
     </ul>
 </nav>

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +38,11 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // jabatan
     Route::resource('jabatan', JabatanController::class)->except('show');
+
+    // agama
+    Route::resource('agama', AgamaController::class)->except('show');
+
+    // pengaturan
+    Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::post('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
 });
