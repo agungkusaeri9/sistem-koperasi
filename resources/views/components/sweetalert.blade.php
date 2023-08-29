@@ -16,6 +16,19 @@
         </script>
     @endif
 
+    @if (session('status'))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('status') }}',
+                showConfirmButton: true,
+                timer: 4500
+            })
+        </script>
+    @endif
+
     @if (session('error'))
         <script>
             Swal.fire({

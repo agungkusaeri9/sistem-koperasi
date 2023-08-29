@@ -30,6 +30,10 @@
                         <a class="nav-link" href="{{ route('agama.index') }}">
                             Agama </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('periode.index') }}">
+                            Periode </a>
+                    </li>
                 </ul>
             </div>
         </li>

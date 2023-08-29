@@ -12,9 +12,10 @@ class Head extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public $title;
+    public function __construct($title = 'Sistem Koperasi')
     {
-        //
+        $this->title = $title;
     }
 
     /**
@@ -23,7 +24,8 @@ class Head extends Component
     public function render(): View|Closure|string
     {
         return view('components.head', [
-            'pengaturan' => Pengaturan::first()
+            'pengaturan' => Pengaturan::first(),
+            'title' => $this->title
         ]);
     }
 }

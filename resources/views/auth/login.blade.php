@@ -49,7 +49,13 @@
 
                             </div>
                             <div class="text-center mt-4 font-weight-light">
-                                Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
+                                <p>
+                                    Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
+                                </p>
+                                <p>
+                                    Lupa Password? <a href="{{ route('password.request') }}" class="text-primary">Reset
+                                        Password</a>
+                                </p>
                             </div>
                         </form>
                     </div>

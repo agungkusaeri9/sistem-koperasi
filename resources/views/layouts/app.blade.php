@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<x-Head />
+<x-Head :title="$title ?? 'Dashboard'" />
 
 <body>
     <div class="container-scroller">
