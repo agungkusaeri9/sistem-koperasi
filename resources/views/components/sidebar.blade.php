@@ -38,6 +38,13 @@
             </div>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="{{ route('anggota.index') }}">
+                <i class="icon-head menu-icon"></i>
+                <span class="menu-title">Anggota</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" href="{{ route('pengaturan.index') }}">
                 <i class="icon-cog menu-icon"></i>
                 <span class="menu-title">Pengaturan</span>

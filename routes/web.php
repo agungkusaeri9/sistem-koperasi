@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgamaController;
+use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\MetodePembayaranController;
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::resource('agama', AgamaController::class)->except('show');
     // periode
     Route::resource('periode', PeriodeController::class)->except('show');
+
+    // anggota
+    Route::resource('anggota', AnggotaController::class);
 
     // pengaturan
     Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');

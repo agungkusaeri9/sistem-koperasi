@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         $query->whereIn('role', ['anggota']);
     }
+
+    public function anggota()
+    {
+        return $this->hasOne(Anggota::class);
+    }
 }
