@@ -128,7 +128,6 @@
                                 </div>
                             @enderror
                         </div>
-
                         <div class='form-group mb-3'>
                             <label for='email' class='mb-2'>Email <span class="text-danger">*</span></label>
                             <input type='text' name='email'
