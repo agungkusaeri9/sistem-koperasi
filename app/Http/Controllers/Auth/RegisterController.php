@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -52,11 +53,12 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+
         return Validator::make($data, [
             'name' => ['required', 'min:3'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['min:6', 'confirmed'],
-            'nip' => ['numeric', 'unique:anggota,nip'],
+            'nip' => [Rule::when($data['nip'] != NULL, ['numeric', 'unique:anggota,nip'])],
             'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
             'tempat_lahir' => ['required'],
             'tanggal_lahir' => ['required', 'date'],

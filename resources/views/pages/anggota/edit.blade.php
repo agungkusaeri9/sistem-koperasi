@@ -173,7 +173,7 @@
                             <select name="is_active" id="is_active"
                                 class="form-control @error('is_active') is-invalid @enderror">
                                 <option value="" selected>Pilih Status</option>
-                                <option @selected($item->user->is_active === '0') value="0">Tidak Aktif</option>
+                                <option @selected($item->user->is_active == 0) value="0">Tidak Aktif</option>
                                 <option @selected($item->user->is_active == 1) value="1">Aktif</option>
                             </select>
                             @error('is_active')

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AnggotaController extends Controller
 {
@@ -38,8 +39,8 @@ class AnggotaController extends Controller
             'password' => ['min:6', 'confirmed'],
             'is_active' => ['required', 'in:0,1'],
             'avatar' => ['image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
-            'nip' => ['required', 'numeric', 'unique:anggota,nip'],
             'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
+            'nip' => [Rule::when(request('nip') != NULL, ['numeric', 'unique:anggota,nip'])],
             'tempat_lahir' => ['required'],
             'tanggal_lahir' => ['required', 'date'],
             'alamat' => ['required'],
@@ -98,22 +99,17 @@ class AnggotaController extends Controller
             'email' => ['required', 'email', 'unique:users,email,' . $item->user->id . ''],
             'is_active' => ['required', 'in:0,1'],
             'avatar' => ['image', 'mimes:jpg,jpeg,png,svg', 'max:2048'],
-            'nip' => ['required', 'numeric', 'unique:anggota,nip,' . $id . ''],
+            'nip' => [Rule::when(request('nip') != NULL, ['numeric', 'unique:anggota,nip, ' . $id . ''])],
             'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
             'tempat_lahir' => ['required'],
             'tanggal_lahir' => ['required', 'date'],
             'alamat' => ['required'],
             'nomor_telepon' => ['required'],
             'agama_id' => ['required'],
-            'jabatan_id' => ['required']
+            'jabatan_id' => ['required'],
+            'password' => [Rule::when(request('password') != NULL, ['min:6', 'confirmed'])]
         ]);
 
-
-        if (request('password')) {
-            request()->validate([
-                'password' => ['min:5', 'confirmed'],
-            ]);
-        }
 
         DB::beginTransaction();
         try {
