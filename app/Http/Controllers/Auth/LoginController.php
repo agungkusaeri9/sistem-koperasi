@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pengaturan;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Spatie\Activitylog\Models\Activity;
 
 class LoginController extends Controller
 {
@@ -44,5 +45,11 @@ class LoginController extends Controller
         return view('auth.login', [
             'pengaturan' => Pengaturan::first()
         ]);
+    }
+
+    public function authenticated()
+    {
+        activity()
+            ->log('Melakukan Login');
     }
 }

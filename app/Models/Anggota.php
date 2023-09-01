@@ -4,16 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Anggota extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     protected $table = 'anggota';
     protected $guarded = ['id'];
 
     public $casts = [
         'tanggal_lahir' => 'datetime'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn (string $eventName) => "The " . \Str::ucfirst(auth()->user()->name) . " {$eventName} anggota")
+            ->logOnly(['nama'])
+            ->useLogName('Anggota');
+    }
 
     public function user()
     {
