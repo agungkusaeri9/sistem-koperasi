@@ -16,7 +16,7 @@ class MetodePembayaran extends Model
 
     public function getFull()
     {
-        if ($this->nomor) {
+        if (!$this->nomor) {
             return $this->nama;
         } else {
             return $this->nomor . ' (' . $this->nama . ')' . ' a.n ' . $this->pemilik;
