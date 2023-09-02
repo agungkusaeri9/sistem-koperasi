@@ -4,6 +4,7 @@ use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\LamaAngsuranController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengaturanController;
@@ -52,4 +53,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // pengaturan
     Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::post('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
+
+    // lama-angsuran
+    Route::resource('lama-angsuran', LamaAngsuranController::class)->except('show');
 });

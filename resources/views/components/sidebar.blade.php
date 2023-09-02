@@ -34,6 +34,10 @@
                         <a class="nav-link" href="{{ route('periode.index') }}">
                             Periode </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('lama-angsuran.index') }}">
+                            Lama Angsuran </a>
+                    </li>
                 </ul>
             </div>
         </li>
