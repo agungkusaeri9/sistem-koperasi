@@ -120,7 +120,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ konversiBulan($angsuran->bulan) . ' ' . $angsuran->tahun }}</td>
-                                    <td>{{ formatTanggalBulanTahun($angsuran->verifikasi) }}</td>
+                                    <td>{{ formatTanggalBulanTahun($angsuran->tanggal_verifikasi) }}</td>
                                     <td>{{ $angsuran->metode_pembayaran ? $angsuran->metode_pembayaran->getFull() : '-' }}
                                     </td>
                                     <td>
