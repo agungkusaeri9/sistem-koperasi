@@ -13,6 +13,16 @@ class MetodePembayaran extends Model
     protected $table = 'metode_pembayaran';
     protected $guarded = ['id'];
 
+
+    public function getFull()
+    {
+        if ($this->nomor) {
+            return $this->nama;
+        } else {
+            return $this->nomor . ' (' . $this->nama . ')' . ' a.n ' . $this->pemilik;
+        }
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

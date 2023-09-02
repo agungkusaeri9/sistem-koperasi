@@ -7,6 +7,20 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#transaksi" aria-expanded="false" aria-controls="transaksi">
+                <i class="icon-folder menu-icon"></i>
+                <span class="menu-title">Transaksi</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="transaksi">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pinjaman.index') }}"> Pinjaman </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#master_data" aria-expanded="false"
                 aria-controls="master_data">
                 <i class="icon-folder menu-icon"></i>

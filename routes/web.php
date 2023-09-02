@@ -9,6 +9,8 @@ use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\PinjamanAngsuranController;
+use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,4 +58,9 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // lama-angsuran
     Route::resource('lama-angsuran', LamaAngsuranController::class)->except('show');
+
+    // pinjaman
+    Route::resource('pinjaman', PinjamanController::class);
+    // pinjaman angsuran
+    Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
 });
