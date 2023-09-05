@@ -22,10 +22,12 @@
                             <span class="font-weight-bold">Lama Angsuran</span>
                             <span>{{ $item->lama_angsuran->durasi . ' bulan' }}</span>
                         </li>
-                        <li class="list-item mb-3 d-flex justify-content-between">
-                            <span class="font-weight-bold">Mulai Angsuran</span>
-                            <span>{{ konversiBulan($item->bulan_mulai) . ' ' . $item->tahun_mulai . ' s.d ' . konversiBulan($item->bulan_sampai) . ' ' . $item->tahun_sampai }}</span>
-                        </li>
+                        @if ($item->bulan_awal && $item->bulan_sampai)
+                            <li class="list-item mb-3 d-flex justify-content-between">
+                                <span class="font-weight-bold">Mulai Angsuran</span>
+                                <span>{{ konversiBulan($item->bulan_mulai) . ' ' . $item->tahun_mulai . ' s.d ' . konversiBulan($item->bulan_sampai) . ' ' . $item->tahun_sampai }}</span>
+                            </li>
+                        @endif
                         <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Potongan Awal</span>
                             <span>{{ formatRupiah($item->potongan_awal) }}</span>
@@ -51,12 +53,27 @@
                             <span>{{ formatRupiah($item->total_jumlah_angsuran_bulan * 12) }}</span>
                         </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
+                            <span class="font-weight-bold">Tanggal Pengajuan</span>
+                            <span>
+                                {{ $item->created_at->translatedFormat('d-m-Y') }}
+                            </span>
+                        </li>
+                        @if ($item->tanggal_diterima)
+                            <li class="list-item mb-3 d-flex justify-content-between">
+                                <span class="font-weight-bold">Tanggal Disetujui</span>
+                                <span>
+                                    {{ $item->tanggal_diterima->translatedFormat('d-m-Y') }}
+                                </span>
+                            </li>
+                        @endif
+                        <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Status</span>
                             <span>
                                 {!! $item->status() !!}
                             </span>
                         </li>
-                        @if ($item->status != 2)
+
+                        @if ($item->status != 2 && auth()->user()->role !== 'anggota')
                             <li class="list-item mb-3 d-flex justify-content-between">
                                 <span class="font-weight-bold">Aksi</span>
                                 <div>
@@ -73,11 +90,15 @@
                                                 data-action="{{ route('pinjaman.update', $item->id) }}">Set
                                                 Ditolak</button>
                                         @elseif($item->status == 1)
-                                            <button
-                                                class="btn btn-sm btn-success @if ($item->cekVerifikasiStatusAngsuran() == false) disabled @else btnStatusPinjaman @endif"
-                                                data-id="{{ $item->id }}" data-status="2"
-                                                data-action="{{ route('pinjaman.update', $item->id) }}">Set
-                                                Selesai</button>
+                                            @if ($item->cekVerifikasiStatusAngsuran() == true)
+                                                <button class="btn btn-sm btn-success btnStatusPinjaman "
+                                                    data-id="{{ $item->id }}" data-status="2"
+                                                    data-action="{{ route('pinjaman.update', $item->id) }}">Set
+                                                    Selesai</button>
+                                            @else
+                                                <button class="btn disabled btn-sm btn-success" type="button">Set
+                                                    Selesai</button>
+                                            @endif
                                         @elseif($item->status == 3)
                                             <button class="btn btn-sm btn-info btnStatusPinjaman"
                                                 data-id="{{ $item->id }}" data-status="1"
@@ -100,6 +121,24 @@
         <div class="col-md">
             <div class="card">
                 <div class="card-body">
+                    @if ($item->angsuran->count() < 1)
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Perhatian!</strong>
+                            <p>Angsuran dibuatkan secara otomatis ketika admin menyetujui pinjaman tersebut.</p>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @elseif($item->tanggal_diterima)
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Perhatian!</strong>
+                            <p>Pembayaran angsuran tidak boleh melebihi tanggal
+                                {{ $item->tanggal_diterima->translatedFormat('d') }} dari bulan angsuran.</p>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
                     <h4 class="card-title mb-5 text-center">Angusran</h4>
                     <table class="table w-100 dtTable table-hover" id="dtTable">
                         <thead>
@@ -110,7 +149,7 @@
                                 <th>Metode Pembayaran</th>
                                 <th>Bukti Pembayaran</th>
                                 <th>Status</th>
-                                @if ($item->status != 2)
+                                @if ($item->status != 2 || auth()->user()->role === 'anggota')
                                     <th>Aksi</th>
                                 @endif
                             </tr>
@@ -125,7 +164,8 @@
                                     </td>
                                     <td>
                                         @if ($angsuran->bukti_pembayaran)
-                                            <a href="" class="btn py-2 btn-sm btn-success">Lihat</a>
+                                            <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
+                                                data-image="{{ asset('storage/' . $angsuran->bukti_pembayaran) }}">Lihat</a>
                                         @else
                                             <a href="" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
                                         @endif
@@ -133,23 +173,46 @@
                                     <td>
                                         {!! $angsuran->status() !!}
                                     </td>
-                                    @if ($item->status != 2)
+
+                                    @if ($item->status != 2 && auth()->user()->role !== 'anggota')
                                         <td>
                                             <form action="javascrip:void(0)" method="post" id="formStatusAngsuran">
                                                 @csrf
                                                 @if ($angsuran->status == 2)
                                                     <button class="btn py-2 btn-sm btn-danger statusAngsuran"
-                                                        data-id="{{ $angsuran->id }}" data-status="0"
+                                                        data-id="{{ $angsuran->id }}" data-status="1"
                                                         data-action="{{ route('pinjaman-angsuran.update', $angsuran->id) }}">Batal
                                                         Verifikasi</button>
                                                 @else
                                                     <button class="btn py-2 btn-sm btn-success statusAngsuran"
-                                                        data-id="{{ $angsuran->id }}"
+                                                        data-id="{{ $angsuran->id }}" data-status="2"
                                                         data-action="{{ route('pinjaman-angsuran.update', $angsuran->id) }}">Verifikasi</button>
                                                 @endif
                                             </form>
                                         </td>
                                     @endif
+
+                                    @if (auth()->user()->role === 'anggota')
+                                        <td>
+                                            @if ($item->status == 2)
+                                                <a href="javascript:void(0)" class="btn disabled py-2 btn-sm btn-info">
+                                                    Upload Ulang
+                                                </a>
+                                            @else
+                                                <a href="{{ route('pinjaman-angsuran.bayar', [
+                                                    'kode_pinjaman' => $item->kode,
+                                                    'pinjaman_angsuran_id' => $angsuran->id,
+                                                ]) }}"
+                                                    class="btn py-2 btn-sm btn-info">
+                                                    @if ($angsuran->status == 0)
+                                                        Upload Bukti
+                                                    @elseif($angsuran->status == 1)
+                                                        Upload Ulang
+                                                    @endif
+                                                </a>
+                                            @endif
+                                    @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -158,7 +221,27 @@
             </div>
         </div>
     </div>
-
+    <!-- Modal -->
+    <div class="modal fade" id="modalBukti" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bukti Pembayaran</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="" class="img-fluid imageModalBukti" alt="">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 <x-Datatable />
 <x-Sweetalert />
@@ -237,6 +320,13 @@
                     $('#formStatusAngsuran').submit();
                 }
             })
+        })
+
+        // handle bukti di klik
+        $('body').on('click', '.btnBukti', function() {
+            let src = $(this).data('image');
+            $('#modalBukti .imageModalBukti').attr('src', src);
+            $('#modalBukti').modal('show');
         })
     </script>
 @endpush

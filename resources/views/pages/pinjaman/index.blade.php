@@ -6,8 +6,6 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title mb-3 align-self-center">Data Pinjaman</h4>
-                        <a href="{{ route('pinjaman.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">Tambah
-                            Pinjaman</a>
                     </div>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
@@ -33,7 +31,7 @@
                                     <td>
                                         <a href="{{ route('pinjaman.show', $item->kode) }}"
                                             class="btn btn-sm py-2 btn-warning">Detail</a>
-                                        @if ($item->status != 2)
+                                        @if ($item->status != 2 && auth()->user()->role !== 'anggota')
                                             <form action="javascript:void(0)" method="post" class="d-inline"
                                                 id="formDelete">
                                                 @csrf

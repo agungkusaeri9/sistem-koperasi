@@ -45,6 +45,22 @@ class LamaAngsuranController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $item = LamaAngsuran::where('id', $id)->first();
+        if ($item) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $item
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'data' => NULL
+            ]);
+        }
+    }
+
     public function edit($id)
     {
         $item = LamaAngsuran::findOrFail($id);

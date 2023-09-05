@@ -117,7 +117,6 @@ class AnggotaController extends Controller
             $data_user['role'] = 'anggota';
             $data_anggota = request()->only(['nip', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'nomor_telepon', 'jabatan_id', 'agama_id']);
             $data_anggota['nama'] = request('name');
-            $data_user['password'] = bcrypt(request('password'));
             request()->file('avatar') ? $data_user['avatar'] = request()->file('avatar')->store('users', 'public') : NULL;
 
             // cek jika ada password

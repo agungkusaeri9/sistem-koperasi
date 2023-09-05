@@ -56,7 +56,7 @@ class User extends Authenticatable
     }
     public function isActive()
     {
-        if ($this->is_active) {
+        if ($this->is_active == 1) {
             return '<span class="badge badge-success">Aktif</span>';
         } else {
             return '<span class="badge badge-danger">Tidak Aktif</span>';

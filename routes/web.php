@@ -57,10 +57,13 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
 
     // lama-angsuran
-    Route::resource('lama-angsuran', LamaAngsuranController::class)->except('show');
+    Route::resource('lama-angsuran', LamaAngsuranController::class);
 
     // pinjaman
     Route::resource('pinjaman', PinjamanController::class);
+
     // pinjaman angsuran
     Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
+    Route::get('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'bayar'])->name('pinjaman-angsuran.bayar');
+    Route::post('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'proses_bayar'])->name('pinjaman-angsuran.proses-bayar');
 });

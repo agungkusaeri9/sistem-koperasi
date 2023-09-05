@@ -10,6 +10,12 @@ class PinjamanAngsuran extends Model
     use HasFactory;
     protected $table = 'pinjaman_angsuran';
     protected $guarded = ['id'];
+
+    public function pinjaman()
+    {
+        return $this->belongsTo(Pinjaman::class);
+    }
+
     public function metode_pembayaran()
     {
         return $this->belongsTo(MetodePembayaran::class);

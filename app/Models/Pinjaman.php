@@ -13,6 +13,10 @@ class Pinjaman extends Model
     protected $table = 'pinjaman';
     protected $guarded = ['id'];
 
+    public $casts = [
+        'tanggal_diterima' => 'datetime'
+    ];
+
     public function anggota()
     {
         return $this->belongsTo(Anggota::class);
@@ -79,5 +83,17 @@ class Pinjaman extends Model
             ->setDescriptionForEvent(fn (string $eventName) => "The " . \Str::ucfirst(auth()->user()->name) . " {$eventName} pinjaman")
             ->logOnly(['kode'])
             ->useLogName('Pinjaman');
+    }
+
+    public static function buatKodeBaru()
+    {
+        $kode_terakhir = Pinjaman::latest()->first()->kode;
+        if ($kode_terakhir) {
+            $kode_nomor = \Str::after($kode_terakhir, 'P');
+            $kode_baru = "P" . str_pad($kode_nomor + 1, 5, 0, STR_PAD_LEFT);
+        } else {
+            $kode_baru = "P00001";
+        }
+        return $kode_baru;
     }
 }
