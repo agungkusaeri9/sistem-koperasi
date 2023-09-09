@@ -108,43 +108,45 @@ class PinjamanController extends Controller
             $item = Pinjaman::findOrFail($id);
 
             if ($status == 1) {
-                // disetujui, dan buatkan angsurannya
-                // set bulan awal, tahun awal, bulan sampai dan tahun sampai
-                $tanggal_sekarang = Carbon::now()->translatedFormat('d');
-                $bulan_sekarang = Carbon::now()->translatedFormat('m');
-                $tahun_sekarang = Carbon::now()->translatedFormat('Y');
-                $bulan_mulai = $bulan_sekarang + 1;
+                $tanggal_sekarang = Carbon::now();
+                $bulan_mulai = $tanggal_sekarang->addMonth()->month; // Bulan mulai + 1
                 $lama_angsuran = $item->lama_angsuran->durasi;
-                $bulan_sampai = $bulan_mulai + $lama_angsuran;
 
                 // looping lama angsuran
                 for ($i = 0; $i < $lama_angsuran; $i++) {
-                    // jika bulan lebih dari 12
-                    $bulan_baru = $bulan_mulai + $i;
-                    if ($bulan_baru > 12) {
-                        $bulan_baru = 1 + $i;
+                    $bulan_hitung = ($bulan_mulai + $i) % 12;
+                    $tahun_angsuran = $tanggal_sekarang->year + floor(($bulan_mulai + $i) / 12);
+
+                    // Jika hasil modulus adalah 0, maka bulan adalah Desember
+                    if ($bulan_hitung === 0) {
+                        $bulan_hitung = 12;
+                        $tahun_angsuran--;
                     }
+
                     // buat angsuran
                     $item->angsuran()->create([
-                        'bulan' => $bulan_baru,
-                        'tahun' => $tahun_sekarang
+                        'bulan' => $bulan_hitung,
+                        'tahun' => $tahun_angsuran
                     ]);
                 }
 
-                //cek jika bulan sampai melebihi 12
-                if ($bulan_sampai > 12) {
-                    $bulan_sampai = $bulan_sampai - 12;
-                    $tahun_sampai = $tahun_sekarang + 1;
-                } else {
-                    $tahun_sampai = $tahun_sekarang;
+                // Menghitung tahun sampai berdasarkan bulan akhir
+                $bulan_akhir = ($bulan_mulai + $lama_angsuran - 1) % 12;
+                $tahun_sampai = $tanggal_sekarang->year + floor(($bulan_mulai + $lama_angsuran - 1) / 12);
+
+                // Jika hasil modulus adalah 0, maka bulan adalah Desember
+                if ($bulan_akhir === 0) {
+                    $bulan_akhir = 12;
+                    $tahun_sampai--;
                 }
+
 
                 // update
                 $item->tanggal_diterima = Carbon::now()->translatedFormat('Y-m-d');
                 $item->diterima_oleh = auth()->id();
                 $item->bulan_mulai = $bulan_mulai;
-                $item->tahun_mulai = $tahun_sekarang;
-                $item->bulan_sampai = $bulan_sampai;
+                $item->tahun_mulai = $tanggal_sekarang->year;
+                $item->bulan_sampai = $bulan_akhir;
                 $item->tahun_sampai = $tahun_sampai;
             }
             $item->status = $status;
