@@ -23,11 +23,27 @@ class MetodePembayaran extends Model
         }
     }
 
+    public function anggota()
+    {
+        return $this->belongsTo(Anggota::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn (string $eventName) => "The " . \Str::ucfirst(auth()->user()->name) . " {$eventName} Metode Pembayaran")
             ->logOnly(['nama'])
             ->useLogName('Metode Pembayaran');
+    }
+
+    public function scopeByAnggota($query)
+    {
+        return $query->where('anggota_id', auth()->user()->anggota->id);
+    }
+
+
+    public function scopeBySistem($query)
+    {
+        return $query->whereNull('anggota_id');
     }
 }

@@ -13,29 +13,40 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
+                                @if (auth()->user()->role !== 'anggota')
+                                    <th>Anggota</th>
+                                @endif
                                 <th>Nama</th>
                                 <th>Nomor</th>
                                 <th>Pemilik</th>
-                                <th>Aksi</th>
+                                @if (auth()->user()->role !== 'anggota')
+                                    <th>Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    @if (auth()->user()->role !== 'anggota')
+                                        <td>{{ $item->anggota->nama ?? 'Sistem' }}</td>
+                                    @endif
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->nomor ?? '-' }}</td>
                                     <td>{{ $item->pemilik ?? '-' }}</td>
-                                    <td>
-                                        <a href="{{ route('metode-pembayaran.edit', $item->id) }}"
-                                            class="btn btn-sm py-2 btn-info">Edit</a>
-                                        <form action="javascript:void(0)" method="post" class="d-inline" id="formDelete">
-                                            @csrf
-                                            @method('delete')
-                                            <button class="btn btnDelete btn-sm py-2 btn-danger"
-                                                data-action="{{ route('metode-pembayaran.destroy', $item->id) }}">Hapus</button>
-                                        </form>
-                                    </td>
+                                    @if (auth()->user()->role !== 'anggota')
+                                        <td>
+                                            <a href="{{ route('metode-pembayaran.edit', $item->id) }}"
+                                                class="btn btn-sm py-2 btn-info">Edit</a>
+                                            <form action="javascript:void(0)" method="post" class="d-inline"
+                                                id="formDelete">
+                                                @csrf
+                                                @method('delete')
+                                                <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                    data-action="{{ route('metode-pembayaran.destroy', $item->id) }}">Hapus</button>
+                                            </form>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

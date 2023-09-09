@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LamaAngsuran;
+use App\Models\MetodePembayaran;
 use App\Models\Pinjaman;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,7 +29,8 @@ class PinjamanController extends Controller
     {
         return view('pages.pinjaman.create', [
             'title' => 'Buat Pengangajuan Pinjaman',
-            'data_lama_angsuran' => LamaAngsuran::orderBy('durasi', 'ASC')->get()
+            'data_lama_angsuran' => LamaAngsuran::orderBy('durasi', 'ASC')->get(),
+            'data_metode_pembayaran' => MetodePembayaran::byAnggota()->get()
         ]);
     }
 
@@ -63,7 +65,8 @@ class PinjamanController extends Controller
                 'jumlah_diterima' => $jumlah_diterima,
                 'angsuran_pokok_bulan' => $angsuran_pokok_bulan,
                 'jasa_pinjaman_bulan' => $jasa_pinjaman_bulan,
-                'total_jumlah_angsuran_bulan' => $total_jumlah_angsuran_bulan
+                'total_jumlah_angsuran_bulan' => $total_jumlah_angsuran_bulan,
+                'metode_pencairan' => request('metode_pencairan')
             ]);
 
             DB::commit();
@@ -78,9 +81,9 @@ class PinjamanController extends Controller
     public function show($kode)
     {
         if (auth()->user()->role !== 'anggota') {
-            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran'])->where('kode', $kode)->firstOrFail();
+            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran', 'met_pencairan'])->where('kode', $kode)->firstOrFail();
         } else {
-            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran'])->where([
+            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran', 'met_pencairan'])->where([
                 'kode' => $kode,
                 'anggota_id' => auth()->user()->anggota->id
             ])->firstOrFail();

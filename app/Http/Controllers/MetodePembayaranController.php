@@ -10,7 +10,11 @@ class MetodePembayaranController extends Controller
 {
     public function index()
     {
-        $items = MetodePembayaran::orderBy('nama', 'ASC')->get();
+        if (auth()->user()->role === 'anggota') {
+            $items = MetodePembayaran::byAnggota()->orderBy('nama', 'ASC')->get();
+        } else {
+            $items = MetodePembayaran::orderBy('nama', 'ASC')->get();
+        }
         return view('pages.metode-pembayaran.index', [
             'title' => 'Metode Pembayaran',
             'items' => $items
@@ -33,6 +37,7 @@ class MetodePembayaranController extends Controller
         DB::beginTransaction();
         try {
             $data = request()->only(['nama', 'nomor', 'pemilik']);
+            auth()->user()->anggota ? $data['anggota_id'] = auth()->user()->anggota->id : NULL;
             MetodePembayaran::create($data);
 
             DB::commit();
@@ -45,7 +50,11 @@ class MetodePembayaranController extends Controller
 
     public function edit($id)
     {
-        $item = MetodePembayaran::findOrFail($id);
+        if (auth()->user()->role === 'anggota') {
+            $item = MetodePembayaran::byAnggota()->findOrFail($id);
+        } else {
+            $item = MetodePembayaran::findOrFail($id);
+        }
         return view('pages.metode-pembayaran.edit', [
             'title' => 'Edit Metode Pembayaran',
             'item' => $item
@@ -62,8 +71,6 @@ class MetodePembayaranController extends Controller
         try {
             $item = MetodePembayaran::findOrFail($id);
             $data = request()->only(['nama', 'nomor', 'pemilik']);
-
-
             $item->update($data);
             DB::commit();
             return redirect()->route('metode-pembayaran.index')->with('success', 'Metode Pembayaran berhasil diupdate.');
@@ -76,7 +83,6 @@ class MetodePembayaranController extends Controller
     public function destroy($id)
     {
         $item = MetodePembayaran::findOrFail($id);
-
         DB::beginTransaction();
         try {
             $item->delete();

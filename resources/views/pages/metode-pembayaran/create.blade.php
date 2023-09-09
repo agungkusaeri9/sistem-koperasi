@@ -2,6 +2,15 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            <div class="alert alert-warning">
+                <strong>Perhatian!</strong>
+                <p>Dimohon memasukan data yang benar, dikarenakan data yang sudah dibuat tidak bisa diedit ataupun dihapus.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Tambah Metode Pembayaran</h4>

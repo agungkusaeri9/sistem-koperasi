@@ -82,6 +82,12 @@
                     <span class="menu-title">Riwayat Pinjaman</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('metode-pembayaran.index') }}">
+                    <i class="icon-head menu-icon"></i>
+                    <span class="menu-title">Metode Pembayaran</span>
+                </a>
+            </li>
         @endif
 
     </ul>

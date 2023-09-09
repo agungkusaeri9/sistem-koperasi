@@ -31,7 +31,8 @@
                                     <td>
                                         <a href="{{ route('pinjaman.show', $item->kode) }}"
                                             class="btn btn-sm py-2 btn-warning">Detail</a>
-                                        @if ($item->status != 2 && auth()->user()->role !== 'anggota')
+
+                                        @if ((auth()->user()->role !== 'anggota' && $item->status == 0) || $item->status == 3)
                                             <form action="javascript:void(0)" method="post" class="d-inline"
                                                 id="formDelete">
                                                 @csrf

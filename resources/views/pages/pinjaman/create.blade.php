@@ -31,6 +31,23 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
+                            <label for='metode_pencairan' class='mb-2'>Metode Pencairan <span
+                                    class="text-danger">*</span></label>
+                            <select name="metode_pencairan" id="metode_pencairan"
+                                class="form-control @error('metode_pencairan') is-invalid @enderror">
+                                <option value="" selected>Pilih Metode Pencairan</option>
+                                @foreach ($data_metode_pembayaran as $metode_pembayaran)
+                                    <option value="{{ $metode_pembayaran->id }}">{{ $metode_pembayaran->getFull() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('metode_pencairan')
+                                <div class='invalid-feedback'>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class='form-group mb-3'>
                             <label for='lama_angsuran_id' class='mb-2'>Lama Angsuran <span
                                     class="text-danger">*</span></label>
                             <select name="lama_angsuran_id" id="lama_angsuran_id"

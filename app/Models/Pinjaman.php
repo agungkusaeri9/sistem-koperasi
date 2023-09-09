@@ -27,6 +27,11 @@ class Pinjaman extends Model
         return $this->belongsTo(LamaAngsuran::class);
     }
 
+    public function met_pencairan()
+    {
+        return $this->belongsTo(MetodePembayaran::class, 'metode_pencairan', 'id');
+    }
+
     public function angsuran()
     {
         return $this->hasMany(PinjamanAngsuran::class, 'pinjaman_id', 'id');
@@ -50,11 +55,6 @@ class Pinjaman extends Model
             }
         }
 
-        // if ($angsuran_lunas && $angsuran_lunas > 0 && $angsuran_belum_lunas > 0) {
-        //     return false;
-        // } else {
-        //     return true;
-        // }
         if ($angsuran_lunas == $total) {
             return true;
         } else {

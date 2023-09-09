@@ -52,7 +52,7 @@ class PinjamanAngsuranController extends Controller
         return view('pages.pinjaman-angsuran.bayar', [
             'title' => 'Bayar angsuran ' . $item->pinjaman->kode,
             'item' => $item,
-            'data_metode_pembayaran' => MetodePembayaran::orderBy('nama', 'ASC')->get()
+            'data_metode_pembayaran' => MetodePembayaran::bySistem()->orderBy('nama', 'ASC')->get()
         ]);
     }
 

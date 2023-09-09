@@ -53,6 +53,10 @@
                             <span>{{ formatRupiah($item->total_jumlah_angsuran_bulan * 12) }}</span>
                         </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
+                            <span class="font-weight-bold">Metode Pencairan</span>
+                            <span>{{ $item->met_pencairan ? $item->met_pencairan->getFull() : '-' }}</span>
+                        </li>
+                        <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Tanggal Pengajuan</span>
                             <span>
                                 {{ $item->created_at->translatedFormat('d-m-Y') }}
@@ -66,6 +70,7 @@
                                 </span>
                             </li>
                         @endif
+
                         <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Status</span>
                             <span>
@@ -133,7 +138,8 @@
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <strong>Perhatian!</strong>
                             <p>Pembayaran angsuran tidak boleh melebihi tanggal
-                                {{ $item->tanggal_diterima->translatedFormat('d') }} dari bulan angsuran.</p>
+                                {{ $item->tanggal_diterima->translatedFormat('d') }} dari bulan angsuran dengan nominal
+                                {{ formatRupiah($item->total_jumlah_angsuran_bulan) }} / bulan</p>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -145,7 +151,6 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Bulan</th>
-                                <th>Tanggal Verifikasi</th>
                                 <th>Metode Pembayaran</th>
                                 <th>Bukti Pembayaran</th>
                                 <th>Status</th>
@@ -159,7 +164,6 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ konversiBulan($angsuran->bulan) . ' ' . $angsuran->tahun }}</td>
-                                    <td>{{ formatTanggalBulanTahun($angsuran->tanggal_verifikasi) }}</td>
                                     <td>{{ $angsuran->metode_pembayaran ? $angsuran->metode_pembayaran->getFull() : '-' }}
                                     </td>
                                     <td>
@@ -199,17 +203,28 @@
                                                     Upload Ulang
                                                 </a>
                                             @else
-                                                <a href="{{ route('pinjaman-angsuran.bayar', [
-                                                    'kode_pinjaman' => $item->kode,
-                                                    'pinjaman_angsuran_id' => $angsuran->id,
-                                                ]) }}"
-                                                    class="btn py-2 btn-sm btn-info">
-                                                    @if ($angsuran->status == 0)
-                                                        Upload Bukti
-                                                    @elseif($angsuran->status == 1)
+                                                @if ($angsuran->status == 0)
+                                                    <a href="{{ route('pinjaman-angsuran.bayar', [
+                                                        'kode_pinjaman' => $item->kode,
+                                                        'pinjaman_angsuran_id' => $angsuran->id,
+                                                    ]) }}"
+                                                        class="btn py-2 btn-sm btn-info">
+                                                        Bayar & Upload Bukti
+                                                    </a>
+                                                @elseif($angsuran->status == 1)
+                                                    <a href="{{ route('pinjaman-angsuran.bayar', [
+                                                        'kode_pinjaman' => $item->kode,
+                                                        'pinjaman_angsuran_id' => $angsuran->id,
+                                                    ]) }}"
+                                                        class="btn py-2 btn-sm btn-info">
                                                         Upload Ulang
-                                                    @endif
-                                                </a>
+                                                    </a>
+                                                @else
+                                                    <a href="javascript:void(0)"
+                                                        class="btn py-2 btn-sm btn-info disabled">
+                                                        Upload Ulang
+                                                    </a>
+                                                @endif
                                             @endif
                                     @endif
                                     </td>
