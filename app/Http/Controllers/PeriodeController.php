@@ -38,6 +38,14 @@ class PeriodeController extends Controller
         DB::beginTransaction();
         try {
             $data = request()->all();
+            if (request('status') == 1) {
+                $cekStatusAktif = Periode::where('status', 1);
+                if ($cekStatusAktif->count() > 0) {
+                    $cekStatusAktif->update([
+                        'status' => 0
+                    ]);
+                }
+            }
             Periode::create($data);
             DB::commit();
             return redirect()->route('periode.index')->with('success', 'Periode berhasil ditambahkan.');
