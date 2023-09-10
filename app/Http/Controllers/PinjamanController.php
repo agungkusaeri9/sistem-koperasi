@@ -13,15 +13,25 @@ class PinjamanController extends Controller
 {
     public function index()
     {
+        $status = request('status');
+        if ($status == 'semua')
+            $items = Pinjaman::whereNotNull('id');
+        elseif ($status != NULL)
+            $items = Pinjaman::where('status', $status)->whereNotNull('id');
+        else
+            $items = Pinjaman::whereNotNull('id');
+
         if (auth()->user()->role !== 'anggota') {
-            $items = Pinjaman::with('anggota')->latest()->get();
+            $data = $items->with('anggota')->latest()->get();
         } else {
             // anggota
-            $items = Pinjaman::where('anggota_id', auth()->user()->anggota->id)->with('anggota')->latest()->get();
+            $data = $items->where('anggota_id', auth()->user()->anggota->id)->with('anggota')->latest()->get();
         }
+
         return view('pages.pinjaman.index', [
             'title' => 'Pinjaman',
-            'items' => $items
+            'items' => $data,
+            'status' => $status ?? 'semua'
         ]);
     }
 

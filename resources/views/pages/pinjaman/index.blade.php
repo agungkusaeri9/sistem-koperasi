@@ -1,5 +1,31 @@
 @extends('layouts.app')
 @section('content')
+    <div class="row mb-2">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Filter</h4>
+                    <form action="{{ route('pinjaman.filter') }}" method="post">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select name="status" id="status" class="form-control">
+                                    <option @selected($status === 'semua') value="semua">Pilih Status</option>
+                                    <option @selected($status == 0) value="0">Menunggu Persetujuan</option>
+                                    <option @selected($status == 1) value="1">Disetujui</option>
+                                    <option @selected($status == 2) value="2">Selesai</option>
+                                    <option @selected($status == 3) value="3">Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="col-md">
+                                <button class="btn btn-primary">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -15,6 +41,7 @@
                                 <th>Nama Anggota</th>
                                 <th>Besar Pinjaman</th>
                                 <th>Keperluan</th>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -27,6 +54,7 @@
                                     <td>{{ $item->anggota->nama }}</td>
                                     <td>Rp {{ number_format($item->besar_pinjaman, 0, '.', '.') }}</td>
                                     <td>{{ $item->keperluan }}</td>
+                                    <td>{{ formatTanggalBulanTahun($item->created_at) }}</td>
                                     <td>{!! $item->status() !!}</td>
                                     <td>
                                         <a href="{{ route('pinjaman.show', $item->kode) }}"

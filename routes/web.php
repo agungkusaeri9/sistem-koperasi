@@ -4,6 +4,7 @@ use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\JenisSimpananController;
 use App\Http\Controllers\LamaAngsuranController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PinjamanAngsuranController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Models\JenisSimpanan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,8 +61,13 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // lama-angsuran
     Route::resource('lama-angsuran', LamaAngsuranController::class);
 
+    // jenis-simpanan
+    Route::resource('jenis-simpanan', JenisSimpananController::class);
+
     // pinjaman
-    Route::resource('pinjaman', PinjamanController::class);
+    Route::post('pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.filter');
+    Route::resource('pinjaman', PinjamanController::class)->except('store');
+    Route::post('pinjaman/create', [PinjamanController::class, 'store'])->name('pinjaman.store');
 
     // pinjaman angsuran
     Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');

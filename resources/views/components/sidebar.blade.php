@@ -23,6 +23,21 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#simpanan" aria-expanded="false"
+                    aria-controls="simpanan">
+                    <i class="icon-folder menu-icon"></i>
+                    <span class="menu-title">Simpanan</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="simpanan">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('jenis-simpanan.index') }}"> Jenis Simpanan </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#master_data" aria-expanded="false"
                     aria-controls="master_data">
                     <i class="icon-folder menu-icon"></i>
