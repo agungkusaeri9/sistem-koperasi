@@ -68,6 +68,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.filter');
     Route::resource('pinjaman', PinjamanController::class)->except('store');
     Route::post('pinjaman/create', [PinjamanController::class, 'store'])->name('pinjaman.store');
+    Route::post('pinjaman/export-pdf/{kode}', [PinjamanController::class, 'export_pdf'])->name('pinjaman.export-pdf');
 
     // pinjaman angsuran
     Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');

@@ -8,6 +8,7 @@ use App\Models\Pinjaman;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PinjamanController extends Controller
 {
@@ -64,6 +65,27 @@ class PinjamanController extends Controller
             $total_jumlah_angsuran_bulan = $angsuran_pokok_bulan + $jasa_pinjaman_bulan;
             $kode_baru = Pinjaman::buatKodeBaru();
 
+            // cari mulan bulan sampai akhir
+            $tanggal_sekarang = Carbon::now();
+            $bulan_mulai = $tanggal_sekarang->addMonth()->month; // Bulan mulai + 1
+            $lama_angsuran = $lama_angsuran->durasi;
+
+            // looping lama angsuran
+            for ($i = 0; $i < $lama_angsuran; $i++) {
+                $bulan_hitung = ($bulan_mulai + $i) % 12;
+                $tahun_angsuran = $tanggal_sekarang->year + floor(($bulan_mulai + $i) / 12);
+
+                // Jika hasil modulus adalah 0, maka bulan adalah Desember
+                if ($bulan_hitung === 0) {
+                    $bulan_hitung = 12;
+                    $tahun_angsuran--;
+                }
+            }
+
+            // Menghitung tahun sampai berdasarkan bulan akhir
+            $bulan_akhir = ($bulan_mulai + $lama_angsuran - 1) % 12;
+            $tahun_sampai = $tanggal_sekarang->year + floor(($bulan_mulai + $lama_angsuran - 1) / 12);
+
             // create pinjaman
             Pinjaman::create([
                 'anggota_id' => auth()->user()->anggota->id,
@@ -76,7 +98,11 @@ class PinjamanController extends Controller
                 'angsuran_pokok_bulan' => $angsuran_pokok_bulan,
                 'jasa_pinjaman_bulan' => $jasa_pinjaman_bulan,
                 'total_jumlah_angsuran_bulan' => $total_jumlah_angsuran_bulan,
-                'metode_pencairan' => request('metode_pencairan')
+                'metode_pencairan' => request('metode_pencairan'),
+                'bulan_mulai' => $bulan_mulai,
+                'tahun_mulai' => $tahun_angsuran,
+                'bulan_sampai' => $bulan_akhir,
+                'tahun_sampai' => $tahun_sampai
             ]);
 
             DB::commit();
@@ -180,5 +206,16 @@ class PinjamanController extends Controller
         }
         $item->delete();
         return redirect()->back()->with('success', 'Pinjaman berhasil dihapus.');
+    }
+
+    public function export_pdf($kode)
+    {
+        $item = Pinjaman::with(['anggota', 'lama_angsuran'])->where('kode', $kode)->firstOrFail();
+        $pdf = Pdf::loadView('pages.pinjaman.export-pdf', [
+            'item' => $item
+        ]);
+        $fileName = "Pinjaman-" . $item->kode . '.pdf';
+        // return $pdf->stream();
+        return $pdf->download($fileName);
     }
 }

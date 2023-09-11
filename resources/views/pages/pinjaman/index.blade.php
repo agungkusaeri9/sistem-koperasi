@@ -59,6 +59,16 @@
                                     <td>
                                         <a href="{{ route('pinjaman.show', $item->kode) }}"
                                             class="btn btn-sm py-2 btn-warning">Detail</a>
+                                        @if (auth()->user()->role !== 'anggota')
+                                            <form
+                                                action="{{ route('pinjaman.export-pdf', [
+                                                    'kode' => $item->kode,
+                                                ]) }}"
+                                                method="post" class="d-inline">
+                                                @csrf
+                                                <button class="btn btn-sm btn-danger py-2">Cetak PDF</button>
+                                            </form>
+                                        @endif
 
                                         @if ((auth()->user()->role !== 'anggota' && $item->status == 0) || $item->status == 3)
                                             <form action="javascript:void(0)" method="post" class="d-inline"
