@@ -16,13 +16,13 @@
         </script>
     @endif
 
-    @if (session('status'))
+    @if (session('warning'))
         <script>
             Swal.fire({
                 position: 'center',
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('status') }}',
+                icon: 'info',
+                title: 'Perhatian!',
+                text: '{{ session('warning') }}',
                 showConfirmButton: true,
                 timer: 4500
             })

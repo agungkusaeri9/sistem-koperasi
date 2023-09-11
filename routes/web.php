@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\JenisSimpananController;
 use App\Http\Controllers\LamaAngsuranController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengaturanController;
@@ -74,4 +75,9 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
     Route::get('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'bayar'])->name('pinjaman-angsuran.bayar');
     Route::post('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'proses_bayar'])->name('pinjaman-angsuran.proses-bayar');
+
+
+    // laporan
+    Route::get('laporan/pinjaman', [LaporanController::class, 'pinjaman'])->name('laporan.pinjaman.index');
+    Route::post('laporan/pinjaman', [LaporanController::class, 'pinjaman_print'])->name('laporan.pinjaman.print');
 });
