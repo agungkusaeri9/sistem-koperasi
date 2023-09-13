@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('simpanan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('jenis_simpanan_id')->constrained('jenis_simpanan');
+            $table->integer('bulan');
+            $table->integer('tahun');
             $table->integer('nominal');
             $table->foreignId('anggota_id')->constrained('anggota')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('metode_pembayaran')->constrained('metode_pembayaran');
+            $table->foreignId('metode_pembayaran')->nullable()->constrained('metode_pembayaran');
+            $table->string('bukti_pembayaran')->nullable();
             $table->boolean('status_pencairan')->default(0);
             $table->timestamps();
         });

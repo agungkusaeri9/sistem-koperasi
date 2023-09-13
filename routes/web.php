@@ -14,6 +14,7 @@ use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PinjamanAngsuranController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SimpananWajibController;
 use App\Models\JenisSimpanan;
 use Illuminate\Support\Facades\Route;
 
@@ -80,4 +81,9 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // laporan
     Route::get('laporan/pinjaman', [LaporanController::class, 'pinjaman'])->name('laporan.pinjaman.index');
     Route::post('laporan/pinjaman', [LaporanController::class, 'pinjaman_print'])->name('laporan.pinjaman.print');
+
+    // simpanan wajib
+    Route::get('simpanan-wajib/tagihan', [SimpananWajibController::class, 'tagihan'])->name('simpanan-wajib.tagihan.index');
+    Route::get('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'tagihan_bayar'])->name('simpanan-wajib.tagihan.bayar');
+    Route::post('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'proses_tagihan_bayar'])->name('simpanan-wajib.tagihan.proses-bayar');
 });
