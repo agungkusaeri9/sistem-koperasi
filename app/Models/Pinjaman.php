@@ -96,4 +96,9 @@ class Pinjaman extends Model
         }
         return $kode_baru;
     }
+
+    public function scopeByAnggota($query)
+    {
+        return $query->where('anggota_id', auth()->user()->anggota->id);
+    }
 }
