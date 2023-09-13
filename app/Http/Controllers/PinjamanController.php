@@ -106,7 +106,7 @@ class PinjamanController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->back()->with('success', 'Pengajuan pinjaman berhasil dilakukan. Mohon tunggu beberapa waktu untuk peninjauan admin.');
+            return redirect()->route('pinjaman.index')->with('success', 'Pengajuan pinjaman berhasil dilakukan. Mohon tunggu beberapa waktu untuk peninjauan admin.');
         } catch (\Throwable $th) {
             throw $th;
             DB::rollBack();

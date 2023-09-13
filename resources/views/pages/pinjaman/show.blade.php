@@ -123,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md">
+        <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
                     @if ($item->angsuran->count() < 1)
@@ -146,7 +146,7 @@
                         </div>
                     @endif
                     <h4 class="card-title mb-5 text-center">Angusran</h4>
-                    <table class="table w-100 dtTable table-hover" id="dtTable">
+                    <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
                                 <th>No.</th>

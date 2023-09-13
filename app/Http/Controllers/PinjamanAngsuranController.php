@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PinjamanAngsuranController extends Controller
 {
@@ -58,9 +59,10 @@ class PinjamanAngsuranController extends Controller
 
     public function proses_bayar($kode_pinjaman, $pinjaman_angsuran_id)
     {
+        $metode_pembayaran = MetodePembayaran::findOrFail(request('metode_pembayaran_id'));
         request()->validate([
             'metode_pembayaran_id' => ['required', 'numeric'],
-            'bukti_pembayaran' => ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048']
+            'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
         ]);
 
         $item = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($kode_pinjaman) {
@@ -77,7 +79,7 @@ class PinjamanAngsuranController extends Controller
 
         $item->update([
             'metode_pembayaran_id' => request('metode_pembayaran_id'),
-            'bukti_pembayaran' => request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public'),
+            'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
             'status' => 1
         ]);
 

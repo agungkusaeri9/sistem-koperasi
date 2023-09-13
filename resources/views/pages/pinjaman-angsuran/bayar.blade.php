@@ -52,8 +52,8 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran <span
-                                    class="text-danger">*</span></label>
+                            <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran <span class="text-danger">(Wajib
+                                    diupload jika memilih metode pembayaran secara transfer)</span></label>
                             <input type='file' name='bukti_pembayaran'
                                 class='form-control @error('bukti_pembayaran') is-invalid @enderror'
                                 value='{{ old('bukti_pembayaran') }}'>
