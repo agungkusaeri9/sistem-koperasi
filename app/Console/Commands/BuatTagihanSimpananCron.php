@@ -37,7 +37,7 @@ class BuatTagihanSimpananCron extends Command
         })->get();
         $nominal_simpanan_wajib = Pengaturan::first()->nominal_simpanan_wajib;
         $nominal_simpanan_shr = Pengaturan::first()->nominal_simpanan_shr;
-        $bulan = Carbon::now()->translatedFormat('m') + 1;
+        $bulan = Carbon::now()->translatedFormat('m');
         $tahun = Carbon::now()->translatedFormat('Y');
 
         // looping data anggota
