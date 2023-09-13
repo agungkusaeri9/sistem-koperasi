@@ -17,6 +17,8 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ $pengaturan ? $pengaturan->favicon() : asset('assets/images/favicon.png') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     @stack('styles')
     @vite(['resources/js'])
 </head>

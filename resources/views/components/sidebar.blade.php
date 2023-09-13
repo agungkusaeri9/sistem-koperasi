@@ -2,7 +2,9 @@
     <ul class="nav">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('dashboard') }}">
-                <i class="icon-grid menu-icon"></i>
+                <span class="material-symbols-outlined mr-2">
+                    dashboard
+                </span>
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
@@ -10,8 +12,10 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#transaksi" aria-expanded="false"
                     aria-controls="transaksi">
-                    <i class="icon-folder menu-icon"></i>
-                    <span class="menu-title">Transaksi</span>
+                    <span class="material-symbols-outlined mr-2">
+                        currency_exchange
+                    </span>
+                    <span class="menu-title">Pinjaman</span>
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="transaksi">
@@ -25,7 +29,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#simpanan" aria-expanded="false"
                     aria-controls="simpanan">
-                    <i class="icon-folder menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        savings
+                    </span>
                     <span class="menu-title">Simpanan</span>
                     <i class="menu-arrow"></i>
                 </a>
@@ -40,7 +46,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#laporan" aria-expanded="false"
                     aria-controls="laporan">
-                    <i class="icon-folder menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        description
+                    </span>
                     <span class="menu-title">Laporan</span>
                     <i class="menu-arrow"></i>
                 </a>
@@ -55,7 +63,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#master_data" aria-expanded="false"
                     aria-controls="master_data">
-                    <i class="icon-folder menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        table
+                    </span>
                     <span class="menu-title">Master Data</span>
                     <i class="menu-arrow"></i>
                 </a>
@@ -89,32 +99,42 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('anggota.index') }}">
-                    <i class="icon-head menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        group
+                    </span>
                     <span class="menu-title">Anggota</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('pengaturan.index') }}">
-                    <i class="icon-cog menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        settings
+                    </span>
                     <span class="menu-title">Pengaturan</span>
                 </a>
             </li>
         @else
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('pinjaman.create') }}">
-                    <i class="icon-head menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        receipt
+                    </span>
                     <span class="menu-title">Pengajuan Pinjaman</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('pinjaman.index') }}">
-                    <i class="icon-head menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        request_page
+                    </span>
                     <span class="menu-title">Riwayat Pinjaman</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('metode-pembayaran.index') }}">
-                    <i class="icon-head menu-icon"></i>
+                    <span class="material-symbols-outlined mr-2">
+                        payment
+                    </span>
                     <span class="menu-title">Metode Pembayaran</span>
                 </a>
             </li>
