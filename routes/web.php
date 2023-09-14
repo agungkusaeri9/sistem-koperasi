@@ -14,9 +14,12 @@ use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PinjamanAngsuranController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\SimpananShrController;
 use App\Http\Controllers\SimpananWajibController;
+use App\Http\Controllers\TagihanSimpananController;
 use App\Models\JenisSimpanan;
+use App\Models\Simpanan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,8 +67,10 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // lama-angsuran
     Route::resource('lama-angsuran', LamaAngsuranController::class);
 
-    // jenis-simpanan
-    Route::resource('jenis-simpanan', JenisSimpananController::class);
+    // tagihan-simpanan
+    Route::post('tagihan-simpanan', [TagihanSimpananController::class, 'index'])->name('tagihan-simpanan.filter');
+    Route::resource('tagihan-simpanan', TagihanSimpananController::class)->except(['show', 'store']);
+    Route::post('tagihan-simpanan/create', [TagihanSimpananController::class, 'store'])->name('tagihan-simpanan.store');
 
     // pinjaman
     Route::post('pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.filter');

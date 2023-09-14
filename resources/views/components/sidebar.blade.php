@@ -38,7 +38,7 @@
                 <div class="collapse" id="simpanan">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jenis-simpanan.index') }}"> Jenis Simpanan </a>
+                            <a class="nav-link" href="{{ route('tagihan-simpanan.index') }}"> Tagihan </a>
                         </li>
                     </ul>
                 </div>
