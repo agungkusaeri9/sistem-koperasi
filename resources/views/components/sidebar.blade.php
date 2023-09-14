@@ -128,7 +128,8 @@
                     <span class="material-symbols-outlined mr-2">
                         savings
                     </span>
-                    <span class="menu-title">Simpanan Wajib</span>
+                    <span class="menu-title">Simpanan Wajib <sup
+                            class="">{{ $tagihan_simpanan_wajib }}</sup></span>
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="simpanan_wajib">
@@ -149,7 +150,8 @@
                     <span class="material-symbols-outlined mr-2">
                         savings
                     </span>
-                    <span class="menu-title">Simpanan SHR</span>
+                    <span class="menu-title">Simpanan SHR <sup
+                            class="">{{ $tagihan_simpanan_shr }}</sup></span>
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="simpanan_shr">

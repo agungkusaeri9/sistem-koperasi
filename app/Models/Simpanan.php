@@ -11,6 +11,11 @@ class Simpanan extends Model
     protected $table = 'simpanan';
     protected $guarded = ['id'];
 
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
     public function simpanan_anggota()
     {
         return $this->hasOne(SimpananAnggota::class);
