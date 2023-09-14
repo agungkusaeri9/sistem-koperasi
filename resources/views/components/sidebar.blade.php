@@ -137,7 +137,8 @@
                             <a class="nav-link" href="{{ route('simpanan-wajib.tagihan.index') }}"> Tagihan </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href=""> Informasi Saldo </a>
+                            <a class="nav-link" href="{{ route('simpanan-wajib.saldo.index') }}"> Informasi Saldo
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -154,10 +155,10 @@
                 <div class="collapse" id="simpanan_shr">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href=""> Tagihan </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.tagihan.index') }}"> Tagihan </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href=""> Informasi Saldo </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.saldo.index') }}"> Informasi Saldo </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href=""> Riwayat Pencairan </a>
@@ -178,7 +179,7 @@
                     <span class="material-symbols-outlined mr-2">
                         payment
                     </span>
-                    <span class="menu-title">Metode Pembayaran</span>
+                    <span class="menu-title">Metode Pencairan</span>
                 </a>
             </li>
         @endif

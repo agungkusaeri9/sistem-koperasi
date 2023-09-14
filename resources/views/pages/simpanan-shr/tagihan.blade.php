@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5 text-center">Tagihan Simpanan Wajib</h4>
+                    <h4 class="card-title mb-5 text-center">Tagihan Simpanan SHR</h4>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
@@ -29,7 +29,7 @@
                                             </a>
                                         @endif
                                         @if ($tagihan->status_tagihan == 0)
-                                            <a href="{{ route('simpanan-wajib.tagihan.bayar', [
+                                            <a href="{{ route('simpanan-shr.tagihan.bayar', [
                                                 'id' => $tagihan->id,
                                             ]) }}"
                                                 class="btn py-2 btn-sm btn-info">

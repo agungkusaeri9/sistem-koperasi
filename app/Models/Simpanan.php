@@ -11,20 +11,45 @@ class Simpanan extends Model
     protected $table = 'simpanan';
     protected $guarded = ['id'];
 
-    public function scopeByAnggota($query)
+    public function simpanan_anggota()
     {
-        return $query->where('anggota_id', auth()->user()->anggota->id);
+        return $this->hasOne(SimpananAnggota::class);
     }
 
-    public function status_tagihan()
+    public static function checkSimpananAnggota($id)
     {
-        // 0 = Belum Bayar, 1 Menunggu Verifikasi, 2 = Lunas
-        if ($this->status_tagihan == 0) {
-            return '<span class="badge badge-danger">Belum Bayar</span>';
-        } elseif ($this->status_tagihan == 1) {
-            return '<span class="badge badge-warning">Menunggu Verifikasi</span>';
+        // $simpanan = Simpanan::where('id', $id)->first();
+        $simpanan_anggota = SimpananAnggota::where([
+            'simpanan_id' => $id,
+            'anggota_id' => auth()->user()->anggota->id
+        ])->first();
+
+
+        if ($simpanan_anggota) {
+            if ($simpanan_anggota->status_tagihan == 0) {
+                return '<span class="badge badge-danger">Belum Bayar</span>';
+            } elseif ($simpanan_anggota->status_tagihan == 1) {
+                return '<span class="badge badge-warning">Menunggu Verifikasi</span>';
+            } else {
+                return '<span class="badge badge-success">Lunas</span>';
+            }
         } else {
-            return '<span class="badge badge-success">Lunas</span>';
+            return '<span class="badge badge-danger">Belum Bayar</span>';
+        }
+    }
+    public static function checkSimpananAnggotaNumber($id)
+    {
+        // $simpanan = Simpanan::where('id', $id)->first();
+        $simpanan_anggota = SimpananAnggota::where([
+            'simpanan_id' => $id,
+            'anggota_id' => auth()->user()->anggota->id
+        ])->first();
+
+
+        if ($simpanan_anggota) {
+            return $simpanan_anggota->status_tagihan;
+        } else {
+            return NULL;
         }
     }
 }

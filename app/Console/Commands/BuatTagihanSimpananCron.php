@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Anggota;
 use App\Models\JenisSimpanan;
 use App\Models\Pengaturan;
+use App\Models\Periode;
 use App\Models\Simpanan;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -39,27 +40,45 @@ class BuatTagihanSimpananCron extends Command
         $nominal_simpanan_shr = Pengaturan::first()->nominal_simpanan_shr;
         $bulan = Carbon::now()->translatedFormat('m');
         $tahun = Carbon::now()->translatedFormat('Y');
+        $periode_aktif = Periode::where('status', 1)->first();
 
         // looping data anggota
-        foreach ($data_anggota as $anggota) {
+        // foreach ($data_anggota as $anggota) {
 
-            // simpanan wajib
-            Simpanan::create([
-                'bulan' => $bulan,
-                'tahun' => $tahun,
-                'jenis' => 'wajib',
-                'nominal' => $nominal_simpanan_wajib,
-                'anggota_id' => $anggota->id
-            ]);
+        //     // simpanan wajib
+        //     Simpanan::create([
+        //         'bulan' => $bulan,
+        //         'tahun' => $tahun,
+        //         'jenis' => 'wajib',
+        //         'nominal' => $nominal_simpanan_wajib,
+        //         'anggota_id' => $anggota->id
+        //     ]);
 
-            // simpanan shr
-            Simpanan::create([
-                'bulan' => $bulan,
-                'tahun' => $tahun,
-                'jenis' => 'shr',
-                'nominal' => $nominal_simpanan_shr,
-                'anggota_id' => $anggota->id
-            ]);
-        }
+        //     // simpanan shr
+        //     Simpanan::create([
+        //         'bulan' => $bulan,
+        //         'tahun' => $tahun,
+        //         'jenis' => 'shr',
+        //         'nominal' => $nominal_simpanan_shr,
+        //         'anggota_id' => $anggota->id
+        //     ]);
+        // }
+
+        // simpanan wajib
+        Simpanan::create([
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+            'jenis' => 'wajib',
+            'nominal' => $nominal_simpanan_wajib
+        ]);
+
+        // simpanan shr
+        Simpanan::create([
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+            'jenis' => 'shr',
+            'nominal' => $nominal_simpanan_shr,
+            'periode_id' => $periode_aktif->id
+        ]);
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PinjamanAngsuranController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SimpananShrController;
 use App\Http\Controllers\SimpananWajibController;
 use App\Models\JenisSimpanan;
 use Illuminate\Support\Facades\Route;
@@ -86,4 +87,14 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('simpanan-wajib/tagihan', [SimpananWajibController::class, 'tagihan'])->name('simpanan-wajib.tagihan.index');
     Route::get('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'tagihan_bayar'])->name('simpanan-wajib.tagihan.bayar');
     Route::post('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'proses_tagihan_bayar'])->name('simpanan-wajib.tagihan.proses-bayar');
+
+    Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
+
+    // simpanan wajib
+    Route::get('simpanan-shr/tagihan', [SimpananShrController::class, 'tagihan'])->name('simpanan-shr.tagihan.index');
+    Route::get('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'tagihan_bayar'])->name('simpanan-shr.tagihan.bayar');
+    Route::post('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'proses_tagihan_bayar'])->name('simpanan-shr.tagihan.proses-bayar');
+
+    Route::get('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.index');
+    Route::post('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.filter');
 });

@@ -4,10 +4,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5">Bayar Simpanan Wajib ({{ konversiBulan($item->simpanan->bulan) }}
+                    <h4 class="card-title mb-5">Bayar Simpanan SHR ({{ konversiBulan($item->simpanan->bulan) }}
                         {{ $item->simpanan->tahun }})</h4>
                     <form
-                        action="{{ route('simpanan-wajib.tagihan.proses-bayar', [
+                        action="{{ route('simpanan-shr.tagihan.proses-bayar', [
                             'id' => $item->id,
                         ]) }}"
                         method="post" enctype="multipart/form-data">
@@ -53,7 +53,7 @@
                             @enderror
                         </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('simpanan-wajib.tagihan.index', $item->id) }}"
+                            <a href="{{ route('simpanan-shr.tagihan.index', $item->id) }}"
                                 class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Upload</button>
                         </div>
