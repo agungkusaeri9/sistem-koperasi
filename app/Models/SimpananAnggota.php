@@ -45,4 +45,14 @@ class SimpananAnggota extends Model
             $simpanan->where('jenis', 'shr');
         });
     }
+
+    public function anggota()
+    {
+        return $this->belongsTo(Anggota::class);
+    }
+
+    public function metode_pembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class);
+    }
 }

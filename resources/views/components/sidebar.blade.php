@@ -27,18 +27,50 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#simpanan" aria-expanded="false"
-                    aria-controls="simpanan">
+                <a class="nav-link" href="{{ route('tagihan-simpanan.index') }}">
+                    <span class="material-symbols-outlined mr-2">
+                        request_quote
+                    </span>
+                    <span class="menu-title">Tagihan Simpanan</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#simpanan_wajib" aria-expanded="false"
+                    aria-controls="simpanan_wajib">
                     <span class="material-symbols-outlined mr-2">
                         savings
                     </span>
-                    <span class="menu-title">Simpanan</span>
+                    <span class="menu-title">Simpanan Wajib</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse" id="simpanan">
+                <div class="collapse" id="simpanan_wajib">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('tagihan-simpanan.index') }}"> Tagihan </a>
+                            <a class="nav-link" href="{{ route('simpanan-wajib.index') }}"> Simpanan </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"> Pencairan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#simpanan_shr" aria-expanded="false"
+                    aria-controls="simpanan_shr">
+                    <span class="material-symbols-outlined mr-2">
+                        savings
+                    </span>
+                    <span class="menu-title">Simpanan SHR</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="simpanan_shr">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"> Simpanan </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"> Pencairan Dana </a>
                         </li>
                     </ul>
                 </div>
@@ -139,6 +171,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('simpanan-wajib.saldo.index') }}"> Informasi Saldo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('simpanan-wajib.pengajuan-pencairan.index') }}">
+                                Pengajuan
+                                Pencairan
                             </a>
                         </li>
                     </ul>

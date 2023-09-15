@@ -36,4 +36,11 @@ class Anggota extends Model
     {
         return $this->belongsTo(Agama::class);
     }
+
+    public function scopeAktif($query)
+    {
+        return $query->whereHas('user', function ($user) {
+            $user->where('is_active', 1);
+        });
+    }
 }

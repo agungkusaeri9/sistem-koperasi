@@ -75,11 +75,20 @@ class TagihanSimpananController extends Controller
             })->get();
 
             foreach ($data_anggota as $anggota) {
-                SimpananAnggota::create([
+
+                // cek jika sudah ada simpanan
+                $simpananCek = SimpananAnggota::where([
                     'anggota_id' => $anggota->id,
-                    'simpanan_id' => $simpanan->id,
-                    'status_tagihan' => 0
-                ]);
+                    'simpanan_id' => $simpanan->id
+                ])->count();
+
+                if ($simpananCek < 1) {
+                    SimpananAnggota::create([
+                        'anggota_id' => $anggota->id,
+                        'simpanan_id' => $simpanan->id,
+                        'status_tagihan' => 0
+                    ]);
+                }
             }
 
             DB::commit();

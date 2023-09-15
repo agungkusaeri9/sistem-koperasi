@@ -89,13 +89,22 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('laporan/pinjaman', [LaporanController::class, 'pinjaman_print'])->name('laporan.pinjaman.print');
 
     // simpanan wajib
+    Route::resource('simpanan-wajib', SimpananWajibController::class)->except('create', 'store', 'show');
+    Route::get('simpanan-wajib', [SimpananWajibController::class, 'index'])->name('simpanan-wajib.index');
+    Route::post('simpanan-wajib', [SimpananWajibController::class, 'index'])->name('simpanan-wajib.filter');
     Route::get('simpanan-wajib/tagihan', [SimpananWajibController::class, 'tagihan'])->name('simpanan-wajib.tagihan.index');
     Route::get('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'tagihan_bayar'])->name('simpanan-wajib.tagihan.bayar');
     Route::post('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'proses_tagihan_bayar'])->name('simpanan-wajib.tagihan.proses-bayar');
 
+    // pencairan simpanan Wajib
+    Route::get('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'pengajuan_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.index');
+    Route::post('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'proses_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.proses');
+    Route::post('simpanan-wajib/pengajuan-pencairan/set-batal', [SimpananWajibController::class, 'proses_batal'])->name('simpanan-wajib.pengajuan-pencairan.batal');
+
+    // saldo simpanan wajib
     Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
 
-    // simpanan wajib
+    // simpanan shr
     Route::get('simpanan-shr/tagihan', [SimpananShrController::class, 'tagihan'])->name('simpanan-shr.tagihan.index');
     Route::get('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'tagihan_bayar'])->name('simpanan-shr.tagihan.bayar');
     Route::post('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'proses_tagihan_bayar'])->name('simpanan-shr.tagihan.proses-bayar');

@@ -2,15 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anggota;
 use App\Models\MetodePembayaran;
+use App\Models\PencairanSimpanan;
+use App\Models\Pinjaman;
+use App\Models\PinjamanAngsuran;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class SimpananWajibController extends Controller
 {
+
+    public function index()
+    {
+        $status = request('status');
+        if ($status === 'semua')
+            $items = SimpananAnggota::with(['anggota'])->jenisWajib()->latest()->get();
+        elseif ($status)
+            $items = SimpananAnggota::where('status_tagihan', $status)->with(['anggota'])->jenisWajib()->latest()->get();
+        else
+            $items = SimpananAnggota::with(['anggota'])->jenisWajib()->latest()->get();
+
+
+        return view('pages.simpanan-wajib.index', [
+            'title' => 'Simpanan Wajib',
+            'items' => $items,
+            'status' => $status === 'semua' ? 'semua' : $status
+        ]);
+    }
+
     public function tagihan()
     {
         $items = SimpananAnggota::jenisWajib()->ByAnggota()->whereHas('simpanan', function ($simpanan) {
@@ -73,5 +97,138 @@ class SimpananWajibController extends Controller
             'items' => $items,
             'saldo' => $saldo
         ]);
+    }
+
+    public function edit($id)
+    {
+        $item = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
+        return view('pages.simpanan-wajib.edit', [
+            'title' => 'Edit Simpanan Wajib',
+            'item' => $item,
+            'data_metode_pembayaran' => MetodePembayaran::bySistem()->get()
+        ]);
+    }
+
+    public function update($id)
+    {
+        request()->validate([
+            'status_tagihan' => ['required', 'in:0,1,2']
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $data = request()->only(['metode_pembayaran_id', 'status_tagihan']);
+            $item = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
+            $item->update($data);
+
+            DB::commit();
+            return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil diupdate.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
+        }
+    }
+
+    public function pengajuan_pencairan()
+    {
+        $saldo = Simpanan::whereHas('simpanan_anggota', function ($sa) {
+            $sa->jenisWajib()->where([
+                'anggota_id' => auth()->user()->anggota->id,
+                'status_pencairan' => 0,
+                'status_tagihan' => 2
+            ]);
+        })->sum('nominal');
+        $pengajuan = PencairanSimpanan::where([
+            'anggota_id' => auth()->user()->anggota->id,
+            'jenis' => 'wajib'
+        ])->where('status', '0');
+
+        return view('pages.simpanan-wajib.pengajuan-pencairan', [
+            'title' => 'Pengajuan Pencairan Simpanan Wajib',
+            'saldo' => $saldo,
+            'data_metode_pembayaran' => MetodePembayaran::byAnggota()->latest()->get(),
+            'pengajuan' => $pengajuan
+        ]);
+    }
+
+    public function proses_pencairan()
+    {
+        request()->validate([
+            'metode_pembayaran_id' => ['required', 'numeric']
+        ]);
+
+        // cek tagihan simpanan wajib dan shr yang belum bayar
+        $cekSimpananBelumBayar = SimpananAnggota::where('status_tagihan', '!=', 2)->where('anggota_id', auth()->user()->anggota->id)->count();
+
+        // cek tagihan pinjaman angsuran apakah ada yang belum di bayar
+        $cekPinjamanAngsuran = Pinjaman::where([
+            'status' => 1,
+            'anggota_id' => auth()->user()->anggota->id
+        ])->count();
+
+        if ($cekSimpananBelumBayar > 0) {
+            return redirect()->back()->with('error', 'Anda masih mempunyai tagihan simpanan wajib/shr yang belum dibayarkan.');
+        }
+
+        if ($cekPinjamanAngsuran > 0) {
+            return redirect()->back()->with('error', 'Anda masih mempunyai tagihan pinjaman yang belum dibayarkan.');
+        }
+
+
+
+        DB::beginTransaction();
+        try {
+            $saldo = Simpanan::whereHas('simpanan_anggota', function ($sa) {
+                $sa->jenisWajib()->where([
+                    'anggota_id' => auth()->user()->anggota->id,
+                    'status_pencairan' => 0,
+                    'status_tagihan' => 2
+                ]);
+            })->sum('nominal');
+
+            if ($saldo < 1) {
+                return redirect()->back()->with('error', 'Saldo yang anda miliki tidak mencukupi untuk melakukan pencairan dana simpanan wajib.');
+            }
+
+            PencairanSimpanan::create([
+                'jenis' => 'wajib',
+                'anggota_id' => auth()->user()->anggota->id,
+                'nominal' => $saldo,
+                'metode_pembayaran_id' => request('metode_pembayaran_id'),
+                'status' => 0
+            ]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Pengajuan pencairan simpanan wajib berhasil dilakukan. Silahkan tunggu admin untuk proses validasi.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function proses_batal()
+    {
+        DB::beginTransaction();
+        try {
+            $pengajuan = PencairanSimpanan::where([
+                'anggota_id' => auth()->user()->anggota->id,
+                'jenis' => 'wajib',
+                'status' => 0
+            ])->firstOrFail();
+
+            $pengajuan->update([
+                'status' => 2
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Anda berhasil membatalkan pengajuan pencairan dana simpanan wajib');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 }
