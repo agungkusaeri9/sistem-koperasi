@@ -145,11 +145,13 @@ class SimpananWajibController extends Controller
             'jenis' => 'wajib'
         ])->where('status', '0');
 
+        $data_pengajuan_pencairan = PencairanSimpanan::where('jenis', 'wajib')->where('anggota_id', auth()->user()->anggota->id)->latest()->get();
         return view('pages.simpanan-wajib.pengajuan-pencairan', [
             'title' => 'Pengajuan Pencairan Simpanan Wajib',
             'saldo' => $saldo,
             'data_metode_pembayaran' => MetodePembayaran::byAnggota()->latest()->get(),
-            'pengajuan' => $pengajuan
+            'pengajuan' => $pengajuan,
+            'data_pengajuan_pencairan' => $data_pengajuan_pencairan
         ]);
     }
 
@@ -221,7 +223,7 @@ class SimpananWajibController extends Controller
             ])->firstOrFail();
 
             $pengajuan->update([
-                'status' => 2
+                'status' => 3
             ]);
 
             DB::commit();
@@ -230,5 +232,58 @@ class SimpananWajibController extends Controller
             //throw $th;
             return redirect()->back()->with('error', $th->getMessage());
         }
+    }
+
+    public function pencairan()
+    {
+        $items = PencairanSimpanan::where('jenis', 'wajib')->latest()->get();
+        return view('pages.simpanan-wajib.pencairan', [
+            'title' => 'Pencairan Simpanan Wajib',
+            'items' => $items
+        ]);
+    }
+
+    public function pencairan_delete($id)
+    {
+        $item = PencairanSimpanan::findOrFail($id);
+        if ($item->status != 2) {
+            return redirect()->back()->with('error', 'Pencairan Simpanan Wajib tidak bisa dihapus.');
+        }
+        $item->delete();
+        return redirect()->back()->with('success', 'Pencairan Simpanan Wajib berhasil dihapus.');
+    }
+
+    public function pencairan_update_status($id)
+    {
+        $item = PencairanSimpanan::findOrFail($id);
+        $anggota_id = $item->anggota_id;
+
+        if (request('status') == 1) {
+            // cek tagihan simpanan wajib dan shr yang belum bayar
+            $cekSimpananBelumBayar = SimpananAnggota::where('status_tagihan', '!=', 2)->where('anggota_id', $anggota_id)->count();
+
+            // cek tagihan pinjaman angsuran apakah ada yang belum di bayar
+            $cekPinjamanAngsuran = Pinjaman::where([
+                'status' => 1,
+                'anggota_id' => $anggota_id
+            ])->count();
+
+            if ($cekSimpananBelumBayar > 0) {
+                return redirect()->back()->with('error', 'Anggota tersebut masih mempunyai tagihan simpanan wajib/shr yang belum dibayarkan.');
+            }
+
+            if ($cekPinjamanAngsuran > 0) {
+                return redirect()->back()->with('error', 'Anggota tersebut masih mempunyai tagihan pinjaman yang belum dibayarkan.');
+            }
+
+            // nonaktifkan langsung anggotanya
+            $item->anggota->user->update([
+                'is_active' => 0
+            ]);
+        }
+        $item->update([
+            'status' => request('status')
+        ]);
+        return redirect()->back()->with('success', 'Status Pencairan Simpanan Wajib berhasil diupdate.');
     }
 }

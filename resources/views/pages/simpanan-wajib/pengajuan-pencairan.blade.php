@@ -17,7 +17,7 @@
             </div>
         </div>
     @endif
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-md-12">
             @if ($pengajuan->count() < 1)
                 <div class="card">
@@ -78,6 +78,39 @@
                     </form>
                 </div>
             @endif
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-5 text-center">Riwayat Pengajuan Pencairan Simpanan Wajib</h4>
+                    <table class="table dtTable table-hover" id="dtTable">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Tanggal Pengajuan</th>
+                                <th>Anggota</th>
+                                <th>Nominal</th>
+                                <th>Metoe Pencairan</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data_pengajuan_pencairan as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ formatTanggalBulanTahun($item->created_at) }}</td>
+                                    <td>{{ $item->anggota->nama }}</td>
+                                    <td>{{ formatRupiah($item->nominal) }}</td>
+                                    <td>{{ $item->metode_pembayaran->getFull() }}</td>
+                                    <td>{!! $item->status() !!}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

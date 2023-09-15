@@ -49,7 +49,7 @@
                             <a class="nav-link" href="{{ route('simpanan-wajib.index') }}"> Simpanan </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#"> Pencairan
+                            <a class="nav-link" href="{{ route('simpanan-wajib.pencairan.index') }}"> Pencairan
                             </a>
                         </li>
                     </ul>

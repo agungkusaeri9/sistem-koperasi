@@ -101,6 +101,10 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'proses_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.proses');
     Route::post('simpanan-wajib/pengajuan-pencairan/set-batal', [SimpananWajibController::class, 'proses_batal'])->name('simpanan-wajib.pengajuan-pencairan.batal');
 
+    Route::get('simpanan-wajib/pencairan', [SimpananWajibController::class, 'pencairan'])->name('simpanan-wajib.pencairan.index');
+    Route::post('simpanan-wajib/pencairan/{id}/set-status', [SimpananWajibController::class, 'pencairan_update_status'])->name('simpanan-wajib.pencairan.set-status');
+    Route::delete('simpanan-wajib/pencairan/{id}', [SimpananWajibController::class, 'pencairan_delete'])->name('simpanan-wajib.pencairan.destroy');
+
     // saldo simpanan wajib
     Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
 

@@ -11,8 +11,27 @@ class PencairanSimpanan extends Model
     protected $table = 'pencairan_simpanan';
     protected $guarded = ['id'];
 
+    public function anggota()
+    {
+        return $this->belongsTo(Anggota::class);
+    }
+
+    public function metode_pembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class);
+    }
+
     public function status()
     {
         // 0 menunggu verifikasi/validasi, 1 diterima, 2 ditolak
+        if ($this->status == 0) {
+            return '<span class="badge badge-warning">Menunggu Validasi</span>';
+        } elseif ($this->status == 1) {
+            return '<span class="badge badge-success">Diterima</span>';
+        } elseif ($this->status == 2) {
+            return '<span class="badge badge-danger">Ditolak</span>';
+        } else {
+            return '<span class="badge badge-danger">Dibatalkan</span>';
+        }
     }
 }
