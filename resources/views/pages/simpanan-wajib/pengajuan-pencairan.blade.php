@@ -114,4 +114,5 @@
         </div>
     </div>
 @endsection
+<x-Datatable />
 <x-Sweetalert />
