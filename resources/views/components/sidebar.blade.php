@@ -70,7 +70,7 @@
                             <a class="nav-link" href="{{ route('simpanan-shr.index') }}"> Simpanan </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#"> Pencairan Dana </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.pencairan.index') }}"> Pencairan Dana </a>
                         </li>
                     </ul>
                 </div>
@@ -201,7 +201,8 @@
                             <a class="nav-link" href="{{ route('simpanan-shr.saldo.index') }}"> Informasi Saldo </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href=""> Riwayat Pencairan </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.pencairan.index') }}"> Riwayat
+                                Pencairan </a>
                         </li>
                     </ul>
                 </div>

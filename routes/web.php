@@ -19,6 +19,7 @@ use App\Http\Controllers\SimpananShrController;
 use App\Http\Controllers\SimpananWajibController;
 use App\Http\Controllers\TagihanSimpananController;
 use App\Models\JenisSimpanan;
+use App\Models\MetodePembayaran;
 use App\Models\Simpanan;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::resource('pegawai', PegawaiController::class)->except('show');
 
     // metode-pembayaran
+    Route::post('metode-pembayarans/get-json-by-anggota', [MetodePembayaranController::class, 'get_json_by_anggota'])->name('metode-pembayaran.get-json.by-anggota');
     Route::resource('metode-pembayaran', MetodePembayaranController::class)->except('show');
 
     // jabatan
@@ -58,6 +60,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::resource('periode', PeriodeController::class)->except('show');
 
     // anggota
+    Route::get('anggota/{id}/json', [AnggotaController::class, 'detail_json'])->name('anggota.detail-json');
     Route::resource('anggota', AnggotaController::class);
 
     // pengaturan
@@ -117,4 +120,10 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     Route::get('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.index');
     Route::post('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.filter');
+
+    Route::get('simpanan-shr/pencairan', [SimpananShrController::class, 'pencairan'])->name('simpanan-shr.pencairan.index');
+    Route::get('simpanan-shr/pencairan/create', [SimpananShrController::class, 'pencairan_create'])->name('simpanan-shr.pencairan.create');
+    // cek saldo anggota berdasarkan periode
+    Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');
+    Route::post('simpanan-shr/pencairan-proses', [SimpananShrController::class, 'proses_pencairan'])->name('simpanan-shr.pencairan.proses');
 });

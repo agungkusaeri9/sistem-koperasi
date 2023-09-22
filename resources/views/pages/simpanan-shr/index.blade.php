@@ -59,7 +59,7 @@
                                             <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
                                                 data-image="{{ asset('storage/' . $simpanan_anggota->bukti_pembayaran) }}">Lihat</a>
                                         @else
-                                            <a href="" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
+                                            <a href="javascript:void(0)" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
                                         @endif
                                     </td>
                                     <td>{!! $simpanan_anggota->status_tagihan() !!}</td>

@@ -11,6 +11,11 @@ class PencairanSimpanan extends Model
     protected $table = 'pencairan_simpanan';
     protected $guarded = ['id'];
 
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
+    }
+
     public function anggota()
     {
         return $this->belongsTo(Anggota::class);
@@ -33,5 +38,15 @@ class PencairanSimpanan extends Model
         } else {
             return '<span class="badge badge-danger">Dibatalkan</span>';
         }
+    }
+
+    public function scopeJenisWajib($q)
+    {
+        return $q->where('jenis', 'wajib');
+    }
+
+    public function scopeJenisShr($q)
+    {
+        return $q->where('jenis', 'shr');
     }
 }

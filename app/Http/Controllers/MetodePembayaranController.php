@@ -93,4 +93,23 @@ class MetodePembayaranController extends Controller
             return redirect()->route('metode-pembayaran.index')->with('error', $th->getMessage());
         }
     }
+
+    public function get_json_by_anggota()
+    {
+        if (request()->ajax()) {
+            $anggota_id  = request('anggota_id');
+            if ($anggota_id) {
+                $metode_pembayaran = MetodePembayaran::where('anggota_id', $anggota_id)->get();
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $metode_pembayaran
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'data' => NULL
+                ]);
+            }
+        }
+    }
 }

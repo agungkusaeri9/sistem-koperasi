@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anggota;
 use App\Models\MetodePembayaran;
+use App\Models\PencairanSimpanan;
 use App\Models\Periode;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
@@ -145,6 +147,97 @@ class SimpananShrController extends Controller
             //throw $th;
             DB::rollBack();
             return redirect()->route('simpanan-shr.index')->with('error', $th->getMessage());
+        }
+    }
+
+    public function pencairan()
+    {
+        if (auth()->user()->role !== 'anggota') {
+            $items = PencairanSimpanan::jenisShr()->latest()->get();
+        } else {
+            $items = PencairanSimpanan::jenisShr()->where('anggota_id', auth()->user()->anggota->id)->latest()->get();
+        }
+        return view('pages.simpanan-shr.pencairan', [
+            'title' => 'Pencairan Simpanan SHR',
+            'items' => $items
+        ]);
+    }
+
+    public function pencairan_create()
+    {
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
+        $data_periode = Periode::latest()->get();
+        return view('pages.simpanan-shr.pencairan-create', [
+            'title' => 'Buat Pencairan Simpanan SHR',
+            'data_anggota' => $data_anggota,
+            'data_periode' => $data_periode
+        ]);
+    }
+
+    public function cek_saldo()
+    {
+        if (request()->ajax()) {
+            $periode_id = request('periode_id');
+            $anggota_id = request('anggota_id');
+
+            if ($periode_id && $anggota_id) {
+                $saldo = SimpananAnggota::jenisShr()
+                    ->withSum('simpanan', 'nominal') // 'nominal' adalah nama kolom yang ingin Anda jumlahkan
+                    ->whereHas('simpanan', function ($simpanan) use ($periode_id) {
+                        $simpanan->where('periode_id', $periode_id);
+                    })
+                    ->where('anggota_id', $anggota_id)
+                    ->get();
+
+                return response()->json([
+                    'status' => 'success',
+                    'saldo' => $saldo->sum('simpanan_sum_nominal') ?? 0,
+                    'status_pencairan' => $saldo->first()->simpanan->status_pencairan ?? 0
+                ]);
+            }
+        }
+    }
+
+    public function proses_pencairan()
+    {
+        request()->validate([
+            'periode_id' => ['required'],
+            'anggota_id' => ['required'],
+            'metode_pembayaran_id' => ['required']
+        ]);
+
+        DB::beginTransaction();
+        try {
+
+            $anggota_id = request('anggota_id');
+            $periode_id = request('periode_id');
+
+            $simpanan = SimpananAnggota::jenisShr()
+                ->withSum('simpanan', 'nominal') // 'nominal' adalah nama kolom yang ingin Anda jumlahkan
+                ->whereHas('simpanan', function ($simpanan) use ($periode_id) {
+                    $simpanan->where('periode_id', $periode_id);
+                })
+                ->where('anggota_id', $anggota_id)
+                ->get();
+
+            $saldo = $simpanan->sum('simpanan_sum_nominal') ?? 0;
+
+            PencairanSimpanan::create([
+                'jenis' => 'shr',
+                'anggota_id' => request('anggota_id'),
+                'nominal' => $saldo,
+                'status' => 1,
+                'periode_id' => request('periode_id'),
+                'metode_pembayaran_id' => request('metode_pembayaran_id')
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('simpanan-shr.pencairan.index')->with('success', 'Pencairan Simpanan SHR berhasil dibuat.');
+        } catch (\Throwable $th) {
+            throw $th;
+            DB::rollBack();
+            return redirect()->route('simpanan-shr.pencairan.index')->with('error', $th->getMessage());
         }
     }
 }

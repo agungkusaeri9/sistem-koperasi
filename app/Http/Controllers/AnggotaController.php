@@ -6,6 +6,7 @@ use App\Models\Agama;
 use App\Models\Anggota;
 use App\Models\Jabatan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -158,6 +159,27 @@ class AnggotaController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->route('anggota.index')->with('error', $th->getMessage());
+        }
+    }
+
+    public function detail_json($id)
+    {
+        if (request()->ajax()) {
+            $anggota = Anggota::with('jabatan')->find($id);
+            if ($anggota) {
+                $anggota['tanggal_lahir_format'] = $anggota->tanggal_lahir->translatedFormat('d F Y');
+                return response()->json([
+                    'status' => 'success',
+                    'code' => 200,
+                    'data' => $anggota
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'code' => 400,
+                    'data' => $anggota
+                ]);
+            }
         }
     }
 }
