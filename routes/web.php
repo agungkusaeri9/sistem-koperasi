@@ -109,6 +109,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
 
     // simpanan shr
+    Route::resource('simpanan-shr', SimpananShrController::class)->except('create', 'store', 'show');
+    Route::post('simpanan-shr', [SimpananShrController::class, 'index'])->name('simpanan-shr.filter');
     Route::get('simpanan-shr/tagihan', [SimpananShrController::class, 'tagihan'])->name('simpanan-shr.tagihan.index');
     Route::get('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'tagihan_bayar'])->name('simpanan-shr.tagihan.bayar');
     Route::post('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'proses_tagihan_bayar'])->name('simpanan-shr.tagihan.proses-bayar');

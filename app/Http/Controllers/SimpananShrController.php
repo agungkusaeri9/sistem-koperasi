@@ -7,15 +7,34 @@ use App\Models\Periode;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class SimpananShrController extends Controller
 {
+
+    public function index()
+    {
+        $status = request('status');
+        if ($status && $status === 'semua')
+            $items = SimpananAnggota::with(['anggota'])->jenisShr()->latest()->get();
+        elseif ($status || $status === '0')
+            $items = SimpananAnggota::where('status_tagihan', $status)->with(['anggota'])->jenisShr()->latest()->get();
+        else
+            $items = SimpananAnggota::with(['anggota'])->jenisShr()->latest()->get();
+
+
+        return view('pages.simpanan-shr.index', [
+            'title' => 'Simpanan SHR',
+            'items' => $items,
+            'status' => $status === 'semua' ? 'semua' : $status
+        ]);
+    }
+
     public function tagihan()
     {
         $items = SimpananAnggota::jenisShr()->ByAnggota()->latest()->get();
-
         return view('pages.simpanan-shr.tagihan', [
             'title' => 'Tagihan Simpanan Wajib',
             'items' => $items
@@ -95,5 +114,37 @@ class SimpananShrController extends Controller
             'periode' => $periode,
             'data_periode' => Periode::latest()->get()
         ]);
+    }
+
+    public function edit($id)
+    {
+        $item = SimpananAnggota::jenisShr()->where('id', $id)->firstOrFail();
+        return view('pages.simpanan-shr.edit', [
+            'title' => 'Edit Simpanan SHR',
+            'item' => $item,
+            'data_metode_pembayaran' => MetodePembayaran::bySistem()->get()
+        ]);
+    }
+
+    public function update($id)
+    {
+        request()->validate([
+            'status_tagihan' => ['required', 'in:0,1,2']
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $data = request()->only(['metode_pembayaran_id', 'status_tagihan']);
+            $item = SimpananAnggota::jenisShr()->where('id', $id)->firstOrFail();
+            $item->update($data);
+
+            DB::commit();
+            return redirect()->route('simpanan-shr.index')->with('success', 'Simpanan SHR berhasil diupdate.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->route('simpanan-shr.index')->with('error', $th->getMessage());
+        }
     }
 }

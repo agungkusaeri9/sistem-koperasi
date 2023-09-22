@@ -11,6 +11,7 @@
                                 <th>No.</th>
                                 <th>Bulan</th>
                                 <th>Tahun</th>
+                                <th>Nominal</th>
                                 <th>Status Tagihan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -21,6 +22,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ konversiBulan($tagihan->simpanan->bulan) }}</td>
                                     <td>{{ $tagihan->simpanan->tahun }}</td>
+                                     <td>{{ formatRupiah($tagihan->simpanan->nominal) }}</td>
                                     <td>{!! $tagihan->status_tagihan() !!}</td>
                                     <td>
                                         @if ($tagihan->status_tagihan != 0)

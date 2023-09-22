@@ -67,7 +67,7 @@
                 <div class="collapse" id="simpanan_shr">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="#"> Simpanan </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.index') }}"> Simpanan </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#"> Pencairan Dana </a>
