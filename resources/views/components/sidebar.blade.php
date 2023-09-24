@@ -70,7 +70,7 @@
                             <a class="nav-link" href="{{ route('simpanan-shr.index') }}"> Simpanan </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-shr.pencairan.index') }}"> Pencairan Dana </a>
+                            <a class="nav-link" href="{{ route('simpanan-shr.pencairan.index') }}"> Pencairan </a>
                         </li>
                     </ul>
                 </div>
@@ -171,12 +171,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('simpanan-wajib.saldo.index') }}"> Informasi Saldo
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-wajib.pengajuan-pencairan.index') }}">
-                                Pengajuan
-                                Pencairan
                             </a>
                         </li>
                     </ul>

@@ -28,7 +28,7 @@ class PencairanSimpanan extends Model
 
     public function status()
     {
-        // 0 menunggu verifikasi/validasi, 1 diterima, 2 ditolak
+        // 0 menunggu verifikasi/validasi, 1 diterima, 2 ditolak, 3 = dibatalkan
         if ($this->status == 0) {
             return '<span class="badge badge-warning">Menunggu Validasi</span>';
         } elseif ($this->status == 1) {

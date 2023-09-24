@@ -100,16 +100,21 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('simpanan-wajib/tagihan/{id}/bayar', [SimpananWajibController::class, 'proses_tagihan_bayar'])->name('simpanan-wajib.tagihan.proses-bayar');
 
     // pencairan simpanan Wajib
-    Route::get('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'pengajuan_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.index');
-    Route::post('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'proses_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.proses');
-    Route::post('simpanan-wajib/pengajuan-pencairan/set-batal', [SimpananWajibController::class, 'proses_batal'])->name('simpanan-wajib.pengajuan-pencairan.batal');
+    // Route::get('simpanan-wajib/pengajuan-pencairan', [SimpananWajibController::class, 'pengajuan_pencairan'])->name('simpanan-wajib.pengajuan-pencairan.index');
+    Route::post('simpanan-wajib/pencairan', [SimpananWajibController::class, 'pencairan_proses'])->name('simpanan-wajib.pencairan.proses');
+    // Route::post('simpanan-wajib/pengajuan-pencairan/set-batal', [SimpananWajibController::class, 'proses_batal'])->name('simpanan-wajib.pengajuan-pencairan.batal');
+
+    Route::get('simpanan-wajib/pencairan/{id}/edit', [SimpananWajibController::class, 'pencairan_edit'])->name('simpanan-wajib.pencairan.edit');
+    Route::patch('simpanan-wajib/pencairan/{id}/edit', [SimpananWajibController::class, 'pencairan_update'])->name('simpanan-wajib.pencairan.update');
 
     Route::get('simpanan-wajib/pencairan', [SimpananWajibController::class, 'pencairan'])->name('simpanan-wajib.pencairan.index');
+    Route::get('simpanan-wajib/pencairan/create', [SimpananWajibController::class, 'pencairan_create'])->name('simpanan-wajib.pencairan.create');
     Route::post('simpanan-wajib/pencairan/{id}/set-status', [SimpananWajibController::class, 'pencairan_update_status'])->name('simpanan-wajib.pencairan.set-status');
     Route::delete('simpanan-wajib/pencairan/{id}', [SimpananWajibController::class, 'pencairan_delete'])->name('simpanan-wajib.pencairan.destroy');
 
     // saldo simpanan wajib
     Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
+    Route::post('simpanan-wajib/cek-saldo', [SimpananWajibController::class, 'cek_saldo'])->name('simpanan-wajib.cek-saldo');
 
     // simpanan shr
     Route::resource('simpanan-shr', SimpananShrController::class)->except('create', 'store', 'show');
@@ -122,7 +127,11 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.filter');
 
     Route::get('simpanan-shr/pencairan', [SimpananShrController::class, 'pencairan'])->name('simpanan-shr.pencairan.index');
+    Route::post('simpanan-shr/pencairan', [SimpananShrController::class, 'pencairan'])->name('simpanan-shr.pencairan.filter');
+    Route::patch('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_update'])->name('simpanan-shr.pencairan.update');
+    Route::get('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_edit'])->name('simpanan-shr.pencairan.edit');
     Route::get('simpanan-shr/pencairan/create', [SimpananShrController::class, 'pencairan_create'])->name('simpanan-shr.pencairan.create');
+
     // cek saldo anggota berdasarkan periode
     Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');
     Route::post('simpanan-shr/pencairan-proses', [SimpananShrController::class, 'proses_pencairan'])->name('simpanan-shr.pencairan.proses');

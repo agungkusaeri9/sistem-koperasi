@@ -51,3 +51,23 @@ function formatTanggalBulanTahun($tanggal)
         return "-";
     }
 }
+
+
+function isLoginAnggota()
+{
+    if (auth()->user()->role === 'anggota') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function isLoginNotAnggota()
+{
+    if (auth()->user()->role !== 'anggota') {
+        return true;
+    } else {
+        return false;
+    }
+}
