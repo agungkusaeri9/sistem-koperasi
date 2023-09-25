@@ -13,6 +13,11 @@ use Illuminate\Validation\Rule;
 
 class TagihanSimpananController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
     public function index()
     {
         $jenis = request('jenis');

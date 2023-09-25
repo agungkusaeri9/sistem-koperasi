@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
+
     public function pinjaman()
     {
         return view('pages.laporan.pinjaman.index', [

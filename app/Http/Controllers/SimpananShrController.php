@@ -16,6 +16,13 @@ use Illuminate\Validation\Rule;
 class SimpananShrController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,anggota')->only(['pencairan']);
+        $this->middleware('checkRole:anggota')->only(['tagihan', 'tagihan_bayar', 'proses_tagihan_bayar', 'saldo']);
+        $this->middleware('checkRole:admin')->only(['index', 'edit', 'update', 'pencairan_create', 'cek_saldo', 'proses_pencairan', 'pencairan_edit', 'pencairan_update', 'pencairan_delete']);
+    }
+
     public function index()
     {
         $status = request('status');
@@ -38,7 +45,7 @@ class SimpananShrController extends Controller
     {
         $items = SimpananAnggota::jenisShr()->ByAnggota()->latest()->get();
         return view('pages.simpanan-shr.tagihan', [
-            'title' => 'Tagihan Simpanan Wajib',
+            'title' => 'Tagihan Simpanan SHR',
             'items' => $items
         ]);
     }
@@ -364,5 +371,15 @@ class SimpananShrController extends Controller
             DB::rollBack();
             return redirect()->route('simpanan-shr.pencairan.index')->with('error', $th->getMessage());
         }
+    }
+
+    public function pencairan_delete($id)
+    {
+        $item = PencairanSimpanan::findOrFail($id);
+        if ($item->status == 1) {
+            return redirect()->back()->with('error', 'Pencairan Simpanan SHR tidak bisa dihapus.');
+        }
+        $item->delete();
+        return redirect()->back()->with('success', 'Pencairan Simpanan SHR berhasil dihapus.');
     }
 }

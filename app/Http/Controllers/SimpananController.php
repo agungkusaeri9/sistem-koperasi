@@ -10,6 +10,13 @@ use Illuminate\Validation\Rule;
 
 class SimpananController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,anggota')->only(['show']);
+        $this->middleware('checkRole:anggota')->only(['create', 'store']);
+        $this->middleware('checkRole:admin')->only(['update', 'destroy']);
+    }
+
     public function index()
     {
         $items = Simpanan::orderBy('jenis', 'ASC')->get();

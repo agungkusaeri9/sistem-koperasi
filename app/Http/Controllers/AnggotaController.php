@@ -14,6 +14,13 @@ use Illuminate\Validation\Rule;
 
 class AnggotaController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin')->except('detail_json');
+    }
+
+
     public function index()
     {
         $items = Anggota::with(['user', 'jabatan', 'agama'])->orderBy('nama', 'ASC')->get();

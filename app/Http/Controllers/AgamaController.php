@@ -9,6 +9,12 @@ use Illuminate\Validation\Rule;
 
 class AgamaController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
     public function index()
     {
         $items = Agama::orderBy('nama', 'ASC')->get();

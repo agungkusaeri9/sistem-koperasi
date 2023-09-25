@@ -12,6 +12,13 @@ use Illuminate\Validation\Rule;
 
 class PinjamanAngsuranController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:anggota')->only(['bayar', 'proses_bayar']);
+        $this->middleware('checkRole:admin')->only(['update']);
+    }
+
     public function update($id)
     {
         request()->validate([

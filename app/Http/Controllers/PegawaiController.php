@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Storage;
 
 class PegawaiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
     public function index()
     {
         $items = User::pegawai()->orderBy('name', 'ASC')->get();

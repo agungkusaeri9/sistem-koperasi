@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class MetodePembayaranController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,anggota')->only(['index', 'create', 'store', 'get_json_by_anggota']);
+        $this->middleware('checkRole:admin')->only(['edit', 'update', 'destroy']);
+    }
+
+
     public function index()
     {
         if (auth()->user()->role === 'anggota') {

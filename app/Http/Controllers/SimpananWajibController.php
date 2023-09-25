@@ -18,6 +18,13 @@ use Illuminate\Validation\Rule;
 class SimpananWajibController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,anggota')->only(['pencairan']);
+        $this->middleware('checkRole:anggota')->only(['tagihan', 'tagihan_bayar', 'proses_tagihan_bayar', 'saldo']);
+        $this->middleware('checkRole:admin')->only(['index', 'edit', 'update', 'pencairan_create', 'cek_saldo', 'proses_pencairan', 'pencairan_edit', 'pencairan_update', 'pencairan_delete']);
+    }
+
     public function index()
     {
         $status = request('status');
@@ -131,51 +138,6 @@ class SimpananWajibController extends Controller
             return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
         }
     }
-
-    // public function pengajuan_pencairan()
-    // {
-    //     $saldo = Simpanan::whereHas('simpanan_anggota', function ($sa) {
-    //         $sa->jenisWajib()->where([
-    //             'anggota_id' => auth()->user()->anggota->id,
-    //             'status_pencairan' => 0,
-    //             'status_tagihan' => 2
-    //         ]);
-    //     })->sum('nominal');
-    //     $pengajuan = PencairanSimpanan::where([
-    //         'anggota_id' => auth()->user()->anggota->id,
-    //         'jenis' => 'wajib'
-    //     ])->where('status', '0');
-
-    //     $data_pengajuan_pencairan = PencairanSimpanan::where('jenis', 'wajib')->where('anggota_id', auth()->user()->anggota->id)->latest()->get();
-    //     return view('pages.simpanan-wajib.pengajuan-pencairan', [
-    //         'title' => 'Pengajuan Pencairan Simpanan Wajib',
-    //         'saldo' => $saldo,
-    //         'data_metode_pembayaran' => MetodePembayaran::byAnggota()->latest()->get(),
-    //         'pengajuan' => $pengajuan,
-    //         'data_pengajuan_pencairan' => $data_pengajuan_pencairan
-    //     ]);
-    // }
-    // public function proses_batal()
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $pengajuan = PencairanSimpanan::where([
-    //             'anggota_id' => auth()->user()->anggota->id,
-    //             'jenis' => 'wajib',
-    //             'status' => 0
-    //         ])->firstOrFail();
-
-    //         $pengajuan->update([
-    //             'status' => 3
-    //         ]);
-
-    //         DB::commit();
-    //         return redirect()->back()->with('success', 'Anda berhasil membatalkan pengajuan pencairan dana simpanan wajib');
-    //     } catch (\Throwable $th) {
-    //         //throw $th;
-    //         return redirect()->back()->with('error', $th->getMessage());
-    //     }
-    // }
 
     public function pencairan()
     {
@@ -344,54 +306,6 @@ class SimpananWajibController extends Controller
             return redirect()->route('simpanan-wajib.pencairan.index')->with('error', $th->getMessage());
         }
     }
-
-    // public function pencairan_update_status($id)
-    // {
-    //     $item = PencairanSimpanan::findOrFail($id);
-    //     $anggota_id = $item->anggota_id;
-
-    //     // cek tagihan simpanan wajib dan shr yang belum bayar
-    //     $cekSimpananBelumBayar = SimpananAnggota::where('status_tagihan', '!=', 2)->where('anggota_id', $anggota_id)->count();
-
-    //     // cek tagihan pinjaman angsuran apakah ada yang belum di bayar
-    //     $cekPinjamanAngsuran = Pinjaman::where([
-    //         'status' => 1,
-    //         'anggota_id' => $anggota_id
-    //     ])->count();
-
-    //     if ($cekSimpananBelumBayar > 0) {
-    //         return redirect()->back()->with('error', 'Anggota tersebut masih mempunyai tagihan simpanan wajib/shr yang belum dibayarkan.');
-    //     }
-
-    //     if ($cekPinjamanAngsuran > 0) {
-    //         return redirect()->back()->with('error', 'Anggota tersebut masih mempunyai tagihan pinjaman yang belum dibayarkan.');
-    //     }
-
-    //     DB::beginTransaction();
-
-    //     try {
-    //         if (request('status') == 1) {
-
-    //             // ubah status pencairan di simpanan
-    //             SimpananAnggota::where('anggota_id', $anggota_id)->update([
-    //                 'status_pencairan' => 1
-    //             ]);
-    //             // nonaktifkan langsung anggotanya
-    //             $item->anggota->user->update([
-    //                 'is_active' => 0
-    //             ]);
-    //         }
-    //         $item->update([
-    //             'status' => request('status')
-    //         ]);
-    //         DB::commit();
-    //         return redirect()->back()->with('success', 'Status Pencairan Simpanan Wajib berhasil diupdate.');
-    //     } catch (\Throwable $th) {
-    //         //throw $th;
-    //         DB::rollBack();
-    //         return redirect()->back()->with('error', $th->getMessage());
-    //     }
-    // }
 
     public function cek_saldo()
     {

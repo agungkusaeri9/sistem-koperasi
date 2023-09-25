@@ -10,6 +10,13 @@ use Illuminate\Validation\Rule;
 
 class JenisSimpananController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
+
     public function index()
     {
         $items = JenisSimpanan::orderBy('jenis', 'ASC')->get();

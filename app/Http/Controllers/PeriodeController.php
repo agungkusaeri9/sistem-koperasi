@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class PeriodeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
     public function index()
     {
         $items = Periode::latest()->get();

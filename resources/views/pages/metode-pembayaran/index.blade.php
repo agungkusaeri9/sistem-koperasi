@@ -5,9 +5,20 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mb-3 align-self-center">Data Metode Pembayaran</h4>
-                        <a href="{{ route('metode-pembayaran.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">Tambah
-                            Metode Pembayaran</a>
+                        <h4 class="card-title mb-3 align-self-center">
+                            @if (isLoginAnggota())
+                                Data Metode Pencairan
+                            @else
+                                Data Metode Pembayaran
+                            @endif
+                        </h4>
+                        <a href="{{ route('metode-pembayaran.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">
+                            @if (isLoginAnggota())
+                                Tambah Metode Pencairan
+                            @else
+                                Tambah Metode Pembayaran
+                            @endif
+                        </a>
                     </div>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>

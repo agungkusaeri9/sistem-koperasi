@@ -89,6 +89,15 @@
                                         <td>
                                             <a href="{{ route('simpanan-shr.pencairan.edit', $item->id) }}"
                                                 class="btn btn-sm py-2 btn-info">Edit</a>
+                                            @if ($item->status != 1)
+                                                <form action="javascript:void(0)" method="post" class="d-inline"
+                                                    id="formDelete">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                        data-action="{{ route('simpanan-shr.pencairan.destroy', $item->id) }}">Hapus</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     @endif
                                 </tr>

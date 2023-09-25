@@ -38,7 +38,6 @@ Route::redirect('/', '/login', 301);
 
 Auth::routes();
 
-// admin
 Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -131,6 +130,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::patch('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_update'])->name('simpanan-shr.pencairan.update');
     Route::get('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_edit'])->name('simpanan-shr.pencairan.edit');
     Route::get('simpanan-shr/pencairan/create', [SimpananShrController::class, 'pencairan_create'])->name('simpanan-shr.pencairan.create');
+    Route::delete('simpanan-shr/pencairan/{id}', [SimpananShrController::class, 'pencairan_delete'])->name('simpanan-shr.pencairan.destroy');
+
 
     // cek saldo anggota berdasarkan periode
     Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');

@@ -12,6 +12,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PinjamanController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,anggota')->only(['show']);
+        $this->middleware('checkRole:anggota')->only(['create', 'store']);
+        $this->middleware('checkRole:admin')->only(['update', 'destroy']);
+    }
+
     public function index()
     {
         $status = request('status');

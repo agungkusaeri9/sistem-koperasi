@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class PengaturanController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
     public function index()
     {
         $item = Pengaturan::first();

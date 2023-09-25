@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class LamaAngsuranController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin')->except('show');
+    }
+
+
     public function index()
     {
         $items = LamaAngsuran::orderBy('durasi', 'ASC')->get();

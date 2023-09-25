@@ -9,6 +9,13 @@ use Illuminate\Validation\Rule;
 
 class JabatanController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin');
+    }
+
+
     public function index()
     {
         $items = Jabatan::orderBy('nama', 'ASC')->get();
