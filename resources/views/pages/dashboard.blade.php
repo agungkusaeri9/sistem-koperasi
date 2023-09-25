@@ -50,7 +50,7 @@
                     <div class="card-body">
                         <p class="card-title mb-3">Pinjaman Terbaru</p>
                         <div class="table-responsive">
-                            <table class="table table-striped table-borderless">
+                            <table class="table table-striped table-borderless" id="dtTable">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -123,7 +123,7 @@
                     <div class="card-body">
                         <p class="card-title mb-3">Tagihan Pinjaman</p>
                         <div class="table-responsive">
-                            <table class="table table-striped table-borderless">
+                            <table class="table table-striped table-borderless" id="dtTable">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -158,4 +158,5 @@
             </div>
         </div>
     @endif
+    <x-Datatable />
 @endsection

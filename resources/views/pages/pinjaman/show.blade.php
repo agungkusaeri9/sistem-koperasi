@@ -145,7 +145,7 @@
                             </button>
                         </div>
                     @endif
-                    <h4 class="card-title mb-5 text-center">Angusran</h4>
+                    <h4 class="card-title mb-5 text-center">Angsuran</h4>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>

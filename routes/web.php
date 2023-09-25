@@ -86,9 +86,17 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'proses_bayar'])->name('pinjaman-angsuran.proses-bayar');
 
 
-    // laporan
+    // laporan pinjaman
     Route::get('laporan/pinjaman', [LaporanController::class, 'pinjaman'])->name('laporan.pinjaman.index');
     Route::post('laporan/pinjaman', [LaporanController::class, 'pinjaman_print'])->name('laporan.pinjaman.print');
+
+    // laporan simpanan shr
+    Route::get('laporan/simpanan-shr', [LaporanController::class, 'simpanan_shr'])->name('laporan.simpanan-shr.index');
+    Route::post('laporan/simpanan-shr', [LaporanController::class, 'simpanan_shr_print'])->name('laporan.simpanan-shr.print');
+
+    // laporan simpanan wajib
+    Route::get('laporan/simpanan-wajib', [LaporanController::class, 'simpanan_wajib'])->name('laporan.simpanan-wajib.index');
+    Route::post('laporan/simpanan-wajib', [LaporanController::class, 'simpanan_wajib_print'])->name('laporan.simpanan-wajib.print');
 
     // simpanan wajib
     Route::resource('simpanan-wajib', SimpananWajibController::class)->except('create', 'store', 'show');
