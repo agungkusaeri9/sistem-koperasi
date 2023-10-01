@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MetodePembayaran;
 use App\Models\PinjamanAngsuran;
+use App\Services\WhatsappService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class PinjamanAngsuranController extends Controller
         $this->middleware('checkRole:admin')->only(['update']);
     }
 
-    public function update($id)
+    public function update(WhatsappService $whatsappService, $id)
     {
         request()->validate([
             'status' => ['required', 'numeric']
@@ -33,6 +34,12 @@ class PinjamanAngsuranController extends Controller
                 $item->tanggal_verifikasi = Carbon::now()->format('Y-m-d');
             $item->status = $status;
             $item->save();
+
+            // kirim notifikasi ke anggota
+            if ($status == 2) {
+                // lunas
+                $whatsappService->anggota_verifikasi_angsuran_pinjaman($item->id);
+            }
             DB::commit();
 
             return redirect()->back()->with('success', 'Status Angsuran berhasil diupdate.');
@@ -64,7 +71,7 @@ class PinjamanAngsuranController extends Controller
         ]);
     }
 
-    public function proses_bayar($kode_pinjaman, $pinjaman_angsuran_id)
+    public function proses_bayar(WhatsappService $whatsappService, $kode_pinjaman, $pinjaman_angsuran_id)
     {
         $metode_pembayaran = MetodePembayaran::findOrFail(request('metode_pembayaran_id'));
         request()->validate([
@@ -72,24 +79,35 @@ class PinjamanAngsuranController extends Controller
             'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
         ]);
 
-        $item = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($kode_pinjaman) {
-            $q->where([
-                'kode' => $kode_pinjaman,
-                'anggota_id' => auth()->user()->anggota->id
+        DB::beginTransaction();
+        try {
+            $item = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($kode_pinjaman) {
+                $q->where([
+                    'kode' => $kode_pinjaman,
+                    'anggota_id' => auth()->user()->anggota->id
+                ]);
+            })->where('id', $pinjaman_angsuran_id)->firstOrFail();
+
+            // hapus gambar/bukti jika sebelumnya ada
+            if ($item->bukti_pembayaran) {
+                Storage::disk('public')->delete($item->bukti_pembayaran);
+            }
+
+            $item->update([
+                'metode_pembayaran_id' => request('metode_pembayaran_id'),
+                'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
+                'status' => 1
             ]);
-        })->where('id', $pinjaman_angsuran_id)->firstOrFail();
 
-        // hapus gambar/bukti jika sebelumnya ada
-        if ($item->bukti_pembayaran) {
-            Storage::disk('public')->delete($item->bukti_pembayaran);
+            // kirim notifikasi ke admin
+            $whatsappService->admin_bukti_pembayaran_angsuran($pinjaman_angsuran_id);
+
+            DB::commit();
+            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('error', $th->getMessage());
         }
-
-        $item->update([
-            'metode_pembayaran_id' => request('metode_pembayaran_id'),
-            'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
-            'status' => 1
-        ]);
-
-        return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
     }
 }

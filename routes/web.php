@@ -21,6 +21,8 @@ use App\Http\Controllers\TagihanSimpananController;
 use App\Models\JenisSimpanan;
 use App\Models\MetodePembayaran;
 use App\Models\Simpanan;
+use App\Services\WhatsappService;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -144,4 +146,21 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // cek saldo anggota berdasarkan periode
     Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');
     Route::post('simpanan-shr/pencairan-proses', [SimpananShrController::class, 'proses_pencairan'])->name('simpanan-shr.pencairan.proses');
+});
+
+Route::get('/test', function () {
+    try {
+        $curl = curl_init();
+        $token = "vfn4vejxTccWCHfoqRDLUc2GsPr6X6FhGKLGL88i9tzeysrhsJ9gcqmWe1Esozcv";
+        $phone = "+6282122018025";
+        $message = "test get";
+        curl_setopt($curl, CURLOPT_URL, "https://jogja.wablas.com/api/send-message?phone=$phone&message=$message&token=$token");
+        $result = curl_exec($curl);
+        curl_close($curl);
+        echo "<pre>";
+        print_r($result);
+    } catch (\Throwable $th) {
+        throw $th;
+        Log("Error kirim whatsapp ke  081919956872");
+    }
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LamaAngsuran;
 use App\Models\MetodePembayaran;
 use App\Models\Pinjaman;
+use App\Services\WhatsappService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -53,7 +54,7 @@ class PinjamanController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(WhatsappService $whatsappService)
     {
         request()->validate([
             'besar_pinjaman' => ['required', 'numeric'],
@@ -95,7 +96,7 @@ class PinjamanController extends Controller
             $tahun_sampai = $tanggal_sekarang->year + floor(($bulan_mulai + $lama_angsuran - 1) / 12);
 
             // create pinjaman
-            Pinjaman::create([
+            $pinjaman = Pinjaman::create([
                 'anggota_id' => auth()->user()->anggota->id,
                 'kode' => $kode_baru,
                 'besar_pinjaman' => $besar_pinjaman,
@@ -112,6 +113,9 @@ class PinjamanController extends Controller
                 'bulan_sampai' => $bulan_akhir,
                 'tahun_sampai' => $tahun_sampai
             ]);
+
+            // kirim notifikasi
+            $whatsappService->admin_submitPinjaman($pinjaman->id);
 
             DB::commit();
             return redirect()->route('pinjaman.index')->with('success', 'Pengajuan pinjaman berhasil dilakukan. Mohon tunggu beberapa waktu untuk peninjauan admin.');
@@ -139,7 +143,7 @@ class PinjamanController extends Controller
     }
 
 
-    public function update($id)
+    public function update(WhatsappService $whatsappService, $id)
     {
         request()->validate([
             'status' => ['required', 'numeric']
@@ -195,6 +199,20 @@ class PinjamanController extends Controller
             }
             $item->status = $status;
             $item->save();
+
+            // notifikasi ke anggota
+            if ($status == 1) {
+                // disetujui
+                $whatsappService->anggota_pinjaman_disetujui($item->id);
+            } elseif ($status == 3) {
+                // ditolak
+                $whatsappService->anggota_pinjaman_ditolak($item->id);
+            } elseif ($status == 2) {
+                // lunas/selesai
+                $whatsappService->anggota_pinjaman_selesai($item->id);
+            }
+
+
             DB::commit();
 
             return redirect()->back()->with('success', 'Pinjaman berhasil diupdate.');
