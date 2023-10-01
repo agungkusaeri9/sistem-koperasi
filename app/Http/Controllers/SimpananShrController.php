@@ -8,6 +8,7 @@ use App\Models\PencairanSimpanan;
 use App\Models\Periode;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
+use App\Services\WhatsappService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -63,7 +64,7 @@ class SimpananShrController extends Controller
         ]);
     }
 
-    public function proses_tagihan_bayar($id)
+    public function proses_tagihan_bayar(WhatsappService $whatsappService, $id)
     {
         $metode_pembayaran = MetodePembayaran::find(request('metode_pembayaran_id'));
         request()->validate([
@@ -71,16 +72,24 @@ class SimpananShrController extends Controller
             'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor ?? 0 != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
         ]);
 
-        $simpanan_anggota = SimpananAnggota::jenisShr()->where('id', $id)->first();
+        DB::beginTransaction();
+        try {
+            $simpanan_anggota = SimpananAnggota::jenisShr()->where('id', $id)->first();
 
-        $simpanan_anggota->update([
-            'metode_pembayaran_id' => request('metode_pembayaran_id'),
-            'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
-            'status_tagihan' => 1
-        ]);
+            $simpanan_anggota->update([
+                'metode_pembayaran_id' => request('metode_pembayaran_id'),
+                'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
+                'status_tagihan' => 1
+            ]);
+            // kirim notifikasi ke admin
+            $whatsappService->admin_bukti_pembayaran_simpanan_shr($simpanan_anggota->id);
 
-
-        return redirect()->route('simpanan-shr.tagihan.index')->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+            DB::commit();
+            return redirect()->route('simpanan-shr.tagihan.index')->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('simpanan-shr.tagihan.index')->with('error', $th->getMessage());
+        }
     }
 
     public function saldo()
@@ -135,7 +144,7 @@ class SimpananShrController extends Controller
         ]);
     }
 
-    public function update($id)
+    public function update(WhatsappService $whatsappService, $id)
     {
         request()->validate([
             'status_tagihan' => ['required', 'in:0,1,2']
@@ -146,12 +155,15 @@ class SimpananShrController extends Controller
         try {
             $data = request()->only(['metode_pembayaran_id', 'status_tagihan']);
             $item = SimpananAnggota::jenisShr()->where('id', $id)->firstOrFail();
+            $item_2 = SimpananAnggota::jenisShr()->where('id', $id)->firstOrFail();
             $item->update($data);
-
+            if (request('status_tagihan') == 2 && $item_2->status_tagihan != 2) {
+                $whatsappService->anggota_verifikasi_simpanan_shr($item->id);
+            }
             DB::commit();
             return redirect()->route('simpanan-shr.index')->with('success', 'Simpanan SHR berhasil diupdate.');
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             DB::rollBack();
             return redirect()->route('simpanan-shr.index')->with('error', $th->getMessage());
         }
@@ -230,7 +242,7 @@ class SimpananShrController extends Controller
         }
     }
 
-    public function proses_pencairan()
+    public function proses_pencairan(WhatsappService $whatsappService)
     {
         request()->validate([
             'periode_id' => ['required'],
@@ -277,7 +289,7 @@ class SimpananShrController extends Controller
                 return redirect()->back()->with('error', 'Saldo Simpanan SHR kosong dan tidak bisa dicairkan.');
             }
 
-            PencairanSimpanan::create([
+            $pencairan = PencairanSimpanan::create([
                 'jenis' => 'shr',
                 'anggota_id' => $anggota_id,
                 'nominal' => $saldo,
@@ -298,7 +310,10 @@ class SimpananShrController extends Controller
                 'status_pencairan' => 1
             ]);
 
+            // notifikasi ke anggota
+            $whatsappService->anggota_pencairan_simpanan_shr($pencairan->id);
             DB::commit();
+
 
             return redirect()->route('simpanan-shr.pencairan.index')->with('success', 'Pencairan Simpanan SHR berhasil dibuat.');
         } catch (\Throwable $th) {

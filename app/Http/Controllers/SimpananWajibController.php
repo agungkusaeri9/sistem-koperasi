@@ -10,6 +10,7 @@ use App\Models\Pinjaman;
 use App\Models\PinjamanAngsuran;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
+use App\Services\WhatsappService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -68,7 +69,7 @@ class SimpananWajibController extends Controller
         ]);
     }
 
-    public function proses_tagihan_bayar($id)
+    public function proses_tagihan_bayar(WhatsappService $whatsappService, $id)
     {
         $metode_pembayaran = MetodePembayaran::find(request('metode_pembayaran_id'));
         request()->validate([
@@ -76,16 +77,25 @@ class SimpananWajibController extends Controller
             'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor ?? 0 != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
         ]);
 
-        $simpanan_anggota = SimpananAnggota::jenisWajib()->where('id', $id)->first();
+        DB::beginTransaction();
 
-        $simpanan_anggota->update([
-            'metode_pembayaran_id' => request('metode_pembayaran_id'),
-            'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
-            'status_tagihan' => 1
-        ]);
+        try {
+            $simpanan_anggota = SimpananAnggota::jenisWajib()->where('id', $id)->first();
 
+            $simpanan_anggota->update([
+                'metode_pembayaran_id' => request('metode_pembayaran_id'),
+                'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
+                'status_tagihan' => 1
+            ]);
+            DB::commit();
 
-        return redirect()->route('simpanan-wajib.tagihan.index')->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+            // kirim notifikasi ke admin
+            $whatsappService->admin_bukti_pembayaran_simpanan_wajib($simpanan_anggota->id);
+            return redirect()->route('simpanan-wajib.tagihan.index')->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('simpanan-wajib.tagihan.index')->with('error', $th->getMessage());
+        }
     }
 
     public function saldo()
@@ -117,7 +127,7 @@ class SimpananWajibController extends Controller
         ]);
     }
 
-    public function update($id)
+    public function update(WhatsappService $whatsappService, $id)
     {
         request()->validate([
             'status_tagihan' => ['required', 'in:0,1,2']
@@ -128,9 +138,15 @@ class SimpananWajibController extends Controller
         try {
             $data = request()->only(['metode_pembayaran_id', 'status_tagihan']);
             $item = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
+            $item_2 = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
             $item->update($data);
 
+
+
             DB::commit();
+            if (request('status_tagihan') == 2 && $item_2->status_tagihan != 2) {
+                $whatsappService->anggota_verifikasi_simpanan_wajib($item->id);
+            }
             return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil diupdate.');
         } catch (\Throwable $th) {
             //throw $th;
@@ -160,7 +176,7 @@ class SimpananWajibController extends Controller
     }
 
 
-    public function pencairan_proses()
+    public function pencairan_proses(WhatsappService $whatsappService)
     {
         request()->validate([
             'metode_pembayaran_id' => ['required', 'numeric'],
@@ -206,7 +222,7 @@ class SimpananWajibController extends Controller
                 return redirect()->back()->with('error', 'Saldo yang anda miliki tidak mencukupi untuk melakukan pencairan dana simpanan wajib.');
             }
 
-            PencairanSimpanan::create([
+            $pencairan = PencairanSimpanan::create([
                 'jenis' => 'wajib',
                 'anggota_id' => $anggota_id,
                 'nominal' => $saldo,
@@ -215,6 +231,7 @@ class SimpananWajibController extends Controller
                 'metode_pembayaran_id' => request('metode_pembayaran_id'),
                 'bukti_pencairan' => request()->file('bukti_pencairan') ? request()->file('bukti_pencairan')->store('simpanan-shr/bukti-pencairan', 'public') : NULL
             ]);
+
 
 
             // update simpanan ke sudah dicairkan
@@ -227,6 +244,9 @@ class SimpananWajibController extends Controller
             ]);
 
             DB::commit();
+
+            // kirim notifikasi ke anggota
+            $whatsappService->anggota_pencairan_simpanan_wajib($pencairan->id);
 
             return redirect()->route('simpanan-wajib.pencairan.index')->with('success', 'Pencairan simpanan wajib berhasil ditambahkan.');
         } catch (\Throwable $th) {

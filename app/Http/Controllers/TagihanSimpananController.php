@@ -7,6 +7,7 @@ use App\Models\Pengaturan;
 use App\Models\Periode;
 use App\Models\Simpanan;
 use App\Models\SimpananAnggota;
+use App\Services\WhatsappService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -42,7 +43,7 @@ class TagihanSimpananController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(WhatsappService $whatsappService)
     {
         request()->validate([
             'jenis' => ['required'],
@@ -93,6 +94,9 @@ class TagihanSimpananController extends Controller
                         'simpanan_id' => $simpanan->id,
                         'status_tagihan' => 0
                     ]);
+
+                    // kirim notifikasi
+                    $whatsappService->anggota_tagihan_simpanan($simpanan->id, $anggota->id);
                 }
             }
 
