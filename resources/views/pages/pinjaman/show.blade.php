@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="row">
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5 text-center">Detail Pinjaman</h4>
@@ -33,25 +33,31 @@
                             <span>{{ formatRupiah($item->potongan_awal) }}</span>
                         </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
+                            <span class="font-weight-bold">Total Jasa Pinjaman</span>
+                            <span>{{ formatRupiah($item->jasa_pinjaman_bulan * $item->lama_angsuran->durasi) }}</span>
+                        </li>
+                        <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Jumlah Diterima</span>
                             <span>{{ formatRupiah($item->jumlah_diterima) }}</span>
                         </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
-                            <span class="font-weight-bold">Angsuran Pokok (bulan)</span>
-                            <span>{{ formatRupiah($item->angsuran_pokok_bulan) }}</span>
-                        </li>
-                        <li class="list-item mb-3 d-flex justify-content-between">
-                            <span class="font-weight-bold">Jasa Pinjaman (bulan)</span>
-                            <span>{{ formatRupiah($item->jasa_pinjaman_bulan) }}</span>
-                        </li>
-                        <li class="list-item mb-3 d-flex justify-content-between">
-                            <span class="font-weight-bold">Total Jumlah Angsuran (bulan)</span>
+                            <span class="font-weight-bold">Angsuran (bulan)</span>
                             <span>{{ formatRupiah($item->total_jumlah_angsuran_bulan) }}</span>
                         </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Total Bayar</span>
-                            <span>{{ formatRupiah($item->total_jumlah_angsuran_bulan * 12) }}</span>
+                            <span>{{ formatRupiah($item->total_bayar) }}</span>
                         </li>
+                        @if ($item->status == 1)
+                            <li class="list-item mb-3 d-flex justify-content-between">
+                                <span class="font-weight-bold">Sudah Terbayar</span>
+                                <span>{{ formatRupiah($item->tagihanSudahTerbayar()) }}</span>
+                            </li>
+                            <li class="list-item mb-3 d-flex justify-content-between">
+                                <span class="font-weight-bold">Sisa Belum Terbayar</span>
+                                <span>{{ formatRupiah($item->tagihanBelumTerbayar()) }}</span>
+                            </li>
+                        @endif
                         <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Metode Pencairan</span>
                             <span>{{ $item->met_pencairan ? $item->met_pencairan->getFull() : '-' }}</span>
@@ -123,7 +129,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
                     @if ($item->angsuran->count() < 1)
@@ -145,118 +151,78 @@
                             </button>
                         </div>
                     @endif
-                    <h4 class="card-title mb-5 text-center">Angsuran</h4>
+                    <h4 class="card-title mb-5 text-center">Tagihan</h4>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Bulan</th>
-                                <th>Metode Pembayaran</th>
-                                <th>Bukti Pembayaran</th>
+                                <th>Jenis</th>
+                                <th>Jatuh Tempo</th>
+                                <th>Nominal</th>
                                 <th>Status</th>
-                                @if ($item->status != 2 || auth()->user()->role === 'anggota')
+                                @if (auth()->user()->role !== 'anggota')
                                     <th>Aksi</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($item->angsuran as $angsuran)
+                            @foreach ($item->angsuran as $key => $angsuran)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ konversiBulan($angsuran->bulan) . ' ' . $angsuran->tahun }}</td>
-                                    <td>{{ $angsuran->metode_pembayaran ? $angsuran->metode_pembayaran->getFull() : '-' }}
+                                    <td>Angsuran Bulanan</td>
+                                    <td>{{ formatTanggal($item->tanggal_diterima) . ' ' . konversiBulan($angsuran->bulan) . ' ' . $angsuran->tahun }}
                                     </td>
-                                    <td>
-                                        @if ($angsuran->bukti_pembayaran)
-                                            <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
-                                                data-image="{{ asset('storage/' . $angsuran->bukti_pembayaran) }}">Lihat</a>
-                                        @else
-                                            <a href="" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
-                                        @endif
-                                    </td>
+                                    <td>{{ formatRupiah($item->total_jumlah_angsuran_bulan) }}</td>
                                     <td>
                                         {!! $angsuran->status() !!}
                                     </td>
-
-                                    @if ($item->status != 2 && auth()->user()->role !== 'anggota')
+                                    @if (auth()->user()->role !== 'anggota')
                                         <td>
-                                            <form action="javascrip:void(0)" method="post" id="formStatusAngsuran">
-                                                @csrf
-                                                @if ($angsuran->status == 2)
-                                                    <button class="btn py-2 btn-sm btn-danger statusAngsuran"
-                                                        data-id="{{ $angsuran->id }}" data-status="1"
-                                                        data-action="{{ route('pinjaman-angsuran.update', $angsuran->id) }}">Batal
-                                                        Verifikasi</button>
-                                                @else
-                                                    <button class="btn py-2 btn-sm btn-success statusAngsuran"
-                                                        data-id="{{ $angsuran->id }}" data-status="2"
-                                                        data-action="{{ route('pinjaman-angsuran.update', $angsuran->id) }}">Verifikasi</button>
-                                                @endif
-                                            </form>
+                                            <a href="{{ route('pinjaman-angsuran.edit', $angsuran->uuid) }}"
+                                                class="btn btn-sm py-2 btn-warning">Edit</a>
                                         </td>
                                     @endif
-
-                                    @if (auth()->user()->role === 'anggota')
-                                        <td>
-                                            @if ($item->status == 2)
-                                                <a href="javascript:void(0)" class="btn disabled py-2 btn-sm btn-info">
-                                                    Upload Ulang
-                                                </a>
-                                            @else
-                                                @if ($angsuran->status == 0)
-                                                    <a href="{{ route('pinjaman-angsuran.bayar', [
-                                                        'kode_pinjaman' => $item->kode,
-                                                        'pinjaman_angsuran_id' => $angsuran->id,
-                                                    ]) }}"
-                                                        class="btn py-2 btn-sm btn-info">
-                                                        Bayar & Upload Bukti
-                                                    </a>
-                                                @elseif($angsuran->status == 1)
-                                                    <a href="{{ route('pinjaman-angsuran.bayar', [
-                                                        'kode_pinjaman' => $item->kode,
-                                                        'pinjaman_angsuran_id' => $angsuran->id,
-                                                    ]) }}"
-                                                        class="btn py-2 btn-sm btn-info">
-                                                        Upload Ulang
-                                                    </a>
-                                                @else
-                                                    <a href="javascript:void(0)"
-                                                        class="btn py-2 btn-sm btn-info disabled">
-                                                        Upload Ulang
-                                                    </a>
-                                                @endif
-                                            @endif
-                                    @endif
-                                    </td>
                                 </tr>
                             @endforeach
+                            @if ($item->status == 1)
+                                <tr>
+                                    <td>{{ $item->angsuran->count() + 1 }}</td>
+                                    <td>Tagihan ADM ({{ $item->lama_angsuran->potongan_awal_persen . '%' }})</td>
+                                    <td> - </td>
+                                    <td>{{ formatRupiah($item->potongan_awal) }}</td>
+                                    <td> {!! $item->statusTagihanPotonganAwal() !!}</td>
+                                    @if (auth()->user()->role !== 'anggota')
+                                        <td>
+                                            @if ($item->status_potongan_awal == 1)
+                                                <form action="{{ route('pinjaman.set-status-potongan-awal') }}"
+                                                    method="post" id="formUpdateStatusPotonganAwal">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $item->id }}">
+                                                    <input type="hidden" name="status" value="0">
+                                                    <button type="submit" class="btn btn-sm py-2 btn-danger ">Set Belum
+                                                        Bayar</button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('pinjaman.set-status-potongan-awal') }}"
+                                                    method="post" id="formUpdateStatusPotonganAwal">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $item->id }}">
+                                                    <input type="hidden" name="status" value="1">
+                                                    <button type="submit" class="btn btn-sm py-2 btn-success ">Set Sudah
+                                                        Bayar</button>
+                                                </form>
+                                            @endif
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="modalBukti" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Bukti Pembayaran</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <img src="" class="img-fluid imageModalBukti" alt="">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 @endsection
 <x-Datatable />
 <x-Sweetalert />
@@ -335,13 +301,6 @@
                     $('#formStatusAngsuran').submit();
                 }
             })
-        })
-
-        // handle bukti di klik
-        $('body').on('click', '.btnBukti', function() {
-            let src = $(this).data('image');
-            $('#modalBukti .imageModalBukti').attr('src', src);
-            $('#modalBukti').modal('show');
         })
     </script>
 @endpush

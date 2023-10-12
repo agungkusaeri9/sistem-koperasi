@@ -52,6 +52,16 @@ function formatTanggalBulanTahun($tanggal)
     }
 }
 
+function formatTanggal($tanggal)
+{
+    if ($tanggal) {
+        $carbon = Carbon::parse($tanggal);
+        return $carbon->translatedFormat('d');
+    } else {
+        return "-";
+    }
+}
+
 
 function isLoginAnggota()
 {

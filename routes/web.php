@@ -82,8 +82,15 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('pinjaman/create', [PinjamanController::class, 'store'])->name('pinjaman.store');
     Route::post('pinjaman/export-pdf/{kode}', [PinjamanController::class, 'export_pdf'])->name('pinjaman.export-pdf');
 
+    // kalkukasi pinjaman
+    Route::post('pinjaman-kalkulasi', [PinjamanController::class, 'kalkulasi'])->name('pinjaman.kalkulasi');
+
+    // update status potongan angsuran
+    Route::post('pinjaman/set-status-potongan-awal', [PinjamanController::class, 'set_status_potongan_awal'])->name('pinjaman.set-status-potongan-awal');
+
     // pinjaman angsuran
-    Route::post('pinjaman-angsuran/{id}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
+    Route::get('pinjaman-angsuran/{uuid}', [PinjamanAngsuranController::class, 'edit'])->name('pinjaman-angsuran.edit');
+    Route::patch('pinjaman-angsuran/{uuid}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
     Route::get('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'bayar'])->name('pinjaman-angsuran.bayar');
     Route::post('bayar-angsuran/{kode_pinjaman}/{pinjaman_angsuran_id}', [PinjamanAngsuranController::class, 'proses_bayar'])->name('pinjaman-angsuran.proses-bayar');
 
@@ -146,21 +153,4 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // cek saldo anggota berdasarkan periode
     Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');
     Route::post('simpanan-shr/pencairan-proses', [SimpananShrController::class, 'proses_pencairan'])->name('simpanan-shr.pencairan.proses');
-});
-
-Route::get('/test', function () {
-    try {
-        $curl = curl_init();
-        $token = "vfn4vejxTccWCHfoqRDLUc2GsPr6X6FhGKLGL88i9tzeysrhsJ9gcqmWe1Esozcv";
-        $phone = "+6282122018025";
-        $message = "test get";
-        curl_setopt($curl, CURLOPT_URL, "https://jogja.wablas.com/api/send-message?phone=$phone&message=$message&token=$token");
-        $result = curl_exec($curl);
-        curl_close($curl);
-        echo "<pre>";
-        print_r($result);
-    } catch (\Throwable $th) {
-        throw $th;
-        Log("Error kirim whatsapp ke  081919956872");
-    }
 });

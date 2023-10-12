@@ -161,53 +161,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#simpanan_wajib" aria-expanded="false"
-                    aria-controls="simpanan_wajib">
-                    <span class="material-symbols-outlined mr-2">
-                        savings
-                    </span>
-                    <span class="menu-title">Simpanan Wajib <sup
-                            class="">{{ $tagihan_simpanan_wajib }}</sup></span>
-                    <i class="menu-arrow"></i>
-                </a>
-                <div class="collapse" id="simpanan_wajib">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-wajib.tagihan.index') }}"> Tagihan </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-wajib.saldo.index') }}"> Informasi Saldo
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#simpanan_shr" aria-expanded="false"
-                    aria-controls="simpanan_shr">
-                    <span class="material-symbols-outlined mr-2">
-                        savings
-                    </span>
-                    <span class="menu-title">Simpanan SHR <sup
-                            class="">{{ $tagihan_simpanan_shr }}</sup></span>
-                    <i class="menu-arrow"></i>
-                </a>
-                <div class="collapse" id="simpanan_shr">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-shr.tagihan.index') }}"> Tagihan </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-shr.saldo.index') }}"> Informasi Saldo </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('simpanan-shr.pencairan.index') }}"> Riwayat
-                                Pencairan </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{{ route('pinjaman.index') }}">
                     <span class="material-symbols-outlined mr-2">
                         request_page
@@ -216,12 +169,26 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('metode-pembayaran.index') }}">
+                <a class="nav-link" data-toggle="collapse" href="#info_saldo" aria-expanded="false"
+                    aria-controls="info_saldo">
                     <span class="material-symbols-outlined mr-2">
-                        payment
+                        savings
                     </span>
-                    <span class="menu-title">Metode Pencairan</span>
+                    <span class="menu-title">Informasi Saldo</sup></span>
+                    <i class="menu-arrow"></i>
                 </a>
+                <div class="collapse" id="info_saldo">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('simpanan-wajib.saldo.index') }}"> Simpanan Wajib
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('simpanan-shr.saldo.index') }}"> Simpanan SHR
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         @endif
     </ul>

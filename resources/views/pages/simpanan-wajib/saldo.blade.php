@@ -56,7 +56,7 @@
 @push('styles')
     <style>
         .info-saldo {
-            font-size: 70px
+            font-size: 40px
         }
     </style>
 @endpush

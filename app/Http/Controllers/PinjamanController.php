@@ -67,20 +67,16 @@ class PinjamanController extends Controller
         try {
             $besar_pinjaman = request('besar_pinjaman');
             $lama_angsuran = LamaAngsuran::findOrFail(request('lama_angsuran_id'));
-            $potongan_awal = $besar_pinjaman * ($lama_angsuran->potongan_awal_persen / 100);
-            $jumlah_diterima = $besar_pinjaman - $potongan_awal;
-            $angsuran_pokok_bulan = $besar_pinjaman / 12;
-            $jasa_pinjaman_bulan = $besar_pinjaman * ($lama_angsuran->jasa_pinjaman_bulan_persen / 100);
-            $total_jumlah_angsuran_bulan = $angsuran_pokok_bulan + $jasa_pinjaman_bulan;
+            // kalkulasi pinjaman
+            $hasil_kalkulasi = Pinjaman::kalkukasiPinjaman($besar_pinjaman, $lama_angsuran->id);
             $kode_baru = Pinjaman::buatKodeBaru();
 
             // cari mulan bulan sampai akhir
             $tanggal_sekarang = Carbon::now();
             $bulan_mulai = $tanggal_sekarang->addMonth()->month; // Bulan mulai + 1
-            $lama_angsuran = $lama_angsuran->durasi;
 
             // looping lama angsuran
-            for ($i = 0; $i < $lama_angsuran; $i++) {
+            for ($i = 0; $i < $lama_angsuran->durasi; $i++) {
                 $bulan_hitung = ($bulan_mulai + $i) % 12;
                 $tahun_angsuran = $tanggal_sekarang->year + floor(($bulan_mulai + $i) / 12);
 
@@ -92,8 +88,8 @@ class PinjamanController extends Controller
             }
 
             // Menghitung tahun sampai berdasarkan bulan akhir
-            $bulan_akhir = ($bulan_mulai + $lama_angsuran - 1) % 12;
-            $tahun_sampai = $tanggal_sekarang->year + floor(($bulan_mulai + $lama_angsuran - 1) / 12);
+            $bulan_akhir = ($bulan_mulai + $lama_angsuran->durasi - 1) % 12;
+            $tahun_sampai = $tanggal_sekarang->year + floor(($bulan_mulai + $lama_angsuran->durasi - 1) / 12);
 
             // create pinjaman
             $pinjaman = Pinjaman::create([
@@ -102,17 +98,18 @@ class PinjamanController extends Controller
                 'besar_pinjaman' => $besar_pinjaman,
                 'keperluan' => request('keperluan'),
                 'lama_angsuran_id' => request('lama_angsuran_id'),
-                'potongan_awal' => $potongan_awal,
-                'jumlah_diterima' => $jumlah_diterima,
-                'angsuran_pokok_bulan' => $angsuran_pokok_bulan,
-                'jasa_pinjaman_bulan' => $jasa_pinjaman_bulan,
-                'total_jumlah_angsuran_bulan' => $total_jumlah_angsuran_bulan,
-                'metode_pencairan' => request('metode_pencairan'),
+                'potongan_awal' => $hasil_kalkulasi['potongan_awal'],
+                'jumlah_diterima' => $hasil_kalkulasi['jumlah_diterima'],
+                'angsuran_pokok_bulan' => $hasil_kalkulasi['angsuran_pokok_bulan'],
+                'jasa_pinjaman_bulan' => $hasil_kalkulasi['jasa_pinjaman_bulan'],
+                'total_jumlah_angsuran_bulan' => $hasil_kalkulasi['total_jumlah_angsuran_bulan'],
+                'total_bayar' => $hasil_kalkulasi['total_bayar'],
                 'bulan_mulai' => $bulan_mulai,
                 'tahun_mulai' => $tahun_angsuran,
                 'bulan_sampai' => $bulan_akhir,
                 'tahun_sampai' => $tahun_sampai
             ]);
+
 
             // kirim notifikasi
             $whatsappService->admin_submitPinjaman($pinjaman->id);
@@ -174,7 +171,8 @@ class PinjamanController extends Controller
                     // buat angsuran
                     $item->angsuran()->create([
                         'bulan' => $bulan_hitung,
-                        'tahun' => $tahun_angsuran
+                        'tahun' => $tahun_angsuran,
+                        'uuid' => \Str::uuid()
                     ]);
                 }
 
@@ -243,5 +241,42 @@ class PinjamanController extends Controller
         $fileName = "Pinjaman-" . $item->kode . '.pdf';
         // return $pdf->stream();
         return $pdf->download($fileName);
+    }
+
+    public function kalkulasi()
+    {
+        request()->validate([
+            'besar_pinjaman' => ['required', 'numeric'],
+            'lama_angsuran_id' => ['required', 'numeric']
+        ]);
+
+
+        // kalkulasi pinjaman
+        $kalkukasi = Pinjaman::kalkukasiPinjaman(request('besar_pinjaman'), request('lama_angsuran_id'));
+
+        return response()->json($kalkukasi);
+    }
+
+    public function set_status_potongan_awal()
+    {
+        request()->validate([
+            'id' => ['required'],
+            'status' => ['required']
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $pinjaman = Pinjaman::findOrFail(request('id'));
+
+            $pinjaman->update([
+                'status_potongan_awal' => request('status')
+            ]);
+            DB::commit();
+
+            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('success', 'Status Potongan Awal berhasil diupdate.');
+        } catch (\Throwable $th) {
+            throw $th;
+            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('error', $th->getMessage());
+        }
     }
 }

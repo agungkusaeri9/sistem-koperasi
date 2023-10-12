@@ -20,16 +20,27 @@ class PinjamanAngsuranController extends Controller
         $this->middleware('checkRole:admin')->only(['update']);
     }
 
-    public function update(WhatsappService $whatsappService, $id)
+    public function edit($uuid)
+    {
+        $item = PinjamanAngsuran::where('uuid', $uuid)->firstOrFail();
+        return view('pages.pinjaman-angsuran.edit', [
+            'title' => 'Pinjaman Angsuran Edit',
+            'item' => $item,
+            'data_metode_pembayaran' => MetodePembayaran::get()
+        ]);
+    }
+
+    public function update(WhatsappService $whatsappService, $uuid)
     {
         request()->validate([
-            'status' => ['required', 'numeric']
+            'status' => ['required', 'numeric'],
+            'metode_pembayaran_id' => ['required']
         ]);
 
         DB::beginTransaction();
         try {
             $status = request('status');
-            $item = PinjamanAngsuran::findOrFail($id);
+            $item = PinjamanAngsuran::where('uuid', $uuid)->firstOrFail();
             if ($status == 2)
                 $item->tanggal_verifikasi = Carbon::now()->format('Y-m-d');
             $item->status = $status;
@@ -38,15 +49,15 @@ class PinjamanAngsuranController extends Controller
             // kirim notifikasi ke anggota
             if ($status == 2) {
                 // lunas
-                $whatsappService->anggota_verifikasi_angsuran_pinjaman($item->id);
+                // $whatsappService->anggota_verifikasi_angsuran_pinjaman($item->id);
             }
             DB::commit();
 
-            return redirect()->back()->with('success', 'Status Angsuran berhasil diupdate.');
+            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('success', 'Status Angsuran berhasil diupdate.');
         } catch (\Throwable $th) {
-            // throw $th;
+            throw $th;
             DB::rollBack();
-            return redirect()->back()->with('error', 'Status Angsuran gagal diupdate.');
+            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('error', 'Status Angsuran gagal diupdate.');
         }
     }
 

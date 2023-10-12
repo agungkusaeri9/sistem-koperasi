@@ -6,28 +6,17 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title mb-3 align-self-center">
-                            @if (isLoginAnggota())
-                                Data Metode Pencairan
-                            @else
-                                Data Metode Pembayaran
-                            @endif
+                            Data Metode Pembayaran
                         </h4>
                         <a href="{{ route('metode-pembayaran.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">
-                            @if (isLoginAnggota())
-                                Tambah Metode Pencairan
-                            @else
-                                Tambah Metode Pembayaran
-                            @endif
+                            Tambah Metode Pembayaran
                         </a>
                     </div>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                @if (auth()->user()->role !== 'anggota')
-                                    <th>Anggota</th>
-                                @endif
-                                <th>Nama</th>
+                                <th>Nama Pembayaran</th>
                                 <th>Nomor</th>
                                 <th>Pemilik</th>
                                 @if (auth()->user()->role !== 'anggota')
@@ -39,9 +28,6 @@
                             @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    @if (auth()->user()->role !== 'anggota')
-                                        <td>{{ $item->anggota->nama ?? 'Sistem' }}</td>
-                                    @endif
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->nomor ?? '-' }}</td>
                                     <td>{{ $item->pemilik ?? '-' }}</td>
