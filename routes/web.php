@@ -108,7 +108,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('laporan/simpanan-wajib', [LaporanController::class, 'simpanan_wajib_print'])->name('laporan.simpanan-wajib.print');
 
     // simpanan wajib
-    Route::resource('simpanan-wajib', SimpananWajibController::class)->except('create', 'store', 'show');
+    Route::resource('simpanan-wajib', SimpananWajibController::class)->except(['show', 'store']);
+    Route::post('simpanan-wajib/create', [SimpananWajibController::class, 'store'])->name('simpanan-wajib.store');
     Route::get('simpanan-wajib', [SimpananWajibController::class, 'index'])->name('simpanan-wajib.index');
     Route::post('simpanan-wajib', [SimpananWajibController::class, 'index'])->name('simpanan-wajib.filter');
     Route::get('simpanan-wajib/tagihan', [SimpananWajibController::class, 'tagihan'])->name('simpanan-wajib.tagihan.index');
@@ -133,7 +134,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('simpanan-wajib/cek-saldo', [SimpananWajibController::class, 'cek_saldo'])->name('simpanan-wajib.cek-saldo');
 
     // simpanan shr
-    Route::resource('simpanan-shr', SimpananShrController::class)->except('create', 'store', 'show');
+    Route::resource('simpanan-shr', SimpananShrController::class)->except('store', 'show');
+    Route::post('simpanan-shr/create', [SimpananShrController::class, 'store'])->name('simpanan-shr.store');
     Route::post('simpanan-shr', [SimpananShrController::class, 'index'])->name('simpanan-shr.filter');
     Route::get('simpanan-shr/tagihan', [SimpananShrController::class, 'tagihan'])->name('simpanan-shr.tagihan.index');
     Route::get('simpanan-shr/tagihan/{id}/bayar', [SimpananShrController::class, 'tagihan_bayar'])->name('simpanan-shr.tagihan.bayar');

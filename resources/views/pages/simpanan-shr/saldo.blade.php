@@ -63,13 +63,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($items as $tagihan)
+                            @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ konversiBulan($tagihan->simpanan->bulan) }}</td>
-                                    <td>{{ $tagihan->simpanan->tahun }}</td>
-                                    <td>{{ formatRupiah($tagihan->simpanan->nominal) }}</td>
-                                    <td>{!! $tagihan->status_tagihan() !!}</td>
+                                    <td>{{ konversiBulan($item->bulan) }}</td>
+                                    <td>{{ $item->tahun }}</td>
+                                    <td>{{ formatRupiah($item->nominal) }}</td>
+                                    <td>{!! $item->status() !!}</td>
                                 </tr>
                             @endforeach
                         </tbody>

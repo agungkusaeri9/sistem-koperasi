@@ -29,43 +29,48 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5 text-center">Simpanan SHR</h4>
+                    <div class="d-flex justify-content-between">
+                        <h4 class="card-title mb-3 align-self-center">Data Simpanan SHR</h4>
+                        <a href="{{ route('simpanan-shr.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">Tambah
+                            Simpanan SHR</a>
+                    </div>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
                                 <th>No.</th>
+                                <th>Nama ANggota</th>
+                                <th>NIP</th>
                                 <th>Bulan</th>
                                 <th>Tahun</th>
                                 <th>Nominal</th>
-                                <th>Anggota</th>
                                 <th>Metode Pembayaran</th>
-                                <th>Bukti</th>
+                                <th>Periode</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($items as $simpanan_anggota)
+                            @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ konversiBulan($simpanan_anggota->simpanan->bulan) }}</td>
-                                    <td>{{ $simpanan_anggota->simpanan->tahun }}</td>
-                                    <td>{{ formatRupiah($simpanan_anggota->simpanan->nominal) }}</td>
-                                    <td>{{ $simpanan_anggota->anggota->nama }}</td>
-                                    <td>{{ $simpanan_anggota->metode_pembayaran_id ? $simpanan_anggota->metode_pembayaran->getFull() : 'Tidak Ada' }}
+                                    <td>{{ $item->anggota->nama }}</td>
+                                    <td>{{ $item->anggota->nip }}</td>
+                                    <td>{{ konversiBulan($item->bulan) }}</td>
+                                    <td>{{ $item->tahun }}</td>
+                                    <td>{{ formatRupiah($item->nominal) }}</td>
+                                    <td>{{ $item->metode_pembayaran_id ? $item->metode_pembayaran->getFull() : 'Tidak Ada' }}
                                     </td>
+                                    <td>{{ $item->periode->periode() }}</td>
+                                    <td>{!! $item->status() !!}</td>
                                     <td>
-                                        @if ($simpanan_anggota->bukti_pembayaran)
-                                            <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
-                                                data-image="{{ asset('storage/' . $simpanan_anggota->bukti_pembayaran) }}">Lihat</a>
-                                        @else
-                                            <a href="javascript:void(0)" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
-                                        @endif
-                                    </td>
-                                    <td>{!! $simpanan_anggota->status_tagihan() !!}</td>
-                                    <td>
-                                        <a href="{{ route('simpanan-shr.edit', $simpanan_anggota->id) }}"
+                                        <a href="{{ route('simpanan-shr.edit', $item->uuid) }}"
                                             class="btn btn-sm py-2 btn-info">Edit</a>
+                                        <form action="javascript:void(0)" method="post" class="d-inline" id="formDelete">
+                                            @csrf
+                                            @method('delete')
+                                            <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                data-action="{{ route('simpanan-shr.destroy', $item->uuid) }}">Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

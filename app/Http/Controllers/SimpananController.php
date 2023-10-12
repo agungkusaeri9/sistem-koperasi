@@ -45,6 +45,7 @@ class SimpananController extends Controller
         DB::beginTransaction();
         try {
             $data = request()->only(['jenis', 'nominal', 'periode_id']);
+            $data['uuid'] = \Str::uuid();
             Simpanan::create($data);
 
             DB::commit();

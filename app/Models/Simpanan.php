@@ -11,14 +11,22 @@ class Simpanan extends Model
     protected $table = 'simpanan';
     protected $guarded = ['id'];
 
-    public function periode()
+    public function anggota()
     {
-        return $this->belongsTo(Periode::class);
+        return $this->belongsTo(Anggota::class);
     }
 
-    public function simpanan_anggota()
+
+    public function status()
     {
-        return $this->hasOne(SimpananAnggota::class);
+        // 0 = Belum Bayar, 1 Menunggu Verifikasi, 2 = Lunas
+        if ($this->status == 0) {
+            return '<span class="badge badge-danger">Belum Bayar</span>';
+        } elseif ($this->status == 1) {
+            return '<span class="badge badge-warning">Menunggu Verifikasi</span>';
+        } else {
+            return '<span class="badge badge-success">Lunas</span>';
+        }
     }
 
     public static function checkSimpananAnggota($id)
@@ -56,5 +64,23 @@ class Simpanan extends Model
         } else {
             return NULL;
         }
+    }
+
+    public function scopeJenisWajib($query)
+    {
+        $query->where('jenis', 'wajib');
+    }
+    public function scopeJenisShr($query)
+    {
+        $query->where('jenis', 'shr');
+    }
+
+    public function metode_pembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class);
+    }
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class);
     }
 }

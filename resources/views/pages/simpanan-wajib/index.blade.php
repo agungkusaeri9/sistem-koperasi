@@ -29,69 +29,51 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5 text-center">Simpanan Wajib</h4>
+                    <div class="d-flex justify-content-between">
+                        <h4 class="card-title mb-3 align-self-center">Data Simpanan Wajib</h4>
+                        <a href="{{ route('simpanan-wajib.create') }}" class="btn my-2 mb-3 btn-sm py-2 btn-primary">Tambah
+                            Simpanan Wajib</a>
+                    </div>
                     <table class="table dtTable table-hover" id="dtTable">
                         <thead>
                             <tr>
                                 <th>No.</th>
+                                <th>Nama ANggota</th>
+                                <th>NIP</th>
                                 <th>Bulan</th>
                                 <th>Tahun</th>
                                 <th>Nominal</th>
-                                <th>Anggota</th>
                                 <th>Metode Pembayaran</th>
-                                <th>Bukti</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($items as $simpanan_anggota)
+                            @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ konversiBulan($simpanan_anggota->simpanan->bulan) }}</td>
-                                    <td>{{ $simpanan_anggota->simpanan->tahun }}</td>
-                                    <td>{{ formatRupiah($simpanan_anggota->simpanan->nominal) }}</td>
-                                    <td>{{ $simpanan_anggota->anggota->nama }}</td>
-                                    <td>{{ $simpanan_anggota->metode_pembayaran_id ? $simpanan_anggota->metode_pembayaran->getFull() : 'Tidak Ada' }}
+                                    <td>{{ $item->anggota->nama }}</td>
+                                    <td>{{ $item->anggota->nip }}</td>
+                                    <td>{{ konversiBulan($item->bulan) }}</td>
+                                    <td>{{ $item->tahun }}</td>
+                                    <td>{{ formatRupiah($item->nominal) }}</td>
+                                    <td>{{ $item->metode_pembayaran_id ? $item->metode_pembayaran->getFull() : 'Tidak Ada' }}
                                     </td>
+                                    <td>{!! $item->status() !!}</td>
                                     <td>
-                                        @if ($simpanan_anggota->bukti_pembayaran)
-                                            <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
-                                                data-image="{{ asset('storage/' . $simpanan_anggota->bukti_pembayaran) }}">Lihat</a>
-                                        @else
-                                            <a href="" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
-                                        @endif
-                                    </td>
-                                    <td>{!! $simpanan_anggota->status_tagihan() !!}</td>
-                                    <td>
-                                        <a href="{{ route('simpanan-wajib.edit', $simpanan_anggota->id) }}"
+                                        <a href="{{ route('simpanan-wajib.edit', $item->uuid) }}"
                                             class="btn btn-sm py-2 btn-info">Edit</a>
+                                        <form action="javascript:void(0)" method="post" class="d-inline" id="formDelete">
+                                            @csrf
+                                            @method('delete')
+                                            <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                data-action="{{ route('simpanan-wajib.destroy', $item->uuid) }}">Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="modalBukti" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Bukti Pembayaran</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <img src="" class="img-fluid imageModalBukti" alt="">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

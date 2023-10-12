@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anggota;
 use App\Models\MetodePembayaran;
 use App\Models\PencairanSimpanan;
+use App\Models\Pengaturan;
 use App\Models\Periode;
 use App\Models\Pinjaman;
 use App\Models\PinjamanAngsuran;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Sabberworm\CSS\Settings;
 
 class SimpananWajibController extends Controller
 {
@@ -29,13 +31,13 @@ class SimpananWajibController extends Controller
     public function index()
     {
         $status = request('status');
-        if ($status === 'semua')
-            $items = SimpananAnggota::with(['anggota'])->jenisWajib()->latest()->get();
-        elseif ($status)
-            $items = SimpananAnggota::where('status_tagihan', $status)->with(['anggota'])->jenisWajib()->latest()->get();
-        else
-            $items = SimpananAnggota::with(['anggota'])->jenisWajib()->latest()->get();
-
+        // if ($status === 'semua')
+        //     $items = Simpanan::with(['anggota'])->jenisWajib()->latest()->get();
+        // elseif ($status)
+        //     $items = Simpanan::where('status_tagihan', $status)->with(['anggota'])->jenisWajib()->latest()->get();
+        // else
+        //     $items = Simpanan::with(['anggota'])->jenisWajib()->latest()->get();
+        $items = Simpanan::jenisWajib()->with('anggota')->latest()->get();
 
         return view('pages.simpanan-wajib.index', [
             'title' => 'Simpanan Wajib',
@@ -44,72 +46,130 @@ class SimpananWajibController extends Controller
         ]);
     }
 
-    public function tagihan()
+    public function create()
     {
-        $items = SimpananAnggota::jenisWajib()->ByAnggota()->whereHas('simpanan', function ($simpanan) {
-            $simpanan->where('jenis', 'wajib');
-        })->latest()->get();
-
-        return view('pages.simpanan-wajib.tagihan', [
-            'title' => 'Tagihan Simpanan Wajib',
-            'items' => $items
-        ]);
-    }
-    public function tagihan_bayar($id)
-    {
-        // cek jika simpanan sudah lunas
-        $item = SimpananAnggota::jenisWajib()->with('simpanan')->where('id', $id)->firstOrFail();
-        if ($item->status_tagihan == 2) {
-            return redirect()->back()->with('warning', 'Tagihan tersebut sudah lunas.');
-        }
-        return view('pages.simpanan-wajib/bayar', [
-            'title' => 'Bayar Simpanan Wajib',
-            'item' => $item,
-            'data_metode_pembayaran' => MetodePembayaran::bySistem()->get()
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
+        $data_metode_pembayaran = MetodePembayaran::get();
+        $data_bulan = Periode::getBulan();
+        $data_tahun = Periode::getTahun();
+        $data_periode = Periode::latest()->get();
+        $pengaturan = Pengaturan::first();
+        return view('pages.simpanan-wajib.create', [
+            'title' => 'Simpanan Wajib',
+            'data_anggota' => $data_anggota,
+            'data_metode_pembayaran' => $data_metode_pembayaran,
+            'data_bulan' => $data_bulan,
+            'data_tahun' => $data_tahun,
+            'data_periode' => $data_periode,
+            'pengaturan' => $pengaturan
         ]);
     }
 
-    public function proses_tagihan_bayar(WhatsappService $whatsappService, $id)
+    public function store(WhatsappService $whatsappService)
     {
-        $metode_pembayaran = MetodePembayaran::find(request('metode_pembayaran_id'));
         request()->validate([
-            'metode_pembayaran_id' => ['required', 'numeric'],
-            'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor ?? 0 != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
+            'anggota_id' => ['required'],
+            'bulan' => ['required', 'numeric'],
+            'tahun' => ['required', 'numeric'],
+            'nominal' => ['required'],
+            'metode_pembayaran_id' => ['required'],
+            'status' => ['required']
         ]);
 
         DB::beginTransaction();
-
         try {
-            $simpanan_anggota = SimpananAnggota::jenisWajib()->where('id', $id)->first();
 
-            $simpanan_anggota->update([
-                'metode_pembayaran_id' => request('metode_pembayaran_id'),
-                'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
-                'status_tagihan' => 1
-            ]);
+            // cek apakah ada yang sama
+            $cekSImpanan = Simpanan::where([
+                'anggota_id' => request('anggota_id'),
+                'jenis' => 'wajib',
+                'bulan' => request('bulan'),
+                'tahun' => request('tahun'),
+            ])->count();
+
+
+            if ($cekSImpanan > 0) {
+                return  redirect()->back()->with('error', 'Simpanan tersebut sudah ada di database.');
+            }
+
+            $data = request()->only(['anggota_id', 'bulan', 'tahun', 'nominal', 'metode_pembayaran_id', 'status']);
+            $data['jenis'] = 'wajib';
+            $data['uuid'] = \Str::uuid();
+            $simpanan = Simpanan::create($data);
+
             DB::commit();
-
-            // kirim notifikasi ke admin
-            $whatsappService->admin_bukti_pembayaran_simpanan_wajib($simpanan_anggota->id);
-            return redirect()->route('simpanan-wajib.tagihan.index')->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
+            return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil ditambahkan.');
         } catch (\Throwable $th) {
-            //throw $th;
-            return redirect()->route('simpanan-wajib.tagihan.index')->with('error', $th->getMessage());
+            DB::rollBack();
+            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
         }
     }
 
+    public function edit($uuid)
+    {
+        $item = Simpanan::where('uuid', $uuid)->firstOrFail();
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
+        $data_metode_pembayaran = MetodePembayaran::get();
+        $data_bulan = Periode::getBulan();
+        $data_tahun = Periode::getTahun();
+        $data_periode = Periode::latest()->get();
+        $pengaturan = Pengaturan::first();
+        return view('pages.simpanan-wajib.edit', [
+            'title' => 'Edit Simpanan Wajib',
+            'data_anggota' => $data_anggota,
+            'data_metode_pembayaran' => $data_metode_pembayaran,
+            'data_bulan' => $data_bulan,
+            'data_tahun' => $data_tahun,
+            'data_periode' => $data_periode,
+            'pengaturan' => $pengaturan,
+            'item' => $item
+        ]);
+    }
+
+    public function update(WhatsappService $whatsappService, $uuid)
+    {
+        request()->validate([
+            'bulan' => ['required', 'numeric'],
+            'tahun' => ['required', 'numeric'],
+            'nominal' => ['required'],
+            'metode_pembayaran_id' => ['required'],
+            'status' => ['required']
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $item = Simpanan::where('uuid', $uuid)->firstOrFail();
+
+            $data = request()->only(['bulan', 'tahun', 'nominal', 'metode_pembayaran_id', 'status']);
+            $item->update($data);
+
+            DB::commit();
+            return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil diupdate.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
+        }
+    }
+
+    public function destroy($uuid)
+    {
+        $item = Simpanan::where('uuid', $uuid)->firstOrFail();
+        $item->delete();
+        return redirect()->back()->with('success', 'Simpanan Wajib berhasil dihapus.');
+    }
+
+
     public function saldo()
     {
-        $items = SimpananAnggota::jenisWajib()->with('simpanan')->ByAnggota()->where('status_tagihan', 2)->where('status_pencairan', 0)->get();
+        $simpanan = Simpanan::jenisWajib()->where([
+            'anggota_id' => auth()->user()->anggota->id,
+            'status' => 2,
+            'status_pencairan' => 0
+        ]);
 
-        $saldo = Simpanan::where('jenis', 'wajib')->whereHas('simpanan_anggota', function ($sa) {
-            $sa->where([
-                'anggota_id' => auth()->user()->anggota->id,
-                'status_tagihan' => 2,
-                'status_pencairan' => 0
-            ]);
-        })->sum('nominal');
 
+        $saldo = $simpanan->sum('nominal');
+        $items = $simpanan->latest()->get();
         return view('pages.simpanan-wajib.saldo', [
             'title' => 'Informasi Saldo Simpanan Wajib',
             'items' => $items,
@@ -117,43 +177,6 @@ class SimpananWajibController extends Controller
         ]);
     }
 
-    public function edit($id)
-    {
-        $item = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
-        return view('pages.simpanan-wajib.edit', [
-            'title' => 'Edit Simpanan Wajib',
-            'item' => $item,
-            'data_metode_pembayaran' => MetodePembayaran::bySistem()->get()
-        ]);
-    }
-
-    public function update(WhatsappService $whatsappService, $id)
-    {
-        request()->validate([
-            'status_tagihan' => ['required', 'in:0,1,2']
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-            $data = request()->only(['metode_pembayaran_id', 'status_tagihan']);
-            $item = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
-            $item_2 = SimpananAnggota::jenisWajib()->where('id', $id)->firstOrFail();
-            $item->update($data);
-
-
-
-            DB::commit();
-            if (request('status_tagihan') == 2 && $item_2->status_tagihan != 2) {
-                $whatsappService->anggota_verifikasi_simpanan_wajib($item->id);
-            }
-            return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil diupdate.');
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
-        }
-    }
 
     public function pencairan()
     {
