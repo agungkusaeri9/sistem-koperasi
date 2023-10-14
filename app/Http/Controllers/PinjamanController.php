@@ -210,7 +210,6 @@ class PinjamanController extends Controller
                 $whatsappService->anggota_pinjaman_selesai($item->id);
             }
 
-
             DB::commit();
 
             return redirect()->back()->with('success', 'Pinjaman berhasil diupdate.');

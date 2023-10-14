@@ -225,10 +225,12 @@ class SimpananShrController extends Controller
     {
         $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
         $data_periode = Periode::latest()->get();
+        $data_metode_pembayaran = MetodePembayaran::get();
         return view('pages.simpanan-shr.pencairan-create', [
             'title' => 'Buat Pencairan Simpanan SHR',
             'data_anggota' => $data_anggota,
-            'data_periode' => $data_periode
+            'data_periode' => $data_periode,
+            'data_metode_pembayaran' => $data_metode_pembayaran
         ]);
     }
 
@@ -239,23 +241,23 @@ class SimpananShrController extends Controller
             $anggota_id = request('anggota_id');
 
             if ($periode_id && $anggota_id) {
-                $saldo = SimpananAnggota::jenisShr()
-                    ->withSum('simpanan', 'nominal') // 'nominal' adalah nama kolom yang ingin Anda jumlahkan
-                    ->whereHas('simpanan', function ($simpanan) use ($periode_id) {
-                        $simpanan->where('periode_id', $periode_id);
-                    })
-                    ->where('anggota_id', $anggota_id)
-                    ->get();
-
-                $status_pencairan = PencairanSimpanan::jenisShr()->where([
+                $simpanan = Simpanan::jenisShr()->where([
                     'anggota_id' => $anggota_id,
-                    'periode_id' => $periode_id
-                ])->first();
+                    'status' => 2,
+                    'status_pencairan' => 0
+                ]);
+                if ($periode_id) {
+                    $simpanan->where('periode_id', $periode_id);
+                } else {
+                    $simpanan->where('periode_id', $periode_id);
+                }
+
+                $saldo = $simpanan->sum('nominal');
 
                 return response()->json([
                     'status' => 'success',
-                    'saldo' => $saldo->sum('simpanan_sum_nominal') ?? 0,
-                    'status_pencairan' => $status_pencairan ? 1 : 0
+                    'saldo' => $saldo ?? 0,
+                    'status_pencairan' => 0
                 ]);
             }
         }
@@ -267,7 +269,6 @@ class SimpananShrController extends Controller
             'periode_id' => ['required'],
             'anggota_id' => ['required'],
             'metode_pembayaran_id' => ['required'],
-            'bukti_pencairan' => [Rule::when(request()->file('bukti_pencairan'), ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'])]
         ]);
 
         DB::beginTransaction();
@@ -277,15 +278,18 @@ class SimpananShrController extends Controller
             $periode_id = request('periode_id');
             $metode_pembayaran_id = request('metode_pembayaran_id');
 
-            $simpanan = SimpananAnggota::jenisShr()
-                ->withSum('simpanan', 'nominal') // 'nominal' adalah nama kolom yang ingin Anda jumlahkan
-                ->whereHas('simpanan', function ($simpanan) use ($periode_id) {
-                    $simpanan->where('periode_id', $periode_id);
-                })
-                ->where('anggota_id', $anggota_id)
-                ->get();
+            $simpanan = Simpanan::jenisShr()->where([
+                'anggota_id' => $anggota_id,
+                'status' => 2,
+                'status_pencairan' => 0
+            ]);
+            if ($periode_id) {
+                $simpanan->where('periode_id', $periode_id);
+            } else {
+                $simpanan->where('periode_id', $periode_id);
+            }
 
-            $saldo = $simpanan->sum('simpanan_sum_nominal') ?? 0;
+            $saldo = $simpanan->sum('nominal');
 
             // cek apakah simpanan sudah dicairkan
             $cekSimpananShr = PencairanSimpanan::jenisShr()->where([
@@ -314,18 +318,15 @@ class SimpananShrController extends Controller
                 'nominal' => $saldo,
                 'status' => 1,
                 'periode_id' => $periode_id,
-                'metode_pembayaran_id' => $metode_pembayaran_id,
-                'bukti_pencairan' => request()->file('bukti_pencairan') ? request()->file('bukti_pencairan')->store('simpanan-shr/bukti-pencairan', 'public') : NULL
+                'metode_pembayaran_id' => $metode_pembayaran_id
             ]);
 
 
-            // update status simpanan di simpanan anggota
-            SimpananAnggota::jenisShr()->where([
+            // update status pencairan simpanan
+            Simpanan::jenisShr()->where([
                 'anggota_id' => $anggota_id,
-                'status_pencairan' => 0
-            ])->whereHas('simpanan', function ($simpanan) use ($periode_id) {
-                $simpanan->where('periode_id', $periode_id);
-            })->update([
+                'periode_id' => $periode_id
+            ])->update([
                 'status_pencairan' => 1
             ]);
 
@@ -345,7 +346,7 @@ class SimpananShrController extends Controller
     public function pencairan_edit($id)
     {
         $item  = PencairanSimpanan::with('anggota')->findOrFail($id);
-        $data_metode_pembayaran = MetodePembayaran::where('anggota_id', $item->anggota->id)->get();
+        $data_metode_pembayaran = MetodePembayaran::get();
         return view('pages.simpanan-shr.pencairan-edit', [
             'title' => 'Buat Pencairan Simpanan SHR',
             'item' => $item,
@@ -371,11 +372,10 @@ class SimpananShrController extends Controller
                     // jika pilihan = sukses
                     $periode_id = $item->periode_id;
                     // update status simpanan di simpanan anggota
-                    SimpananAnggota::jenisShr()->where([
-                        'anggota_id' => $item->anggota_id
-                    ])->whereHas('simpanan', function ($simpanan) use ($periode_id) {
-                        $simpanan->where('periode_id', $periode_id);
-                    })->update([
+                    Simpanan::jenisShr()->where([
+                        'anggota_id' => $item->anggota_id,
+                        'periode_id' => $periode_id
+                    ])->update([
                         'status_pencairan' => 1
                     ]);
                 }
@@ -384,19 +384,17 @@ class SimpananShrController extends Controller
                     // jika pilihan = sukses
                     $periode_id = $item->periode_id;
                     // update status simpanan di simpanan anggota
-                    SimpananAnggota::jenisShr()->where([
-                        'anggota_id' => $item->anggota_id
-                    ])->whereHas('simpanan', function ($simpanan) use ($periode_id) {
-                        $simpanan->where('periode_id', $periode_id);
-                    })->update([
+                    Simpanan::jenisShr()->where([
+                        'anggota_id' => $item->anggota_id,
+                        'periode_id' => $periode_id
+                    ])->update([
                         'status_pencairan' => 0
                     ]);
                 }
             }
             $item->update([
                 'metode_pembayaran_id' => request('metode_pembayaran_id'),
-                'status' => request('status'),
-                'bukti_pencairan' => request()->file('bukti_pencairan') ? request()->file('bukti_pencairan')->store('simpanan-shr/bukti-pencairan', 'public') : $item->bukti_pencairan
+                'status' => request('status')
             ]);
             DB::commit();
             return redirect()->route('simpanan-shr.pencairan.index')->with('success', 'Pencairan Simpanan SHR berhasil di update');

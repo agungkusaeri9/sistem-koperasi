@@ -71,11 +71,14 @@
                             </div>
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='metode_pembayaran_id' class='mb-2'>Metode Pencairan <span
+                            <label for='metode_pembayaran_id' class='mb-2'>Metode Pembayaran <span
                                     class="text-danger">*</span></label>
                             <select name="metode_pembayaran_id" id="metode_pembayaran_id"
                                 class="form-control @error('metode_pembayaran_id') is-invalid @enderror">
-                                <option value="" selected>Pilih Metode Pencairan</option>
+                                <option value="" selected>Pilih Metode Pembayaran</option>
+                                @foreach ($data_metode_pembayaran as $pembayaran)
+                                <option value="{{ $pembayaran->id }}">{{ $pembayaran->getFull() }}</option>
+                                @endforeach
                             </select>
                             @error('metode_pembayaran_id')
                                 <div class='invalid-feedback'>
@@ -117,17 +120,6 @@
                                         class='form-control' value='' readonly>
                                 </div>
                             </div>
-                        </div>
-                        <div class='form-group mb-3'>
-                            <label for='bukti_pencairan' class='mb-2'>Bukti Pencairan <span class="text-danger">(format
-                                    jpg/png/jpeg)</span></label>
-                            <input type='file' name='bukti_pencairan'
-                                class='form-control @error('bukti_pencairan') is-invalid @enderror' value=''>
-                            @error('bukti_pencairan')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
                         </div>
                         <div class="form-group text-right">
                             <a href="{{ route('simpanan-shr.pencairan.index') }}" class="btn btn-warning">Batal</a>
@@ -187,29 +179,6 @@
                     }
 
                 })
-
-                $.ajax({
-                    url: '{{ route('metode-pembayaran.get-json.by-anggota') }}',
-                    data: {
-                        anggota_id
-                    },
-                    type: 'POST',
-                    dataType: 'JSON',
-                    success: function(response) {
-                        $('#metode_pembayaran_id').empty();
-                        $('#metode_pembayaran_id').append(`
-                            <option>Pilih Metode Pencairan</option>
-                        `);
-                        response.data.forEach(mp => {
-                            $('#metode_pembayaran_id').append(`
-                            <option value="${mp.id}">${mp.nama} - ${mp.nomor} (a.n ${mp.pemilik})</option>
-                        `);
-                        });
-                    },
-                    error: function(err) {
-                        console.log(err);
-                    }
-                })
             })
 
             $('#periode_id').on('change', function() {
@@ -225,6 +194,7 @@
                         periode_id
                     },
                     success: function(response) {
+
                         if (response.status === 'success') {
                             $('#saldo').val(formatRupiah(response.saldo));
                             let status_pencairan = response.status_pencairan == 0 ?

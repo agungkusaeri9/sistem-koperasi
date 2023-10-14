@@ -104,17 +104,6 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class='form-group mb-3'>
-                            <label for='bukti_pencairan' class='mb-2'>Bukti Pencairan <span class="text-danger">(format
-                                    jpg/png/jpeg)</span></label>
-                            <input type='file' name='bukti_pencairan'
-                                class='form-control @error('bukti_pencairan') is-invalid @enderror' value=''>
-                            @error('bukti_pencairan')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
                         <div class="form-group text-right">
                             <a href="{{ route('simpanan-shr.pencairan.index') }}" class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Update Pencairan</button>
