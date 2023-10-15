@@ -55,6 +55,26 @@ class Pinjaman extends Model
         return $hasil;
     }
 
+
+    public function totalJasaPinjaman()
+    {
+        $total_jasa_pinjaman = $this->jasa_pinjaman_bulan * $this->lama_angsuran->durasi;
+        return $total_jasa_pinjaman;
+    }
+
+    public function sisaAngsuranBulan()
+    {
+        $jml = $this->hasMany(PinjamanAngsuran::class, 'pinjaman_id', 'id')->whereIn('status', [0, 1])->count();
+        return $jml;
+    }
+
+    public function totalBayar()
+    {
+        $tagihan_adm = $this->statu_potongan_awal == 0 ? $adm = $this->potongan_awal : $adm = 0;
+        $total = $this->total_bayar + $adm;
+        return $total;
+    }
+
     public function cekVerifikasiStatusAngsuran()
     {
         $data_angsuran = $this->angsuran;

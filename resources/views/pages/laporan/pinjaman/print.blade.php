@@ -15,13 +15,28 @@
             width: 100%;
         }
 
+
         .styled-table {
             border-collapse: collapse;
-            margin: 25px 0;
+            /* margin: 25px 0; */
             font-size: 0.9em;
             font-family: sans-serif;
             min-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+        }
+
+        .styled-table2 {
+            border-collapse: collapse;
+            /* margin: 25px 0; */
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+
+        }
+
+        .tb-info {
+            border-collapse: collapse;
+            margin-bottom: 20px
         }
 
         .styled-table thead tr {
@@ -32,27 +47,27 @@
 
         .styled-table th,
         .styled-table td {
-            padding: 12px 15px;
+            padding: 2px 3px;
         }
 
-        .styled-table tbody tr {
+        /* .styled-table tbody tr {
             border-bottom: 1px solid #dddddd;
-        }
+        } */
 
-        .styled-table tbody tr:nth-of-type(even) {
+        /* .styled-table tbody tr:nth-of-type(even) {
             background-color: #f3f3f3;
-        }
+        } */
 
-        .styled-table tbody tr:last-of-type {
+        /* .styled-table tbody tr:last-of-type {
             border-bottom: 2px solid #009879;
-        }
+        } */
 
-        .styled-table tbody tr.active-row,
+        /* .styled-table tbody tr.active-row,
         tr.active-row {
             font-weight: bold;
             color: #009879;
 
-        }
+        } */
     </style>
 </head>
 
@@ -96,15 +111,20 @@
             <td>{{ Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</td>
         </tr>
     </table>
-    <table class="styled-table">
+    <table class="styled-table" border="1">
         <thead>
             <tr>
                 <th>No.</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Kode</th>
                 <th>Nama Anggota</th>
-                <th>Status</th>
+                <th>NIP</th>
+                <th>Lama Pinjaman</th>
                 <th>Besar Pinjaman</th>
+                <th>Potongan Awal</th>
+                <th>Total Jasa Pinjaman</th>
+                <th>Jumlah Diterima</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -114,18 +134,65 @@
                     <td style="text-align: center">{{ formatTanggalBulanTahun($item->created_at) }}</td>
                     <td style="text-align: center">{{ $item->kode }}</td>
                     <td style="text-align: center">{{ $item->anggota->nama }}</td>
-                    <td style="text-align: center">{!! $item->status() !!}</td>
+                    <td style="text-align: center">{{ $item->anggota->nip }}</td>
+                    <td style="text-align: center">{{ $item->lama_angsuran->durasi . ' bulan' }}</td>
                     <td style="text-align: right">Rp {{ number_format($item->besar_pinjaman, 0, '.', '.') }}</td>
+                    <td style="text-align: right">Rp {{ number_format($item->potongan_awal, 0, '.', '.') }}</td>
+                    <td style="text-align: right">Rp {{ number_format($item->totalJasaPinjaman(), 0, '.', '.') }}</td>
+                    <td style="text-align: right">Rp {{ number_format($item->jumlah_diterima, 0, '.', '.') }}</td>
+                    <td style="text-align: center">{!! $item->status() !!}</td>
+                </tr>
+                <tr>
+                    <td colspan="11">
+                        <table class="styled-table2">
+                            <tr>
+                                <th colspan="7" rowspan="{{ $item->angsuran->count() + 6 }}">Detail Tagihan</th>
+                                <th>Jenis Tagihan</th>
+                                <th>Jatuh Tempo</th>
+                                <th>Nominal</th>
+                                <th>Status Tagihan</th>
+                            </tr>
+                            @foreach ($item->angsuran as $key => $angsuran)
+                                <tr>
+
+                                    <td>Angsuran Bulanan</td>
+                                    <td>{{ formatTanggal($item->tanggal_diterima) . ' ' . konversiBulan($angsuran->bulan) . ' ' . $angsuran->tahun }}
+                                    </td>
+                                    <td>{{ formatRupiah($item->total_jumlah_angsuran_bulan) }}</td>
+                                    <td>
+                                        {!! $angsuran->status() !!}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @if ($item->status == 1)
+                                <tr>
+                                    <th colspan="2" style="text-align: left">Tagihan ADM
+                                        ({{ $item->lama_angsuran->potongan_awal_persen . '%' }})</th>
+                                    <td style="text-align: center"> - </td>
+                                    <td> {!! $item->statusTagihanPotonganAwal() !!}</td>
+
+                                </tr>
+                            @endif
+                            <tr>
+                                <th colspan="3" style="text-align: left">Sisa Angsuran</th>
+                                <td>{{ $item->sisaAngsuranBulan() . ' bulan' }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: left">Total Bayar</th>
+                                <td>{{ formatRupiah($item->total_bayar) }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: left">Terbayar</th>
+                                <td>{{ formatRupiah($item->tagihanSudahTerbayar()) }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: left">Sisa</th>
+                                <td>{{ formatRupiah($item->tagihanBelumTerbayar()) }}</td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             @endforeach
-            <tr>
-                <td colspan="5" style="text-align: center;font-weight:bold">
-                    Total
-                </td>
-                <td style="text-align: right;font-weight:bold">
-                    {{ formatRupiah($items->sum('besar_pinjaman')) }}
-                </td>
-            </tr>
         </tbody>
     </table>
 </body>
