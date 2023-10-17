@@ -2,31 +2,50 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Perhatian!</strong>
+                <p>Pencairan Simpanan SHR Tidak bisa dibatalkan!.</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5">Edit Pencairan Simpanan Wajib</h4>
-                    <form action="{{ route('simpanan-wajib.pencairan.update', $item->id) }}" method="post"
-                        enctype="multipart/form-data">
+                    <h4 class="card-title mb-5">Buat Pencairan Simpanan SHR</h4>
+                    <form action="{{ route('pencairan-simpanan-shr.index') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        @method('patch')
                         <div class='form-group mb-3'>
-                            <label for='' class='mb-2'>Nama Anggota</label>
-                            <input type='text' name='nama' id="nama" class='form-control'
-                                value='{{ $item->anggota->nama }}' readonly>
+                            <label for='anggota_id' class='mb-2'>Anggota <span class="text-danger">*</span></label>
+                            <select name="anggota_id" id="anggota_id"
+                                class="form-control select2 @error('anggota_id') is-invalid @enderror">
+                                <option value="">Pilih Anggota</option>
+                                @foreach ($data_anggota as $anggota)
+                                    <option value="{{ $anggota->id }}">{{ $anggota->nama }}</option>
+                                @endforeach
+                            </select>
+                            @error('anggota_id')
+                                <div class='invalid-feedback'>
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>NIP</label>
-                                    <input type='text' name='nip' id="nip" class='form-control'
-                                        value='{{ $item->anggota->nip }}' readonly>
+                                    <input type='text' name='nip' id="nip" class='form-control' value=''
+                                        readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>Jenis Kelamin</label>
                                     <input type='text' name='jenis_kelamin' id="jenis_kelamin" class='form-control'
-                                        value='{{ $item->anggota->jenis_kelamin }}' readonly>
+                                        value='' readonly>
                                 </div>
                             </div>
                         </div>
@@ -35,14 +54,14 @@
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>Tempat Lahir</label>
                                     <input type='text' name='tempat_lahir' id="tempat_lahir" class='form-control'
-                                        value='{{ $item->anggota->tempat_lahir }}' readonly>
+                                        value='' readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>Tanggal Lahir</label>
                                     <input type='text' name='tanggal_lahir' id="tanggal_lahir" class='form-control'
-                                        value='{{ $item->anggota->tanggal_lahir->translatedFormat('d F Y') }}' readonly>
+                                        value='' readonly>
                                 </div>
                             </div>
                         </div>
@@ -51,14 +70,14 @@
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>Nomor Telepon</label>
                                     <input type='text' name='nomor_telepon' id="nomor_telepon" class='form-control'
-                                        value='{{ $item->anggota->nomor_telepon }}' readonly>
+                                        value='' readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class='form-group mb-3'>
                                     <label for='' class='mb-2'>Jabatan</label>
-                                    <input type='text' name='jabatan' id="jabatan" class='form-control'
-                                        value='{{ $item->anggota->jabatan->nama }}' readonly>
+                                    <input type='text' name='jabatan' id="jabatan" class='form-control' value=''
+                                        readonly>
                                 </div>
                             </div>
                         </div>
@@ -68,9 +87,8 @@
                             <select name="metode_pembayaran_id" id="metode_pembayaran_id"
                                 class="form-control @error('metode_pembayaran_id') is-invalid @enderror">
                                 <option value="" selected>Pilih Metode Pencairan</option>
-                                @foreach ($data_metode_pembayaran as $mp)
-                                    <option value="{{ $mp->id }}" @selected($mp->id == $item->metode_pembayaran_id)>{{ $mp->getFull() }}
-                                    </option>
+                                @foreach ($data_metode_pembayaran as $pembayaran)
+                                    <option value="{{ $pembayaran->id }}">{{ $pembayaran->getFull() }}</option>
                                 @endforeach
                             </select>
                             @error('metode_pembayaran_id')
@@ -80,39 +98,36 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='' class='mb-2'>Nominal</label>
-                            <input type='text' name='nominal' id="nominal" class='form-control'
-                                value='Rp {{ number_format($item->nominal, 0, 2, '.') }}' readonly>
-                        </div>
-                        <div class='form-group mb-3'>
-                            <label for='status' class='mb-2'>Status <span class="text-danger">*</span></label>
-                            <select name="status" id="status"
-                                class="form-control @error('status') is-invalid @enderror">
-                                <option @selected($item->status == 0) value="0">Menunggu Validasi</option>
-                                <option @selected($item->status == 1) value="1">Diterima</option>
-                                <option @selected($item->status == 2) value="2">Ditolak</option>
-                                <option @selected($item->status == 3) value="3">Dibatalkan</option>
+                            <label for='periode_id' class='mb-2'>Periode <span class="text-danger">*</span></label>
+                            <select name="periode_id" id="periode_id"
+                                class="form-control @error('periode_id') is-invalid @enderror">
+                                <option value="" selected>Pilih Periode</option>
+                                @foreach ($data_periode as $periode)
+                                    <option value="{{ $periode->id }}">
+                                        {{ $periode->periode() }} @if ($periode->status == 1)
+                                            (Periode Aktif)
+                                        @endif
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('status')
+                            @error('periode_id')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
                                 </div>
                             @enderror
                         </div>
-                        <div class='form-group mb-3'>
-                            <label for='bukti_pencairan' class='mb-2'>Bukti Pencairan <span class="text-danger">(format
-                                    jpg/png/jpeg)</span></label>
-                            <input type='file' name='bukti_pencairan'
-                                class='form-control @error('bukti_pencairan') is-invalid @enderror' value=''>
-                            @error('bukti_pencairan')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class='form-group mb-3'>
+                                    <label for='' class='mb-2'>Saldo</label>
+                                    <input type='text' name='saldo' id="saldo" class='form-control'
+                                        value='' readonly>
                                 </div>
-                            @enderror
+                            </div>
                         </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('simpanan-wajib.pencairan.index') }}" class="btn btn-warning">Batal</a>
-                            <button class="btn btn-primary">Update Pencairan</button>
+                            <a href="{{ route('pencairan-simpanan-shr.index') }}" class="btn btn-warning">Batal</a>
+                            <button class="btn btn-primary">Buat Pencairan</button>
                         </div>
                     </form>
                 </div>
@@ -168,29 +183,6 @@
                     }
 
                 })
-
-                $.ajax({
-                    url: '{{ route('metode-pembayaran.get-json.by-anggota') }}',
-                    data: {
-                        anggota_id
-                    },
-                    type: 'POST',
-                    dataType: 'JSON',
-                    success: function(response) {
-                        $('#metode_pembayaran_id').empty();
-                        $('#metode_pembayaran_id').append(`
-                            <option>Pilih Metode Pencairan</option>
-                        `);
-                        response.data.forEach(mp => {
-                            $('#metode_pembayaran_id').append(`
-                            <option value="${mp.id}">${mp.nama} - ${mp.nomor} (a.n ${mp.pemilik})</option>
-                        `);
-                        });
-                    },
-                    error: function(err) {
-                        console.log(err);
-                    }
-                })
             })
 
             $('#periode_id').on('change', function() {
@@ -198,7 +190,7 @@
                 let anggota_id = $('#anggota_id').val();
 
                 $.ajax({
-                    url: "{{ route('simpanan-wajib.cek-saldo') }}",
+                    url: "{{ route('simpanan-shr.cek-saldo') }}",
                     type: 'POST',
                     dataType: 'JSON',
                     data: {
@@ -206,6 +198,7 @@
                         periode_id
                     },
                     success: function(response) {
+
                         if (response.status === 'success') {
                             $('#saldo').val(formatRupiah(response.saldo));
                             let status_pencairan = response.status_pencairan == 0 ?

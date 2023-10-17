@@ -42,6 +42,19 @@
                                 </div>
                             @enderror
                         </div>
+                        <div class='form-group mb-3'>
+                            <label for='' class='mb-2'>Jenis</label>
+                            <select name="jenis" id="jenis" class="form-control @error('jenis') is-invalid @enderror">
+                                <option value="" selected>Pilih Jenis</option>
+                                <option @selected(old('jenis') === 'Jangka Pendek') value="Jangka Pendek">Jangka Pendek</option>
+                                <option @selected(old('jenis') === 'Jangka Panjang') value="Jangka Panjang">Jangka Panjang</option>
+                            </select>
+                            @error('jasa_pinjaman_bulan_persen')
+                                <div class='invalid-feedback'>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
                         <div class="form-group text-right">
                             <a href="{{ route('lama-angsuran.index') }}" class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Tambah Data</button>

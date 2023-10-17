@@ -9,6 +9,8 @@ use App\Http\Controllers\LamaAngsuranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PencairanSimpananShrController;
+use App\Http\Controllers\PencairanSimpananWajibController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PinjamanAngsuranController;
@@ -144,12 +146,13 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.index');
     Route::post('simpanan-shr/saldo', [SimpananShrController::class, 'saldo'])->name('simpanan-shr.saldo.filter');
 
-    Route::get('simpanan-shr/pencairan', [SimpananShrController::class, 'pencairan'])->name('simpanan-shr.pencairan.index');
-    Route::post('simpanan-shr/pencairan', [SimpananShrController::class, 'pencairan'])->name('simpanan-shr.pencairan.filter');
-    Route::patch('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_update'])->name('simpanan-shr.pencairan.update');
-    Route::get('simpanan-shr/pencairan/{id}/edit', [SimpananShrController::class, 'pencairan_edit'])->name('simpanan-shr.pencairan.edit');
-    Route::get('simpanan-shr/pencairan/create', [SimpananShrController::class, 'pencairan_create'])->name('simpanan-shr.pencairan.create');
-    Route::delete('simpanan-shr/pencairan/{id}', [SimpananShrController::class, 'pencairan_delete'])->name('simpanan-shr.pencairan.destroy');
+    // pencairan dana simpanan wajib
+    Route::resource('pencairan-simpanan-wajib', PencairanSimpananWajibController::class)->except(['edit', 'update', 'destroy', 'show']);
+
+    // pencairan dana simpanan shr
+    Route::post('pencairan-simpanan-shr', [PencairanSimpananShrController::class, 'index'])->name('pencairan-simpanan-shr.filter');
+    Route::post('pencairan-simpanan-shr/create', [PencairanSimpananShrController::class, 'store'])->name('pencairan-simpanan-shr.store');
+    Route::resource('pencairan-simpanan-shr', PencairanSimpananShrController::class)->except(['edit', 'update', 'destroy', 'show', 'store']);
 
 
     // cek saldo anggota berdasarkan periode

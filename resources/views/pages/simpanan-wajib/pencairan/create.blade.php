@@ -2,10 +2,26 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Perhatian!</strong>
+                <p>
+                    Ketika simpanan wajib dibuat, maka secara otomatis anggota tersebut dinyatakan sudah tidak lagi menjadi
+                    anggota.
+                </p>
+                <p>Pencairan Simpanan Wajib Tidak bisa dibatalkan!.</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-5">Buat Pencairan Simpanan SHR</h4>
-                    <form action="{{ route('simpanan-shr.pencairan.proses') }}" method="post" enctype="multipart/form-data">
+                    <h4 class="card-title mb-5">Buat Pencairan Simpanan Wajib</h4>
+                    <form action="{{ route('pencairan-simpanan-wajib.store') }}" method="post"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class='form-group mb-3'>
                             <label for='anggota_id' class='mb-2'>Anggota <span class="text-danger">*</span></label>
@@ -71,13 +87,13 @@
                             </div>
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='metode_pembayaran_id' class='mb-2'>Metode Pembayaran <span
+                            <label for='metode_pembayaran_id' class='mb-2'>Metode Pencairan <span
                                     class="text-danger">*</span></label>
                             <select name="metode_pembayaran_id" id="metode_pembayaran_id"
                                 class="form-control @error('metode_pembayaran_id') is-invalid @enderror">
-                                <option value="" selected>Pilih Metode Pembayaran</option>
+                                <option value="" selected>Pilih Metode Pencairan</option>
                                 @foreach ($data_metode_pembayaran as $pembayaran)
-                                <option value="{{ $pembayaran->id }}">{{ $pembayaran->getFull() }}</option>
+                                    <option value="{{ $pembayaran->id }}">{{ $pembayaran->getFull() }}</option>
                                 @endforeach
                             </select>
                             @error('metode_pembayaran_id')
@@ -87,42 +103,12 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='periode_id' class='mb-2'>Periode <span class="text-danger">*</span></label>
-                            <select name="periode_id" id="periode_id"
-                                class="form-control @error('periode_id') is-invalid @enderror">
-                                <option value="" selected>Pilih Periode</option>
-                                @foreach ($data_periode as $periode)
-                                    <option value="{{ $periode->id }}">
-                                        {{ $periode->periode() }} @if ($periode->status == 1)
-                                            (Periode Aktif)
-                                        @endif
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('periode_id')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class='form-group mb-3'>
-                                    <label for='' class='mb-2'>Saldo</label>
-                                    <input type='text' name='saldo' id="saldo" class='form-control'
-                                        value='' readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class='form-group mb-3'>
-                                    <label for='' class='mb-2'>Status Pencairan</label>
-                                    <input type='text' name='status_pencairan' id="status_pencairan"
-                                        class='form-control' value='' readonly>
-                                </div>
-                            </div>
+                            <label for='' class='mb-2'>Saldo</label>
+                            <input type='text' name='saldo' id="saldo" class='form-control' value=''
+                                readonly>
                         </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('simpanan-shr.pencairan.index') }}" class="btn btn-warning">Batal</a>
+                            <a href="{{ route('simpanan-wajib.pencairan.index') }}" class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Buat Pencairan</button>
                         </div>
                     </form>
@@ -179,27 +165,18 @@
                     }
 
                 })
-            })
-
-            $('#periode_id').on('change', function() {
-                let periode_id = $(this).val();
-                let anggota_id = $('#anggota_id').val();
 
                 $.ajax({
-                    url: "{{ route('simpanan-shr.cek-saldo') }}",
+                    url: "{{ route('simpanan-wajib.cek-saldo') }}",
                     type: 'POST',
                     dataType: 'JSON',
                     data: {
-                        anggota_id,
-                        periode_id
+                        anggota_id
                     },
                     success: function(response) {
-
                         if (response.status === 'success') {
+                            console.log(response);
                             $('#saldo').val(formatRupiah(response.saldo));
-                            let status_pencairan = response.status_pencairan == 0 ?
-                                'Belum Dicairkan' : 'Sudah Dicairkan';
-                            $('#status_pencairan').val(status_pencairan);
                         }
                     },
                     error: function(err) {

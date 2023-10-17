@@ -28,9 +28,10 @@ class Periode extends Model
     public static function getTahun()
     {
         $tahun_sekarang = Carbon::now()->format('Y');
+        $tahun_awal = 2018;
         $years = [];
 
-        for ($i = $tahun_sekarang - 2; $i <= $tahun_sekarang + 2; $i++) {
+        for ($i = $tahun_awal; $i <= $tahun_sekarang + 2; $i++) {
             $years[] = $i;
         }
 

@@ -60,8 +60,8 @@ class LaporanController extends Controller
             'tanggal_sampai' => $tanggal_sampai
         ])->setPaper('A4', 'landscape');
         $fileName = "Laporan pinjaman " . time() . '.pdf';
-        return $pdf->stream();
-        // return $pdf->download($fileName);
+        // return $pdf->stream();
+        return $pdf->download($fileName);
     }
 
     public function simpanan_shr()

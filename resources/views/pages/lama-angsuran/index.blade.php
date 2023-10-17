@@ -16,6 +16,7 @@
                                 <th>Durasi</th>
                                 <th>Potongan Awal (%)</th>
                                 <th>Jasa Pinjaman Per Bulan (%)</th>
+                                <th>Jenis</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -26,6 +27,7 @@
                                     <td>{{ $item->durasi . ' bulan' }}</td>
                                     <td>{{ $item->potongan_awal_persen . '%' }}</td>
                                     <td>{{ $item->jasa_pinjaman_bulan_persen . '%' }}</td>
+                                    <td>{{ $item->jenis }}</td>
                                     <td>
                                         <a href="{{ route('lama-angsuran.edit', $item->id) }}"
                                             class="btn btn-sm py-2 btn-info">Edit</a>

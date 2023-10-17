@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="mb-3">Filter</h4>
-                        <form action="{{ route('simpanan-shr.pencairan.filter') }}" method="post">
+                        <form action="{{ route('pencairan-simpanan-shr.filter') }}" method="post">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
@@ -46,7 +46,7 @@
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title mb-3 align-self-center">Pencairan Simpanan SHR</h4>
                         @if (isLoginNotAnggota())
-                            <a href="{{ route('simpanan-shr.pencairan.create') }}"
+                            <a href="{{ route('pencairan-simpanan-shr.create') }}"
                                 class="btn my-2 mb-3 btn-sm py-2 btn-primary">Buat
                                 Pencairan</a>
                         @endif
@@ -60,11 +60,7 @@
                                 <th>Periode Simpanan</th>
                                 <th>Nominal</th>
                                 <th>Metode Pencairan</th>
-                                <th>Bukti Pencairan</th>
                                 <th>Status</th>
-                                @if (isLoginNotAnggota())
-                                    <th>Aksi</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -76,30 +72,7 @@
                                     <td>{{ $item->periode->periode() }}</td>
                                     <td>{{ formatRupiah($item->nominal) }}</td>
                                     <td>{{ $item->metode_pembayaran->getFull() }}</td>
-                                    <td>
-                                        @if ($item->bukti_pencairan)
-                                            <a href="javascript:void(0)" class="btn btnBukti py-2 btn-sm btn-success"
-                                                data-image="{{ asset('storage/' . $item->bukti_pencairan) }}">Lihat</a>
-                                        @else
-                                            <a href="javascript:void(0)" class="btn py-2 btn-sm btn-danger">Tidak Ada</a>
-                                        @endif
-                                    </td>
                                     <td>{!! $item->status() !!}</td>
-                                    @if (isLoginNotAnggota())
-                                        <td>
-                                            <a href="{{ route('simpanan-shr.pencairan.edit', $item->id) }}"
-                                                class="btn btn-sm py-2 btn-info">Edit</a>
-                                            @if ($item->status != 1)
-                                                <form action="javascript:void(0)" method="post" class="d-inline"
-                                                    id="formDelete">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button class="btn btnDelete btn-sm py-2 btn-danger"
-                                                        data-action="{{ route('simpanan-shr.pencairan.destroy', $item->id) }}">Hapus</button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

@@ -36,12 +36,13 @@ class LamaAngsuranController extends Controller
         request()->validate([
             'durasi' => ['required', 'numeric', 'unique:lama_angsuran,durasi'],
             'potongan_awal_persen' => ['required', 'numeric'],
-            'jasa_pinjaman_bulan_persen' => ['required', 'numeric']
+            'jasa_pinjaman_bulan_persen' => ['required', 'numeric'],
+            'jenis' => ['required', 'in:Jangka Pendek,Jangka Panjang']
         ]);
 
         DB::beginTransaction();
         try {
-            $data = request()->only(['durasi', 'potongan_awal_persen', 'jasa_pinjaman_bulan_persen']);
+            $data = request()->only(['durasi', 'potongan_awal_persen', 'jasa_pinjaman_bulan_persen', 'jenis']);
             LamaAngsuran::create($data);
 
             DB::commit();
@@ -82,13 +83,14 @@ class LamaAngsuranController extends Controller
         request()->validate([
             'durasi' => ['required', 'numeric', 'unique:lama_angsuran,durasi,' . $id . ''],
             'potongan_awal_persen' => ['required', 'numeric'],
-            'jasa_pinjaman_bulan_persen' => ['required', 'numeric']
+            'jasa_pinjaman_bulan_persen' => ['required', 'numeric'],
+            'jenis' => ['required', 'in:Jangka Pendek,Jangka Panjang']
         ]);
 
         DB::beginTransaction();
         try {
             $item = LamaAngsuran::findOrFail($id);
-            $data = request()->only(['durasi', 'potongan_awal_persen', 'jasa_pinjaman_bulan_persen']);
+            $data = request()->only(['durasi', 'potongan_awal_persen', 'jasa_pinjaman_bulan_persen', 'jenis']);
 
             $item->update($data);
             DB::commit();
