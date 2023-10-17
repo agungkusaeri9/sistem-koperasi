@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anggota;
 use App\Models\Periode;
 use App\Models\Pinjaman;
 use App\Models\Simpanan;
@@ -20,14 +21,17 @@ class LaporanController extends Controller
 
     public function pinjaman()
     {
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
         return view('pages.laporan.pinjaman.index', [
             'title' => 'Laporan Pinjaman',
-            'status' => 'semua'
+            'status' => 'semua',
+            'data_anggota' => $data_anggota
         ]);
     }
 
     public function pinjaman_print()
     {
+        $anggota_id = request('anggota_id');
         $tanggal_awal = request('tanggal_awal');
         $tanggal_sampai = request('tanggal_sampai');
         $status = request('status');
@@ -41,10 +45,13 @@ class LaporanController extends Controller
             $items = Pinjaman::whereNotNull('id');
         }
 
-        if ($status === 'semua')
-            $data = $items->latest()->get();
-        else
-            $data = $items->where('status', $status)->latest()->get();
+        if ($status !== 'semua')
+            $items->where('status', $status);
+
+        if ($anggota_id)
+            $items->where('anggota_id', $anggota_id);
+
+        $data = $items->latest()->get();
 
 
         if (count($data) < 1) {
@@ -53,11 +60,13 @@ class LaporanController extends Controller
 
         $tanggal_awal = Carbon::parse($tanggal_awal)->format('d F Y');
         $tanggal_sampai = Carbon::parse($tanggal_sampai)->format('d F Y');
+        $anggota = Anggota::find($anggota_id);
         $pdf = Pdf::loadView('pages.laporan.pinjaman.print', [
             'items' => $data,
             'status' => $status,
             'tanggal_awal' => $tanggal_awal,
-            'tanggal_sampai' => $tanggal_sampai
+            'tanggal_sampai' => $tanggal_sampai,
+            'anggota' => $anggota
         ])->setPaper('A4', 'landscape');
         $fileName = "Laporan pinjaman " . time() . '.pdf';
         // return $pdf->stream();
@@ -66,49 +75,44 @@ class LaporanController extends Controller
 
     public function simpanan_shr()
     {
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
+        $data_periode = Periode::latest()->get();
         return view('pages.laporan.simpanan-shr.index', [
             'title' => 'Laporan Simpanan SHR',
             'status' => 'semua',
-            'data_bulan' => Periode::getBulan(),
-            'data_tahun' => Periode::getTahun()
+            'data_anggota' => $data_anggota,
+            'data_periode' => $data_periode
         ]);
     }
 
     public function simpanan_shr_print()
     {
-        $bulan = request('bulan');
-        $tahun = request('tahun');
-        $status = request('status');
+        $periode_id = request('periode_id');
+        $anggota_id = request('anggota_id');
 
-        $items = SimpananAnggota::jenisShr()->with(['anggota']);
-        if ($bulan) {
-            $items = $items->whereHas('simpanan', function ($simpanan) use ($bulan) {
-                $simpanan->where('bulan', $bulan);
-            });
+
+        $items = Simpanan::jenisShr()->with(['anggota']);
+        if ($periode_id) {
+            $items->where('periode_id', $periode_id);
         }
 
-        if ($tahun) {
-            $items = $items->whereHas('simpanan', function ($simpanan) use ($tahun) {
-                $simpanan->where('tahun', $tahun);
-            });
+        if ($anggota_id) {
+            $items->where('anggota_id', $anggota_id);
         }
-
-        if ($status === 'semua')
-            $items = $items;
-        else
-            $items = $items->where('status_tagihan', $status);
 
         $data = $items->latest()->get();
+
 
         if (count($data) < 1) {
             return redirect()->route('laporan.simpanan-shr.index')->with('warning', 'Data Simpanan SHR tidak ditemukan.');
         }
 
+        $anggota = Anggota::find($anggota_id);
+        $periode = periode::find($periode_id);
         $pdf = Pdf::loadView('pages.laporan.simpanan-shr.print', [
             'items' => $data,
-            'status' => $status,
-            'bulan' => $bulan,
-            'tahun' => $tahun
+            'periode' => $periode,
+            'anggota' => $anggota
         ]);
         $fileName = "Laporan Simpanan SHR " . time() . '.pdf';
         // return $pdf->stream();
@@ -117,37 +121,22 @@ class LaporanController extends Controller
 
     public function simpanan_wajib()
     {
+        $data_anggota = Anggota::orderBy('nama', 'ASC')->get();
         return view('pages.laporan.simpanan-wajib.index', [
             'title' => 'Laporan Simpanan wajib',
             'status' => 'semua',
-            'data_bulan' => Periode::getBulan(),
-            'data_tahun' => Periode::getTahun()
+            'data_anggota' => $data_anggota
         ]);
     }
 
     public function simpanan_wajib_print()
     {
-        $bulan = request('bulan');
-        $tahun = request('tahun');
-        $status = request('status');
+        $anggota_id = request('anggota_id');
 
-        $items = SimpananAnggota::jenisWajib()->with(['anggota']);
-        if ($bulan) {
-            $items = $items->whereHas('simpanan', function ($simpanan) use ($bulan) {
-                $simpanan->where('bulan', $bulan);
-            });
+        $items = Simpanan::jenisWajib()->with(['anggota']);
+        if ($anggota_id) {
+            $items->where('anggota_id', $anggota_id);
         }
-
-        if ($tahun) {
-            $items = $items->whereHas('simpanan', function ($simpanan) use ($tahun) {
-                $simpanan->where('tahun', $tahun);
-            });
-        }
-
-        if ($status === 'semua')
-            $items = $items;
-        else
-            $items = $items->where('status_tagihan', $status);
 
         $data = $items->latest()->get();
 
@@ -155,11 +144,10 @@ class LaporanController extends Controller
             return redirect()->route('laporan.simpanan-wajib.index')->with('warning', 'Data Simpanan wajib tidak ditemukan.');
         }
 
+        $anggota = Anggota::find($anggota_id);
         $pdf = Pdf::loadView('pages.laporan.simpanan-wajib.print', [
             'items' => $data,
-            'status' => $status,
-            'bulan' => $bulan,
-            'tahun' => $tahun
+            'anggota' => $anggota
         ]);
         $fileName = "Laporan Simpanan wajib " . time() . '.pdf';
         // return $pdf->stream();

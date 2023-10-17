@@ -42,57 +42,27 @@
         .styled-table tbody tr:nth-of-type(even) {
             background-color: #f3f3f3;
         }
-
-        .styled-table tbody tr:last-of-type {
-            border-bottom: 2px solid #009879;
-        }
-
-        .styled-table tbody tr.active-row,
-        tr.active-row {
-            font-weight: bold;
-            color: #009879;
-
-        }
     </style>
 </head>
 
 <body>
     <h2 style="text-align: center">Laporan Simpanan Wajib</h2>
     <table class="tb-info">
-        @if ($bulan)
+        @if ($anggota)
             <tr>
-                <td style="text-align:left;width:100px">Bulan</td>
+                <td style="text-align:left;width:100px">Nama Anggota</td>
                 <td style="width:10px"> : </td>
                 <td>
-                    {{ konversiBulan($bulan) }}
+                    {{ $anggota->nama }}
                 </td>
             </tr>
         @endif
-        @if ($tahun)
+        @if ($anggota)
             <tr>
-                <td style="text-align:left;width:100px">Tahun</td>
+                <td style="text-align:left;width:100px">NIP</td>
                 <td style="width:10px"> : </td>
                 <td>
-                    {{ $tahun }}
-                </td>
-            </tr>
-        @endif
-        @if ($status && $status !== 'semua')
-            <tr>
-                <td style="text-align:left;width:100px">Status</td>
-                <td style="width:10px"> : </td>
-                <td>
-                    @if ($status === 'semua')
-                        Semua
-                    @else
-                        @if ($status == 0)
-                            Belum Bayar
-                        @elseif($status == 1)
-                            Menunggu Verifikasi
-                        @elseif($status == 2)
-                            Lunas
-                        @endif
-                    @endif
+                    {{ $anggota->nip }}
                 </td>
             </tr>
         @endif
@@ -106,27 +76,27 @@
         <thead>
             <tr>
                 <th>No.</th>
+                <th>Anggota</th>
                 <th>Bulan</th>
                 <th>Tahun</th>
-                <th>Nominal</th>
-                <th>Anggota</th>
                 <th>Metode Pembayaran</th>
+                <th>Nominal</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($items as $simpanan_anggota)
+            @foreach ($items as $simpanan)
                 <tr>
                     <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td style="text-align: center">{{ konversiBulan($simpanan_anggota->simpanan->bulan) }}</td>
-                    <td style="text-align: center">{{ $simpanan_anggota->simpanan->tahun }}</td>
-                    <td style="text-align: center">{{ formatRupiah($simpanan_anggota->simpanan->nominal) }}</td>
-                    <td style="text-align: center">{{ $simpanan_anggota->anggota->nama }}</td>
+                    <td style="text-align: center">{{ $simpanan->anggota->nama }}</td>
+                    <td style="text-align: center">{{ konversiBulan($simpanan->bulan) }}</td>
+                    <td style="text-align: center">{{ $simpanan->tahun }}</td>
                     <td style="text-align: center">
-                        {{ $simpanan_anggota->metode_pembayaran_id ? $simpanan_anggota->metode_pembayaran->getFull() : 'Tidak Ada' }}
+                        {{ $simpanan->metode_pembayaran_id ? $simpanan->metode_pembayaran->getFull() : 'Tidak Ada' }}
                     </td>
+                    <td style="text-align: center">{{ formatRupiah($simpanan->nominal) }}</td>
 
-                    <td style="text-align: center">{!! $simpanan_anggota->status_tagihan() !!}</td>
+                    <td style="text-align: center">{!! $simpanan->status() !!}</td>
                 </tr>
             @endforeach
         </tbody>

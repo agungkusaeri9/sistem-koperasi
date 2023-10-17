@@ -74,6 +74,24 @@
 <body>
     <h2 style="text-align: center">Laporan Pinjaman</h2>
     <table class="tb-info">
+        @if ($anggota)
+            <tr>
+                <td style="text-align:left;width:100px">Nama Anggota</td>
+                <td style="width:10px"> : </td>
+                <td>
+                    {{ $anggota->nama }}
+                </td>
+            </tr>
+        @endif
+        @if ($anggota)
+            <tr>
+                <td style="text-align:left;width:100px">NIP</td>
+                <td style="width:10px"> : </td>
+                <td>
+                    {{ $anggota->nip }}
+                </td>
+            </tr>
+        @endif
         @if ($tanggal_awal)
             <tr>
                 <td style="text-align:left;width:100px">Dari Tanggal</td>

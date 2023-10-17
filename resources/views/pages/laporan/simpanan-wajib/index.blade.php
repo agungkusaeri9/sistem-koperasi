@@ -9,45 +9,16 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-3">
-                                <div class='form-group mb-3'>
-                                    <label for='bulan' class='mb-2'>Bulan</label>
-                                    <select name="bulan" id="bulan" class="form-control">
-                                        <option value="">Pilih Bulan</option>
-                                        @foreach ($data_bulan as $bulan)
-                                            <option value="{{ $bulan->no }}">{{ $bulan->nama }}</option>
+                                <div class="form-group mb-3">
+                                    <label for='anggota_id' class='mb-2'>Anggota</label>
+                                    <select name="anggota_id" id="anggota_id" class="form-control select2">
+                                        <option @selected($status === '') value="">Pilih Anggota</option>
+                                        @foreach ($data_anggota as $anggota)
+                                            <option value="{{ $anggota->id }}">{{ $anggota->nama . ' | ' . $anggota->nip }}
+                                            </option>
                                         @endforeach
                                     </select>
-                                    @error('bulan')
-                                        <div class='invalid-feedback'>
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class='form-group mb-3'>
-                                    <label for='tahun' class='mb-2'>Tahun</label>
-                                    <select name="tahun" id="tahun" class="form-control">
-                                        <option value="">Pilih Tahun</option>
-                                        @foreach ($data_tahun as $tahun)
-                                            <option value="{{ $tahun }}">{{ $tahun }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('tahun')
-                                        <div class='invalid-feedback'>
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for='status' class='mb-2'>Status</label>
-                                <select name="status" id="status" class="form-control">
-                                    <option @selected($status === 'semua') value="semua">Semua</option>
-                                    <option @selected($status == 0) value="0">Belum Bayar</option>
-                                    <option @selected($status == 1) value="1">Menunggu Verifikasi</option>
-                                    <option @selected($status == 2) value="2">Lunas</option>
-                                </select>
                             </div>
                             <div class="col-md align-self-center">
                                 <button class="btn mt-2 btn-danger">Cetak PDF</button>
@@ -60,3 +31,14 @@
     </div>
 @endsection
 <x-Sweetalert />
+@push('stylesBefore')
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+@endpush
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $('.select2').select2();
+        })
+    </script>
+@endpush
