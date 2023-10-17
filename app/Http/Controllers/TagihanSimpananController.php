@@ -83,16 +83,16 @@ class TagihanSimpananController extends Controller
             foreach ($data_anggota as $anggota) {
 
                 // cek jika sudah ada simpanan
-                $simpananCek = SimpananAnggota::where([
+                $simpananCek = Simpanan::where([
                     'anggota_id' => $anggota->id,
                     'simpanan_id' => $simpanan->id
                 ])->count();
 
                 if ($simpananCek < 1) {
-                    SimpananAnggota::create([
+                    Simpanan::create([
                         'anggota_id' => $anggota->id,
                         'simpanan_id' => $simpanan->id,
-                        'status_tagihan' => 0
+                        'status' => 0
                     ]);
 
                     // kirim notifikasi
