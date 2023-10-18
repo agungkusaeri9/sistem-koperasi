@@ -27,6 +27,27 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#trk_pinjaman" aria-expanded="false"
+                    aria-controls="trk_pinjaman">
+                    <span class="material-symbols-outlined mr-2">
+                        savings
+                    </span>
+                    <span class="menu-title">Transaksi Pinjaman</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="trk_pinjaman">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pinjaman.index') }}"> Pinjaman</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pinjaman-angsuran.index') }}"> Angsuran Pinjaman </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trk_simpanan" aria-expanded="false"
                     aria-controls="trk_simpanan">
                     <span class="material-symbols-outlined mr-2">

@@ -92,6 +92,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::post('pinjaman/set-status-potongan-awal', [PinjamanController::class, 'set_status_potongan_awal'])->name('pinjaman.set-status-potongan-awal');
 
     // pinjaman angsuran
+    Route::get('angsuran-pinjaman', [PinjamanAngsuranController::class, 'index'])->name('pinjaman-angsuran.index');
+    Route::post('angsuran-pinjaman', [PinjamanAngsuranController::class, 'index'])->name('pinjaman-angsuran.filter');
     Route::get('pinjaman-angsuran/{uuid}', [PinjamanAngsuranController::class, 'edit'])->name('pinjaman-angsuran.edit');
     Route::patch('pinjaman-angsuran/{uuid}', [PinjamanAngsuranController::class, 'update'])->name('pinjaman-angsuran.update');
 
