@@ -120,6 +120,9 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('simpanan-wajib/saldo', [SimpananWajibController::class, 'saldo'])->name('simpanan-wajib.saldo.index');
     Route::post('simpanan-wajib/cek-saldo', [SimpananWajibController::class, 'cek_saldo'])->name('simpanan-wajib.cek-saldo');
 
+    // cek nominal simpanan
+    Route::post('periode/cek-nominal', [PeriodeController::class, 'cekNominalSimpanan'])->name('periode.cek-nominal-simpanan');
+
     // simpanan shr
     Route::resource('simpanan-shr', SimpananShrController::class)->except('store', 'show');
     Route::post('simpanan-shr/create', [SimpananShrController::class, 'store'])->name('simpanan-shr.store');

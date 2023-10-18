@@ -14,6 +14,8 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Periode</th>
+                                <th>Nominal Simpanan SHR</th>
+                                <th>Nominal Simpanan Wajib</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -23,6 +25,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->periode() }}</td>
+                                    <td>{{ formatRupiah($item->nominal_simpanan_shr) }}</td>
+                                    <td>{{ formatRupiah($item->nominal_simpanan_wajib) }}</td>
                                     <td>{!! $item->status() !!}</td>
                                     <td>
                                         <a href="{{ route('periode.edit', $item->id) }}"

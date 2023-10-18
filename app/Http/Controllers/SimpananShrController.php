@@ -74,7 +74,7 @@ class SimpananShrController extends Controller
             'nominal' => ['required'],
             'metode_pembayaran_id' => ['required'],
             'status' => ['required'],
-            'periode_id' => ['required']
+            'periode_id' => ['required'],
         ]);
 
         DB::beginTransaction();

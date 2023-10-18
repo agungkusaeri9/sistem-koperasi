@@ -79,7 +79,7 @@
                         <div class='form-group mb-3'>
                             <label for='nominal' class='mb-2'>Nominal <span class="text-danger">*</span></label>
                             <input type='text' name='nominal' class='form-control @error('nominal') is-invalid @enderror'
-                                value='{{ $item->nominal ?? old('nominal') }}'>
+                                value='{{ $item->nominal ?? old('nominal') }}' readonly>
                             @error('nominal')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
@@ -129,3 +129,53 @@
     </div>
 @endsection
 <x-Sweetalert />
+@push('stylesBefore')
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(function() {
+            $('.select2').select2();
+
+            function formatRupiah(angka) {
+                var formatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                });
+                return formatter.format(angka);
+            }
+
+            $('#periode_id').on('change', function() {
+                let periode_id = $(this).val();
+                let anggota_id = $('#anggota_id').val();
+                let jenis = 'shr';
+
+                $.ajax({
+                    url: "{{ route('periode.cek-nominal-simpanan') }}",
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        jenis,
+                        periode_id
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('input[name=nominal]').val(response.nominal);
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                })
+            })
+        })
+    </script>
+@endpush

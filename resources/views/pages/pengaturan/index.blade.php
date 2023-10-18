@@ -40,28 +40,6 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='nominal_simpanan_wajib' class='mb-2'>Nominal Simpanan Wajib</label>
-                            <input type='number' name='nominal_simpanan_wajib'
-                                class='form-control @error('nominal_simpanan_wajib') is-invalid @enderror'
-                                value='{{ $item->nominal_simpanan_wajib ?? old('nominal_simpanan_wajib') }}'>
-                            @error('nominal_simpanan_wajib')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class='form-group mb-3'>
-                            <label for='nominal_simpanan_shr' class='mb-2'>Nominal Simpanan SHR</label>
-                            <input type='number' name='nominal_simpanan_shr'
-                                class='form-control @error('nominal_simpanan_shr') is-invalid @enderror'
-                                value='{{ $item->nominal_simpanan_shr ?? old('nominal_simpanan_shr') }}'>
-                            @error('nominal_simpanan_shr')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class='form-group mb-3'>
                             <label for='pembuat' class='mb-2'>Pembuat</label>
                             <input type='text' name='pembuat' class='form-control @error('pembuat') is-invalid @enderror'
                                 value='{{ $item->pembuat ?? old('pembuat') }}'>

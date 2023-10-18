@@ -8,6 +8,23 @@
                     <form action="{{ route('simpanan-wajib.store') }}" method="post">
                         @csrf
                         <div class='form-group mb-3'>
+                            <label for='periode_id' class='mb-2'>Periode <span class="text-danger">(Periode ini hanya untuk
+                                    mengetahui nominal saja)</span></label>
+                            <select name="periode_id" id="periode_id"
+                                class="form-control @error('periode_id') is-invalid @enderror">
+                                <option value="" selected>Pilih Periode</option>
+                                @foreach ($data_periode as $periode)
+                                    <option value="{{ $periode->id }}">
+                                        {{ $periode->periode() }}</option>
+                                @endforeach
+                            </select>
+                            @error('periode_id')
+                                <div class='invalid-feedback'>
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class='form-group mb-3'>
                             <label for='anggota_id' class='mb-2'>Anggota <span class="text-danger">*</span></label>
                             <select name="anggota_id" id="anggota_id"
                                 class="form-control @error('anggota_id') is-invalid @enderror">
@@ -54,7 +71,7 @@
                         <div class='form-group mb-3'>
                             <label for='nominal' class='mb-2'>Nominal <span class="text-danger">*</span></label>
                             <input type='text' name='nominal' class='form-control @error('nominal') is-invalid @enderror'
-                                value='{{ $pengaturan->nominal_simpanan_wajib ?? old('nominal') }}'>
+                                value='' readonly>
                             @error('nominal')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
@@ -104,3 +121,53 @@
     </div>
 @endsection
 <x-Sweetalert />
+@push('stylesBefore')
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(function() {
+            $('.select2').select2();
+
+            function formatRupiah(angka) {
+                var formatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                });
+                return formatter.format(angka);
+            }
+
+            $('#periode_id').on('change', function() {
+                let periode_id = $(this).val();
+                let anggota_id = $('#anggota_id').val();
+                let jenis = 'shr';
+
+                $.ajax({
+                    url: "{{ route('periode.cek-nominal-simpanan') }}",
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        jenis,
+                        periode_id
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('input[name=nominal]').val(response.nominal);
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                })
+            })
+        })
+    </script>
+@endpush

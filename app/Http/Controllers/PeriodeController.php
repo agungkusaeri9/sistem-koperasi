@@ -39,6 +39,8 @@ class PeriodeController extends Controller
             'tahun_awal' => ['required', 'numeric'],
             'bulan_akhir' => ['required', 'numeric'],
             'tahun_akhir' => ['required', 'numeric'],
+            'nominal_simpanan_shr' => ['required', 'numeric'],
+            'nominal_simpanan_wajib' => ['required', 'numeric']
         ]);
 
         DB::beginTransaction();
@@ -79,6 +81,8 @@ class PeriodeController extends Controller
             'tahun_awal' => ['required', 'numeric'],
             'bulan_akhir' => ['required', 'numeric'],
             'tahun_akhir' => ['required', 'numeric'],
+            'nominal_simpanan_shr' => ['required', 'numeric'],
+            'nominal_simpanan_wajib' => ['required', 'numeric']
         ]);
 
         DB::beginTransaction();
@@ -119,6 +123,35 @@ class PeriodeController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->route('periode.index')->with('error', $th->getMessage());
+        }
+    }
+
+    public function cekNominalSimpanan()
+    {
+        if (request()->ajax()) {
+            request()->validate([
+                'jenis' => ['required'],
+                'periode_id' => ['required']
+            ]);
+            $periode_id = request('periode_id');
+            $jenis = request('jenis');
+
+            $item = Periode::where('id', $periode_id)->first();
+            if ($item) {
+                if ($jenis === 'shr') {
+                    $nominal = $item->nominal_simpanan_shr;
+                } else {
+                    $nominal = $item->nominal_simpanan_wajib;
+                }
+                $status = 'success';
+            } else {
+                $status = 'error';
+            }
+
+            return response()->json([
+                'status' => $status,
+                'nominal' => $nominal
+            ]);
         }
     }
 }

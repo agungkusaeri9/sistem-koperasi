@@ -62,7 +62,7 @@
                         <div class='form-group mb-3'>
                             <label for='nominal' class='mb-2'>Nominal <span class="text-danger">*</span></label>
                             <input type='text' name='nominal' class='form-control @error('nominal') is-invalid @enderror'
-                                value='{{ $item->nominal ?? old('nominal') }}'>
+                                value='{{ $item->nominal ?? old('nominal') }}' readonly>
                             @error('nominal')
                                 <div class='invalid-feedback'>
                                     {{ $message }}
