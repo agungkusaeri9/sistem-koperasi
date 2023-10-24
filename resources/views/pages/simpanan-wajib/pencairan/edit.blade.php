@@ -100,7 +100,7 @@
                             @enderror
                         </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('simpanan-wajib.pencairan.index') }}" class="btn btn-warning">Batal</a>
+                            <a href="{{ route('pencairan-simpanan-wajib.index') }}" class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Update Pencairan</button>
                         </div>
                     </form>

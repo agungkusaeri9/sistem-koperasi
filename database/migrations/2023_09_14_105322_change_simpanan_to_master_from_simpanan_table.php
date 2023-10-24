@@ -28,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('simpanan', function (Blueprint $table) {
             $table->foreignId('anggota_id')->nullable()->constrained('anggota');
-            $table->string('bukti_pembayaran')->nullable();
+            $table->string('bukti_pembayaran', 100)->nullable();
             $table->boolean('status_pencairan')->default(0);
             $table->integer('status_tagihan')->default(0);
             $table->foreignId('metode_pembayaran_id')->nullable()->constrained('metode_pembayaran');

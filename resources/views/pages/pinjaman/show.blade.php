@@ -44,10 +44,10 @@
                             <span class="font-weight-bold">Angsuran (bulan)</span>
                             <span>{{ formatRupiah($item->total_jumlah_angsuran_bulan) }}</span>
                         </li>
-                        <li class="list-item mb-3 d-flex justify-content-between">
+                        {{-- <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Total Bayar</span>
                             <span>{{ formatRupiah($item->total_bayar) }}</span>
-                        </li>
+                        </li> --}}
                         @if ($item->status == 1)
                             <li class="list-item mb-3 d-flex justify-content-between">
                                 <span class="font-weight-bold">Sudah Terbayar</span>

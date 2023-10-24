@@ -16,7 +16,7 @@ return new class extends Migration
             $table->dropConstrainedForeignId('jenis_simpanan_id');
 
             // buatkan kolom jenis simpanan
-            $table->string('jenis')->nullable();
+            $table->string('jenis', 30)->nullable();
         });
     }
 

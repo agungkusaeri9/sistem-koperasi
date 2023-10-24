@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('pinjaman', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
+            $table->string('kode', 20)->unique();
             $table->foreignId('anggota_id')->constrained('anggota');
             $table->integer('besar_pinjaman');
-            $table->string('keperluan');
+            $table->string('keperluan', 100);
             $table->foreignId('lama_angsuran_id')->constrained('lama_angsuran');
             $table->integer('bulan_mulai');
             $table->integer('tahun_mulai');

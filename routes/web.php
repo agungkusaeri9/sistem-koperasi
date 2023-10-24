@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login', 301);
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -73,11 +73,6 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // lama-angsuran
     Route::resource('lama-angsuran', LamaAngsuranController::class);
-
-    // tagihan-simpanan
-    Route::post('tagihan-simpanan', [TagihanSimpananController::class, 'index'])->name('tagihan-simpanan.filter');
-    Route::resource('tagihan-simpanan', TagihanSimpananController::class)->except(['show', 'store']);
-    Route::post('tagihan-simpanan/create', [TagihanSimpananController::class, 'store'])->name('tagihan-simpanan.store');
 
     // pinjaman
     Route::post('pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.filter');

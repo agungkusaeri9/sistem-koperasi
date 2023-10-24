@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jenis_simpanan', function (Blueprint $table) {
             $table->id();
-            $table->string('jenis');
+            $table->string('jenis', 30);
             $table->integer('nominal');
             $table->foreignId('periode_id')->nullable()->constrained('periode');
             $table->timestamps();

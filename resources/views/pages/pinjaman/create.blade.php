@@ -91,17 +91,6 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class='form-group mb-3'>
-                            <label for='total_bayar' class='mb-2'>Total Bayar</label>
-                            <input type='text' name='total_bayar'
-                                class='form-control @error('total_bayar') is-invalid @enderror'
-                                value='{{ old('total_bayar') }}' readonly>
-                            @error('total_bayar')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
                         <div class="form-group text-right">
                             <button class="btn btn-primary">Ajukan Pinjaman</button>
                         </div>
@@ -139,8 +128,7 @@
                                 data.total_jumlah_angsuran_bulan));
                             $('input[name=total_jasa_pinjaman]').val(formatRupiah(
                                 data.total_jasa_pinjaman));
-                            $('input[name=total_bayar]').val(
-                                formatRupiah(data.total_bayar));
+
                         }
                     },
                     error: function(err) {

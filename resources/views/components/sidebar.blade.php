@@ -17,14 +17,6 @@
                     <span class="menu-title">Pinjaman</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('tagihan-simpanan.index') }}">
-                    <span class="material-symbols-outlined mr-2">
-                        request_quote
-                    </span>
-                    <span class="menu-title">Tagihan Simpanan</span>
-                </a>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trk_pinjaman" aria-expanded="false"

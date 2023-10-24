@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('anggota_id')->constrained('anggota');
             $table->foreignId('metode_pembayaran_id')->constrained('metode_pembayaran');
             $table->integer('nominal');
-            $table->string('bukti_pencairan')->nullable();
+            $table->string('bukti_pencairan', 100)->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });

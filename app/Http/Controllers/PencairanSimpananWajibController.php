@@ -101,7 +101,7 @@ class PencairanSimpananWajibController extends Controller
             DB::commit();
 
             // kirim notifikasi ke anggota
-            $whatsappService->anggota_pencairan_simpanan_wajib($pencairan->id);
+            // $whatsappService->anggota_pencairan_simpanan_wajib($pencairan->id);
 
             return redirect()->route('pencairan-simpanan-wajib.index')->with('success', 'Pencairan simpanan wajib berhasil ditambahkan.');
         } catch (\Throwable $th) {

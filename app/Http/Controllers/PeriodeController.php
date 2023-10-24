@@ -40,7 +40,8 @@ class PeriodeController extends Controller
             'bulan_akhir' => ['required', 'numeric'],
             'tahun_akhir' => ['required', 'numeric'],
             'nominal_simpanan_shr' => ['required', 'numeric'],
-            'nominal_simpanan_wajib' => ['required', 'numeric']
+            'nominal_simpanan_wajib' => ['required', 'numeric'],
+            'status' => ['required']
         ]);
 
         DB::beginTransaction();

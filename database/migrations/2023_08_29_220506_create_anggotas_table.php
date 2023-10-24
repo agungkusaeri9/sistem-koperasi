@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('anggota', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('nip')->nullable()->unique();
-            $table->string('jenis_kelamin');
-            $table->string('tempat_lahir');
+            $table->string('nama', 30);
+            $table->string('nip', 20)->nullable()->unique();
+            $table->string('jenis_kelamin', 20);
+            $table->string('tempat_lahir', 30);
             $table->date('tanggal_lahir');
             $table->text('alamat');
-            $table->string('nomor_telepon');
+            $table->string('nomor_telepon', 20);
             $table->foreignId('jabatan_id')->constrained('jabatan');
             $table->foreignId('agama_id')->constrained('agama');
             $table->foreignId('user_id')->constrained('users');

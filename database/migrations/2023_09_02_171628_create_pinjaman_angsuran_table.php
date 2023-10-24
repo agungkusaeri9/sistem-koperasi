@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('bulan');
             $table->integer('tahun');
             $table->date('tanggal_verifikasi')->nullable();
-            $table->string('bukti_pembayaran')->nullable();
+            $table->string('bukti_pembayaran', 100)->nullable();
             $table->foreignId('metode_pembayaran_id')->constrained('metode_pembayaran');
             $table->integer('status')->default(0);
             $table->timestamps();

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('metode_pembayaran', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('nomor')->nullable();
-            $table->string('pemilik')->nullable();
+            $table->string('nama', 30);
+            $table->string('nomor', 30)->nullable();
+            $table->string('pemilik', 30)->nullable();
             $table->timestamps();
         });
     }

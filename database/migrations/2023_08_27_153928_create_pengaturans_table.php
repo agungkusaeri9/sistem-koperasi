@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('pengaturan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_situs');
-            $table->string('email')->nullable();
-            $table->string('nomor_telepon')->nullable();
-            $table->string('pembuat')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('favicon')->nullable();
+            $table->string('nama_situs', 50);
+            $table->string('email', 50)->nullable();
+            $table->string('nomor_telepon', 50)->nullable();
+            $table->string('pembuat', 50)->nullable();
+            $table->string('logo', 100)->nullable();
+            $table->string('favicon', 100)->nullable();
             $table->timestamps();
         });
     }

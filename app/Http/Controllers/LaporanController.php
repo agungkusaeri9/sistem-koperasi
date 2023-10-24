@@ -48,8 +48,9 @@ class LaporanController extends Controller
         if ($status !== 'semua')
             $items->where('status', $status);
 
-        if ($anggota_id)
+        if ($anggota_id && $anggota_id !== 'semua')
             $items->where('anggota_id', $anggota_id);
+
 
         $data = $items->latest()->get();
 

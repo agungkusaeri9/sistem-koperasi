@@ -8,7 +8,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
-        Commands\BuatTagihanSimpananCron::class,
+        Commands\BuatTagihanSimpananPerbulan::class,
     ];
 
     /**
@@ -16,8 +16,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // jalankan setiap tanggal 1, jam 1 malam
-        $schedule->command('buatTagihanSimpanan:cron')->everyMinute();
+        // jalankan setiap tanggal 1, jam 00 malam
+        $schedule->command('buat-tagihan-simpanan-perbulan:cron')->monthly();
+
+        // jalankan setiap hari jam 00
+        $schedule->command('angsuranPinjamanOtomatisUpdate:cron')->daily();
     }
 
     /**

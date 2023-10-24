@@ -112,7 +112,7 @@ class PinjamanController extends Controller
 
 
             // kirim notifikasi
-            $whatsappService->admin_submitPinjaman($pinjaman->id);
+            // $whatsappService->admin_submitPinjaman($pinjaman->id);
 
             DB::commit();
             return redirect()->route('pinjaman.index')->with('success', 'Pengajuan pinjaman berhasil dilakukan. Mohon tunggu beberapa waktu untuk peninjauan admin.');
@@ -199,16 +199,16 @@ class PinjamanController extends Controller
             $item->save();
 
             // notifikasi ke anggota
-            if ($status == 1) {
-                // disetujui
-                $whatsappService->anggota_pinjaman_disetujui($item->id);
-            } elseif ($status == 3) {
-                // ditolak
-                $whatsappService->anggota_pinjaman_ditolak($item->id);
-            } elseif ($status == 2) {
-                // lunas/selesai
-                $whatsappService->anggota_pinjaman_selesai($item->id);
-            }
+            // if ($status == 1) {
+            //     // disetujui
+            //     $whatsappService->anggota_pinjaman_disetujui($item->id);
+            // } elseif ($status == 3) {
+            //     // ditolak
+            //     $whatsappService->anggota_pinjaman_ditolak($item->id);
+            // } elseif ($status == 2) {
+            //     // lunas/selesai
+            //     $whatsappService->anggota_pinjaman_selesai($item->id);
+            // }
 
             DB::commit();
 

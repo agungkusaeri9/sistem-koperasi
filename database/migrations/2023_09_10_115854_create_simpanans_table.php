@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('nominal');
             $table->foreignId('anggota_id')->constrained('anggota')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('metode_pembayaran')->nullable()->constrained('metode_pembayaran');
-            $table->string('bukti_pembayaran')->nullable();
+            $table->string('bukti_pembayaran', 100)->nullable();
             $table->boolean('status_pencairan')->default(0);
             $table->timestamps();
         });
