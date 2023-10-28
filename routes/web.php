@@ -8,6 +8,7 @@ use App\Http\Controllers\JenisSimpananController;
 use App\Http\Controllers\LamaAngsuranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MetodePembayaranController;
+use App\Http\Controllers\PanduanController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PencairanSimpananShrController;
 use App\Http\Controllers\PencairanSimpananWajibController;
@@ -139,4 +140,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // cek saldo shr anggota berdasarkan periode
     Route::post('simpanan-shr/cek-saldo', [SimpananShrController::class, 'cek_saldo'])->name('simpanan-shr.cek-saldo');
     Route::post('simpanan-shr/pencairan-proses', [SimpananShrController::class, 'proses_pencairan'])->name('simpanan-shr.pencairan.proses');
+
+    // panduan
+    Route::get('panduan', [PanduanController::class, 'index'])->name('panduan.index');
 });

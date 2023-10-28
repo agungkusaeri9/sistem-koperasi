@@ -10,15 +10,6 @@
         </li>
         @if (auth()->user()->role !== 'anggota')
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('pinjaman.index') }}">
-                    <span class="material-symbols-outlined mr-2">
-                        currency_exchange
-                    </span>
-                    <span class="menu-title">Pinjaman</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trk_pinjaman" aria-expanded="false"
                     aria-controls="trk_pinjaman">
                     <span class="material-symbols-outlined mr-2">
@@ -196,5 +187,13 @@
                 </div>
             </li>
         @endif
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('panduan.index') }}">
+                <span class="material-symbols-outlined mr-2">
+                    help
+                </span>
+                <span class="menu-title">Panduan Pengguna</span>
+            </a>
+        </li>
     </ul>
 </nav>
