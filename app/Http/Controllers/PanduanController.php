@@ -12,7 +12,7 @@ class PanduanController extends Controller
         if (auth()->user()->role === 'anggota') {
             return view('pages.panduan.anggota', compact('title'));
         } else {
-            return view('pages.panduan.anggota', compact('title'));
+            return view('pages.panduan.admin', compact('title'));
         }
     }
 }

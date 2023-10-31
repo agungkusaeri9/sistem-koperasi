@@ -17,10 +17,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // jalankan setiap tanggal 1, jam 00 malam
-        $schedule->command('buat-tagihan-simpanan-perbulan:cron')->monthly();
+        // $schedule->command('buat-tagihan-simpanan-perbulan:cron')->monthly();
 
-        // jalankan setiap hari jam 00
-        $schedule->command('angsuranPinjamanOtomatisUpdate:cron')->daily();
+        // // jalankan setiap hari jam 00
+        // $schedule->command('angsuranPinjamanOtomatisUpdate:cron')->daily();
+
+        // contoh jalanin setiap menit
+        $schedule->command('buat-tagihan-simpanan-perbulan:cron')->everyMinute();
+        $schedule->command('angsuranPinjamanOtomatisUpdate:cron')->everyMinute();
     }
 
     /**

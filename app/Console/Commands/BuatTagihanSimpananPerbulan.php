@@ -70,7 +70,7 @@ class BuatTagihanSimpananPerbulan extends Command
                         'uuid' => \Str::uuid(),
                         'status_pencairan' => 0,
                         'status' => 2,
-                        'metode_pembayaran' => $metode_pembayaran_potong_gaji->id ?? NULL
+                        'metode_pembayaran_id' => $metode_pembayaran_potong_gaji->id
                     ]);
 
                     // Create Simpanan SHR
@@ -84,7 +84,7 @@ class BuatTagihanSimpananPerbulan extends Command
                         'uuid' => \Str::uuid(),
                         'status_pencairan' => 0,
                         'status' => 2,
-                        'metode_pembayaran' => $metode_pembayaran_potong_gaji->id ?? NULL
+                        'metode_pembayaran_id' => $metode_pembayaran_potong_gaji->id
                     ]);
                 }
             }

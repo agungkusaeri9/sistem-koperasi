@@ -35,9 +35,9 @@ class AngsuranPinjamanOtomatisUpdate extends Command
         // $tanggal_sekarang = Carbon::now()->translatedFormat('Y-m-d');
         // $bulan_sekarang = Carbon::now()->translatedFormat('m');
         // $tahun_sekarang = Carbon::now()->translatedFormat('Y');
-        $tanggal_sekarang = 25;
-        $bulan_sekarang = 1;
-        $tahun_sekarang = 2024;
+        $tanggal_sekarang = 2023-11-27;
+        $bulan_sekarang = 11;
+        $tahun_sekarang = 2023;
         $data_angsuran_pinjaman = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($tanggal_sekarang) {
             $q->whereHas('lama_angsuran', function ($lm) {
                 $lm->where('jenis', 'Jangka Pendek');
