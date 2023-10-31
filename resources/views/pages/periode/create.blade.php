@@ -68,7 +68,8 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='nominal_simpanan_shr' class='mb-2'>Nominal Simpanan SHR</label>
+                            <label for='nominal_simpanan_shr' class='mb-2'>Nominal Simpanan SHR <span
+                                    class="text-danger">*</span></label>
                             <input type='number' name='nominal_simpanan_shr'
                                 class='form-control @error('nominal_simpanan_shr') is-invalid @enderror'
                                 value='{{ old('nominal_simpanan_shr') }}'>
@@ -79,7 +80,8 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='nominal_simpanan_wajib' class='mb-2'>Nominal Simpanan Wajib</label>
+                            <label for='nominal_simpanan_wajib' class='mb-2'>Nominal Simpanan Wajib <span
+                                    class="text-danger">*</span></label>
                             <input type='number' name='nominal_simpanan_wajib'
                                 class='form-control @error('nominal_simpanan_wajib') is-invalid @enderror'
                                 value='{{ old('nominal_simpanan_wajib') }}'>

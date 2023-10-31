@@ -143,4 +143,37 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // panduan
     Route::get('panduan', [PanduanController::class, 'index'])->name('panduan.index');
+
+    // panduan master data pegawai
+    Route::get('panduan/master-data-pegawai', [PanduanController::class, 'master_data_pegawai'])->name('panduan.master-data-pegawai');
+
+    // panduan master data metode-pembayaran
+    Route::get('panduan/master-data-metode-pembayaran', [PanduanController::class, 'master_data_metode_pembayaran'])->name('panduan.master-data-metode-pembayaran');
+
+    // panduan master data jabatan
+    Route::get('panduan/master-data-jabatan', [PanduanController::class, 'master_data_jabatan'])->name('panduan.master-data-jabatan');
+
+    // panduan master data agama
+    Route::get('panduan/master-data-agama', [PanduanController::class, 'master_data_agama'])->name('panduan.master-data-agama');
+
+    // panduan master data periode
+    Route::get('panduan/master-data-periode', [PanduanController::class, 'master_data_periode'])->name('panduan.master-data-periode');
+
+    // panduan master data lama-angsuran
+    Route::get('panduan/master-data-lama-angsuran', [PanduanController::class, 'master_data_lama_angsuran'])->name('panduan.master-data-lama-angsuran');
+
+    // panduan pinjaman
+    Route::get('panduan/pinjaman', [PanduanController::class, 'pinjaman'])->name('panduan.pinjaman');
+
+    // panduan dashboard anggota
+    Route::get('panduan/dashboard-anggota', [PanduanController::class, 'dashboard_anggota'])->name('panduan.dashboard-anggota');
+
+    // panduan pinjaman anggota
+    Route::get('panduan/pinjaman-anggota', [PanduanController::class, 'pinjaman_anggota'])->name('panduan.pinjaman-anggota');
+
+    // panduan simpanan-wajib anggota
+    Route::get('panduan/simpanan-wajib-anggota', [PanduanController::class, 'simpanan_wajib_anggota'])->name('panduan.simpanan-wajib-anggota');
+
+    // panduan simpanan-shr anggota
+    Route::get('panduan/simpanan-shr-anggota', [PanduanController::class, 'simpanan_shr_anggota'])->name('panduan.simpanan-shr-anggota');
 });
