@@ -90,68 +90,7 @@ class PinjamanAngsuranController extends Controller
         } catch (\Throwable $th) {
             throw $th;
             DB::rollBack();
-            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('error', 'Status Angsuran gagal diupdate.');
-        }
-    }
-
-    public function bayar($kode_pinjaman, $pinjaman_angsuran_id)
-    {
-        $item = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($kode_pinjaman) {
-            $q->where([
-                'kode' => $kode_pinjaman,
-                'anggota_id' => auth()->user()->anggota->id
-            ]);
-        })->where('id', $pinjaman_angsuran_id)->firstOrFail();
-
-        // jika angsuran status nya bukan bayar, maka alihkan ke detail pinjaman
-        if ($item->status == 2) {
-            return redirect()->route('pinjaman.show', $item->pinjaman->kode);
-        }
-
-        return view('pages.pinjaman-angsuran.bayar', [
-            'title' => 'Bayar angsuran ' . $item->pinjaman->kode,
-            'item' => $item,
-            'data_metode_pembayaran' => MetodePembayaran::bySistem()->orderBy('nama', 'ASC')->get()
-        ]);
-    }
-
-    public function proses_bayar(WhatsappService $whatsappService, $kode_pinjaman, $pinjaman_angsuran_id)
-    {
-        $metode_pembayaran = MetodePembayaran::findOrFail(request('metode_pembayaran_id'));
-        request()->validate([
-            'metode_pembayaran_id' => ['required', 'numeric'],
-            'bukti_pembayaran' => [Rule::when($metode_pembayaran->nomor != NULL, ['required', 'image', 'mimes:jpg,jpeg,png,svg', 'max:2048'])]
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $item = PinjamanAngsuran::whereHas('pinjaman', function ($q) use ($kode_pinjaman) {
-                $q->where([
-                    'kode' => $kode_pinjaman,
-                    'anggota_id' => auth()->user()->anggota->id
-                ]);
-            })->where('id', $pinjaman_angsuran_id)->firstOrFail();
-
-            // hapus gambar/bukti jika sebelumnya ada
-            if ($item->bukti_pembayaran) {
-                Storage::disk('public')->delete($item->bukti_pembayaran);
-            }
-
-            $item->update([
-                'metode_pembayaran_id' => request('metode_pembayaran_id'),
-                'bukti_pembayaran' => request()->file('bukti_pembayaran') ? request()->file('bukti_pembayaran')->store('angsuran/bukti-pembayaran', 'public') : NULL,
-                'status' => 1
-            ]);
-
-            // kirim notifikasi ke admin
-            $whatsappService->admin_bukti_pembayaran_angsuran($pinjaman_angsuran_id);
-
-            DB::commit();
-            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('success', 'Bukti pembayaran berhasil diupload. Dimohon tunggu admin untuk memverifikasi pembayaran.');
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('error', $th->getMessage());
+            return redirect()->route('pinjaman.show', $item->pinjaman->kode)->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

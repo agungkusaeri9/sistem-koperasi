@@ -60,7 +60,7 @@ class PeriodeController extends Controller
             return redirect()->route('periode.index')->with('success', 'Periode berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('periode.index')->with('error', $th->getMessage());
+            return redirect()->route('periode.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -108,7 +108,7 @@ class PeriodeController extends Controller
             return redirect()->route('periode.index')->with('success', 'Periode berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('periode.index')->with('error', $th->getMessage());
+            return redirect()->route('periode.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -123,7 +123,7 @@ class PeriodeController extends Controller
             return redirect()->route('periode.index')->with('success', 'Periode berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('periode.index')->with('error', $th->getMessage());
+            return redirect()->route('periode.index')->with('error', 'Data Tidak Bisa Dihapus!');
         }
     }
 

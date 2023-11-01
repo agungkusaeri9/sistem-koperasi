@@ -49,7 +49,7 @@ class LamaAngsuranController extends Controller
             return redirect()->route('lama-angsuran.index')->with('success', 'Lama Angsuran berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('lama-angsuran.index')->with('error', $th->getMessage());
+            return redirect()->route('lama-angsuran.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -97,7 +97,7 @@ class LamaAngsuranController extends Controller
             return redirect()->route('lama-angsuran.index')->with('success', 'Lama Angsuran berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('lama-angsuran.index')->with('error', $th->getMessage());
+            return redirect()->route('lama-angsuran.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -112,7 +112,7 @@ class LamaAngsuranController extends Controller
             return redirect()->route('lama-angsuran.index')->with('success', 'Lama Angsuran berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('lama-angsuran.index')->with('error', $th->getMessage());
+            return redirect()->route('lama-angsuran.index')->with('error', 'Data Tidak Dapat Dihapus!');
         }
     }
 }

@@ -59,10 +59,6 @@
                             </li>
                         @endif
                         <li class="list-item mb-3 d-flex justify-content-between">
-                            <span class="font-weight-bold">Metode Pencairan</span>
-                            <span>{{ $item->met_pencairan ? $item->met_pencairan->getFull() : '-' }}</span>
-                        </li>
-                        <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Tanggal Pengajuan</span>
                             <span>
                                 {{ $item->created_at->translatedFormat('d-m-Y') }}
@@ -84,7 +80,7 @@
                             </span>
                         </li>
 
-                        @if ($item->status != 2 && auth()->user()->role !== 'anggota')
+                        @if ($item->status != 2 && auth()->user()->role !== 'anggota' && $item->status != 3)
                             <li class="list-item mb-3 d-flex justify-content-between">
                                 <span class="font-weight-bold">Aksi</span>
                                 <div>
@@ -111,10 +107,6 @@
                                                     Selesai</button>
                                             @endif
                                         @elseif($item->status == 3)
-                                            <button class="btn btn-sm btn-info btnStatusPinjaman"
-                                                data-id="{{ $item->id }}" data-status="1"
-                                                data-action="{{ route('pinjaman.update', $item->id) }}">Set
-                                                Disetujui</button>
                                         @endif
                                     </form>
                                 </div>

@@ -69,7 +69,7 @@ class PengaturanController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
+            return redirect()->back()->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

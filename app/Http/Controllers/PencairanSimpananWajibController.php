@@ -86,7 +86,6 @@ class PencairanSimpananWajibController extends Controller
                 'status' => 1,
                 'periode_id' => NULL,
                 'metode_pembayaran_id' => request('metode_pembayaran_id'),
-                'bukti_pencairan' => request()->file('bukti_pencairan') ? request()->file('bukti_pencairan')->store('simpanan-shr/bukti-pencairan', 'public') : NULL
             ]);
 
             // update simpanan ke sudah dicairkan
@@ -94,7 +93,7 @@ class PencairanSimpananWajibController extends Controller
                 'status_pencairan' => 1
             ]);
             // non aktifkan anggota
-            Anggota::findOrFail($anggota_id)->update([
+            Anggota::findOrFail($anggota_id)->user()->update([
                 'status' => 0
             ]);
 
@@ -107,78 +106,7 @@ class PencairanSimpananWajibController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            return redirect()->back()->with('error', $th->getMessage());
-        }
-    }
-
-    public function destroy($id)
-    {
-        $item = PencairanSimpanan::findOrFail($id);
-        if ($item->status == 1) {
-            return redirect()->back()->with('error', 'Pencairan Simpanan Wajib tidak bisa dihapus.');
-        }
-        $item->delete();
-        return redirect()->back()->with('success', 'Pencairan Simpanan Wajib berhasil dihapus.');
-    }
-
-    public function edit($id)
-    {
-        $item  = PencairanSimpanan::with('anggota')->findOrFail($id);
-        $data_metode_pembayaran = MetodePembayaran::where('anggota_id', $item->anggota->id)->get();
-        return view('pages.simpanan-wajib.pencairan.edit', [
-            'title' => 'Buat Pencairan Simpanan Wajib',
-            'item' => $item,
-            'data_metode_pembayaran' => $data_metode_pembayaran
-        ]);
-    }
-
-    public function pencairan_update($id)
-    {
-        request()->validate([
-            'metode_pembayaran_id' => ['required'],
-            'status' => ['required', 'in:0,1,2,3']
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $item = PencairanSimpanan::findOrFail($id);
-
-            // jika status gagal => 0, 2, 3
-            if ($item->status != 1) {
-                // jika status pencairan bukan sukses
-                if (request('status') == 1) {
-                    // jika pilihan = sukses
-                    // update status simpanan di simpanan anggota
-                    SimpananAnggota::jenisWajib()->where([
-                        'anggota_id' => $item->anggota_id
-                    ])->update([
-                        'status_pencairan' => 1
-                    ]);
-                }
-            } elseif ($item->status == 1) {
-                if (request('status') != 1) {
-                    // jika pilihan = sukses
-                    // update status simpanan di simpanan anggota
-                    SimpananAnggota::jenisWajib()->where([
-                        'anggota_id' => $item->anggota_id
-                    ])->update([
-                        'status_pencairan' => 0
-                    ]);
-                }
-            }
-
-            $item->update([
-                'metode_pembayaran_id' => request('metode_pembayaran_id'),
-                'status' => request('status'),
-                'bukti_pencairan' => request()->file('bukti_pencairan') ? request()->file('bukti_pencairan')->store('simpanan-shr/bukti-pencairan', 'public') : $item->bukti_pencairan
-            ]);
-
-            DB::commit();
-            return redirect()->route('pencairan-simpanan-wajib.index')->with('success', 'Pencairan Simpanan Wajib berhasil di update');
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-            return redirect()->route('pencairan-simpanan-wajib.index')->with('error', $th->getMessage());
+            return redirect()->back()->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

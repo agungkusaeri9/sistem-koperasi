@@ -101,7 +101,7 @@ class SimpananWajibController extends Controller
             return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
+            return redirect()->route('simpanan-wajib.index')->with('error',  'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -147,7 +147,7 @@ class SimpananWajibController extends Controller
             return redirect()->route('simpanan-wajib.index')->with('success', 'Simpanan Wajib berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('simpanan-wajib.index')->with('error', $th->getMessage());
+            return redirect()->route('simpanan-wajib.index')->with('error',  'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 

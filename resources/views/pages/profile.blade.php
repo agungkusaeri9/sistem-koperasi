@@ -8,7 +8,7 @@
                     <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class='form-group mb-3'>
-                            <label for='avatar' class='mb-2'>Avatar</label>
+                            <label for='avatar' class='mb-2'>Gambar</label>
                             <input type='file' name='avatar' class='form-control @error('avatar') is-invalid @enderror'
                                 value='{{ old('avatar') }}'>
                             @error('avatar')
@@ -18,7 +18,7 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='name' class='mb-2'>Name</label>
+                            <label for='name' class='mb-2'>Nama</label>
                             <input type='text' name='name' class='form-control @error('name') is-invalid @enderror'
                                 value='{{ auth()->user()->name ?? old('name') }}'>
                             @error('name')
@@ -30,7 +30,7 @@
                         <div class='form-group mb-3'>
                             <label for='email' class='mb-2'>Email</label>
                             <input type='text' name='email' class='form-control @error('email') is-invalid @enderror'
-                                value='{{ auth()->user()->email ?? old('email') }}'>
+                                value='{{ auth()->user()->email ?? old('email') }}' readonly>
                             @error('email')
                                 <div class='invalid-feedback'>
                                     {{ $message }}

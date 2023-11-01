@@ -75,7 +75,7 @@ class AnggotaController extends Controller
             return redirect()->route('anggota.index')->with('success', 'Anggota berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('anggota.index')->with('error', $th->getMessage());
+            return redirect()->route('anggota.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -146,7 +146,7 @@ class AnggotaController extends Controller
             return redirect()->route('anggota.index')->with('success', 'Anggota berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('anggota.index')->with('error', $th->getMessage());
+            return redirect()->route('anggota.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -165,7 +165,7 @@ class AnggotaController extends Controller
             return redirect()->route('anggota.index')->with('success', 'Anggota berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('anggota.index')->with('error', $th->getMessage());
+            return redirect()->route('anggota.index')->with('error', 'Data Tidak Dapat Dihapus!');
         }
     }
 

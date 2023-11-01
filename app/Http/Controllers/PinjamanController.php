@@ -49,8 +49,7 @@ class PinjamanController extends Controller
     {
         return view('pages.pinjaman.create', [
             'title' => 'Buat Pengangajuan Pinjaman',
-            'data_lama_angsuran' => LamaAngsuran::orderBy('durasi', 'ASC')->get(),
-            'data_metode_pembayaran' => MetodePembayaran::byAnggota()->get()
+            'data_lama_angsuran' => LamaAngsuran::orderBy('durasi', 'ASC')->get()
         ]);
     }
 
@@ -107,7 +106,8 @@ class PinjamanController extends Controller
                 'bulan_mulai' => $bulan_mulai,
                 'tahun_mulai' => $tahun_angsuran,
                 'bulan_sampai' => $bulan_akhir,
-                'tahun_sampai' => $tahun_sampai
+                'tahun_sampai' => $tahun_sampai,
+                'uuid' => \Str::uuid()
             ]);
 
 
@@ -117,19 +117,19 @@ class PinjamanController extends Controller
             DB::commit();
             return redirect()->route('pinjaman.index')->with('success', 'Pengajuan pinjaman berhasil dilakukan. Mohon tunggu beberapa waktu untuk peninjauan admin.');
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             DB::rollBack();
-            return redirect()->back()->with('error', 'Pengajuan pinjaman anda ditolak admin.');
+            return redirect()->back()->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
-    public function show($kode)
+    public function show($uuid)
     {
         if (auth()->user()->role !== 'anggota') {
-            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran', 'met_pencairan'])->where('kode', $kode)->firstOrFail();
+            $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran', 'met_pencairan'])->where('uuid', $uuid)->firstOrFail();
         } else {
             $item = Pinjaman::with(['anggota', 'angsuran', 'lama_angsuran', 'met_pencairan'])->where([
-                'kode' => $kode,
+                'uuid' => $uuid,
                 'anggota_id' => auth()->user()->anggota->id
             ])->firstOrFail();
         }
@@ -197,26 +197,13 @@ class PinjamanController extends Controller
             }
             $item->status = $status;
             $item->save();
-
-            // notifikasi ke anggota
-            // if ($status == 1) {
-            //     // disetujui
-            //     $whatsappService->anggota_pinjaman_disetujui($item->id);
-            // } elseif ($status == 3) {
-            //     // ditolak
-            //     $whatsappService->anggota_pinjaman_ditolak($item->id);
-            // } elseif ($status == 2) {
-            //     // lunas/selesai
-            //     $whatsappService->anggota_pinjaman_selesai($item->id);
-            // }
-
             DB::commit();
 
             return redirect()->back()->with('success', 'Pinjaman berhasil diupdate.');
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             DB::rollBack();
-            return redirect()->back()->with('error', 'Pinjaman gagal diupdate.');
+            return redirect()->back()->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -227,8 +214,16 @@ class PinjamanController extends Controller
         if ($item->status == 1 || $item->status == 2) {
             return redirect()->back()->with('warning', 'Pinjaman tidak bisa dihapus!');
         }
-        $item->delete();
-        return redirect()->back()->with('success', 'Pinjaman berhasil dihapus.');
+        DB::beginTransaction();
+
+        try {
+            $item->delete();
+            return redirect()->back()->with('success', 'Pinjaman berhasil dihapus.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->with('success', 'Data Tidak Bisa Dihapus!.');
+        }
     }
 
     public function export_pdf($kode)
@@ -237,7 +232,7 @@ class PinjamanController extends Controller
         $pdf = Pdf::loadView('pages.pinjaman.export-pdf', [
             'item' => $item
         ]);
-        $fileName = "Pinjaman-" . $item->kode . '.pdf';
+        $fileName = "Pinjaman-" . $item->uuid . '.pdf';
         // return $pdf->stream();
         return $pdf->download($fileName);
     }
@@ -275,7 +270,7 @@ class PinjamanController extends Controller
             return redirect()->route('pinjaman.show', $pinjaman->kode)->with('success', 'Status Potongan Awal berhasil diupdate.');
         } catch (\Throwable $th) {
             throw $th;
-            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('error', $th->getMessage());
+            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

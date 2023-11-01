@@ -53,7 +53,7 @@ class PegawaiController extends Controller
             return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('pegawai.index')->with('error', $th->getMessage());
+            return redirect()->route('pegawai.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -106,7 +106,7 @@ class PegawaiController extends Controller
             return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('pegawai.index')->with('error', $th->getMessage());
+            return redirect()->route('pegawai.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -121,7 +121,7 @@ class PegawaiController extends Controller
             return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('pegawai.index')->with('error', $th->getMessage());
+            return redirect()->route('pegawai.index')->with('error', 'Data Tidak Dapat Dihapu!');
         }
     }
 }

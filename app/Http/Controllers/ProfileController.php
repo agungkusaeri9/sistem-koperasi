@@ -20,7 +20,6 @@ class ProfileController extends Controller
         $user = auth()->user();
         request()->validate([
             'name' => ['required', 'min:3'],
-            'email' => ['required', 'unique:users,email,' . $user->id . ''],
             'role' => ['required'],
             'avatar' => ['image', 'mimes:jpg,jpeg,png,svg', 'max:2048']
         ]);
@@ -33,7 +32,7 @@ class ProfileController extends Controller
 
         DB::beginTransaction();
         try {
-            $data = request()->only(['name', 'email']);
+            $data = request()->only(['name']);
             request('password') ? $data['password'] = bcrypt(request('password')) : NULL;
             request()->file('avatar') ? $data['avatar'] = request()->file('avatar')->store('users', 'public') : NULL;
             $user->update($data);
@@ -42,7 +41,7 @@ class ProfileController extends Controller
             return redirect()->route('profile.index')->with('success', 'Profile berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw $th;
+            return redirect()->route('profile.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

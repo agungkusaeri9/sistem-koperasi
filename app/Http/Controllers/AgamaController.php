@@ -46,7 +46,7 @@ class AgamaController extends Controller
             return redirect()->route('agama.index')->with('success', 'Agama berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('agama.index')->with('error', $th->getMessage());
+            return redirect()->route('agama.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -74,7 +74,7 @@ class AgamaController extends Controller
             return redirect()->route('agama.index')->with('success', 'Agama berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('agama.index')->with('error', $th->getMessage());
+            return redirect()->route('agama.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -89,7 +89,7 @@ class AgamaController extends Controller
             return redirect()->route('agama.index')->with('success', 'Agama berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('agama.index')->with('error', $th->getMessage());
+            return redirect()->route('agama.index')->with('error', 'Data Tidak Dapat Dihapus!');
         }
     }
 }

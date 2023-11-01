@@ -102,7 +102,7 @@ class SimpananShrController extends Controller
             return redirect()->route('simpanan-shr.index')->with('success', 'Simpanan SHR berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('simpanan-shr.index')->with('error', $th->getMessage());
+            return redirect()->route('simpanan-shr.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -149,7 +149,7 @@ class SimpananShrController extends Controller
             return redirect()->route('simpanan-shr.index')->with('success', 'Simpanan SHR berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('simpanan-shr.index')->with('error', $th->getMessage());
+            return redirect()->route('simpanan-shr.index')->with('error',  'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 

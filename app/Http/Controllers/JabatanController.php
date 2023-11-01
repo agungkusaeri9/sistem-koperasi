@@ -47,7 +47,7 @@ class JabatanController extends Controller
             return redirect()->route('jabatan.index')->with('success', 'Jabatan berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('jabatan.index')->with('error', $th->getMessage());
+            return redirect()->route('jabatan.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -75,7 +75,7 @@ class JabatanController extends Controller
             return redirect()->route('jabatan.index')->with('success', 'Jabatan berhasil diupdate.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('jabatan.index')->with('error', $th->getMessage());
+            return redirect()->route('jabatan.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 
@@ -90,7 +90,7 @@ class JabatanController extends Controller
             return redirect()->route('jabatan.index')->with('success', 'Jabatan berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('jabatan.index')->with('error', $th->getMessage());
+            return redirect()->route('jabatan.index')->with('error', 'Data Tidak Dapat Dihapus');
         }
     }
 }

@@ -37,7 +37,8 @@
                                 class="form-control @error('lama_angsuran_id') is-invalid @enderror">
                                 <option value="" selected>Pilih Lama Angsuran</option>
                                 @foreach ($data_lama_angsuran as $lama_angsuran)
-                                    <option value="{{ $lama_angsuran->id }}">{{ $lama_angsuran->durasi . ' bulan' }}
+                                    <option value="{{ $lama_angsuran->id }}">
+                                        {{ $lama_angsuran->durasi . ' bulan' . '( ' . $lama_angsuran->jenis . ' )' }}
                                     </option>
                                 @endforeach
                             </select>

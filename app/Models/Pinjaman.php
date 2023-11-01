@@ -94,7 +94,11 @@ class Pinjaman extends Model
         }
 
         if ($angsuran_lunas == $total) {
-            return true;
+            if ($this->status_potongan_awal == 0) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
             return false;
         }

@@ -57,7 +57,7 @@
                                     <td>{{ formatTanggalBulanTahun($item->created_at) }}</td>
                                     <td>{!! $item->status() !!}</td>
                                     <td>
-                                        <a href="{{ route('pinjaman.show', $item->kode) }}"
+                                        <a href="{{ route('pinjaman.show', $item->uuid) }}"
                                             class="btn btn-sm py-2 btn-warning">Detail</a>
                                         @if (auth()->user()->role !== 'anggota')
                                             <form
