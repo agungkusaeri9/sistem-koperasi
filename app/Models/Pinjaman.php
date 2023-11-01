@@ -9,7 +9,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Pinjaman extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
     protected $table = 'pinjaman';
     protected $guarded = ['id'];
 

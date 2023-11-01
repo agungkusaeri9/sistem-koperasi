@@ -2,78 +2,78 @@
 @section('content')
     <div class="row mb-4">
         <div class="col-md-12">
-            <h3>Panduan Admin</h3>
+            <h3>Panduan Pengguna Admin</h3>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-pegawai') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-pegawai') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Pegawai</p>
+                        <p class="text-center text-white text-white">Manajemen Pegawai</p>
                     </div>
-                </div>
+            </div>
             </a>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-metode-pembayaran') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-metode-pembayaran') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Metode Pembayaran</p>
+                        <p class="text-center text-white">Manajemen Metode Pembayaran</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-jabatan') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-jabatan') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Jabatan</p>
+                        <p class="text-center text-white">Manajemen Jabatan</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-agama') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-agama') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Agama</p>
+                        <p class="text-center text-white">Manajemen Agama</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-periode') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-periode') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Periode</p>
+                        <p class="text-center text-white">Manajemen Periode</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.master-data-lama-angsuran') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.master-data-lama-angsuran') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Lama Angsuran</p>
+                        <p class="text-center text-white">Manajemen Lama Angsuran</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
-        <div class="col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-4 stretch-card transparent">
-            <a href="{{ route('panduan.pinjaman') }}">
-                <div class="card card-dark-blue">
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.pinjaman') }}">
                     <div class="card-body">
-                        <p class="text-center">Manajemen Pinjaman</p>
+                        <p class="text-center text-white">Manajemen Pinjaman</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
     </div>
 @endsection

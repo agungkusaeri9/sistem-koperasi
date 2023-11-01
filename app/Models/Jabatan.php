@@ -9,15 +9,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Jabatan extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
     protected $table = 'jabatan';
     protected $guarded = ['id'];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->setDescriptionForEvent(fn (string $eventName) => "The " . \Str::ucfirst(auth()->user()->name) . " {$eventName} jabatan")
-            ->logOnly(['nama'])
-            ->useLogName('Jabatan');
-    }
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //         ->setDescriptionForEvent(fn (string $eventName) => "The " . \Str::ucfirst(auth()->user()->name) . " {$eventName} jabatan")
+    //         ->logOnly(['nama'])
+    //         ->useLogName('Jabatan');
+    // }
 }
