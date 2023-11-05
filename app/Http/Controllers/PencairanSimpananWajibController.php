@@ -93,8 +93,8 @@ class PencairanSimpananWajibController extends Controller
                 'status_pencairan' => 1
             ]);
             // non aktifkan anggota
-            Anggota::findOrFail($anggota_id)->user()->update([
-                'status' => 0
+            Anggota::findOrFail($anggota_id)->user->update([
+                'is_avtive' => 0
             ]);
 
             DB::commit();
@@ -104,7 +104,7 @@ class PencairanSimpananWajibController extends Controller
 
             return redirect()->route('pencairan-simpanan-wajib.index')->with('success', 'Pencairan simpanan wajib berhasil ditambahkan.');
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             DB::rollBack();
             return redirect()->back()->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }

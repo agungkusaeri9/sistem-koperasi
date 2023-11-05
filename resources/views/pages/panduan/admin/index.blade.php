@@ -75,6 +75,46 @@
                 </a>
             </div>
         </div>
+
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.angsuran-pinjaman') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Manajemen Angsuran Pinjaman</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.simpanan-wajib') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Manajemen Simpanan Wajib</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.simpanan-shr') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Manajemen Simpanan SHR</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.pencairan-simpanan') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Manajemen Pencairan Simpanan</p>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 @endsection
 <x-Sweetalert />

@@ -85,7 +85,7 @@
                                     @if (auth()->user()->role !== 'anggota')
                                         <td>
                                             <a href="{{ route('pinjaman-angsuran.edit', $item->uuid) }}"
-                                                class="btn btn-sm py-2 btn-warning">Edit</a>
+                                                class="btn btn-sm py-2 btn-info">Edit</a>
                                         </td>
                                     @endif
                                 </tr>

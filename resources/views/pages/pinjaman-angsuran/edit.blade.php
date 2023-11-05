@@ -67,7 +67,7 @@
                             @enderror
                         </div>
                         <div class="form-group text-right">
-                            <a href="{{ route('pinjaman.show', $item->pinjaman->kode) }}" class="btn btn-warning">Batal</a>
+                            <a href="{{ route('pinjaman-angsuran.index') }}" class="btn btn-warning">Batal</a>
                             <button class="btn btn-primary">Update Data</button>
                         </div>
                     </form>

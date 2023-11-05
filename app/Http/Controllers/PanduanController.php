@@ -59,6 +59,30 @@ class PanduanController extends Controller
         return view('pages.panduan.admin.pinjaman', compact('title'));
     }
 
+    public function angsuran_pinjaman()
+    {
+        $title = 'Panduan Manajemen Angsuran Pinjaman';
+        return view('pages.panduan.admin.angsuran-pinjaman', compact('title'));
+    }
+
+    public function simpanan_wajib()
+    {
+        $title = 'Panduan Manajemen Simpanan Wajib';
+        return view('pages.panduan.admin.simpanan-wajib', compact('title'));
+    }
+
+    public function simpanan_shr()
+    {
+        $title = 'Panduan Manajemen Simpanan SHR';
+        return view('pages.panduan.admin.simpanan-shr', compact('title'));
+    }
+
+    public function pencairan_simpanan()
+    {
+        $title = 'Panduan Manajemen Pencairan Simpanan';
+        return view('pages.panduan.admin.pencairan-simpanan', compact('title'));
+    }
+
 
     public function dashboard_anggota()
     {

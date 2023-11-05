@@ -267,10 +267,10 @@ class PinjamanController extends Controller
             ]);
             DB::commit();
 
-            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('success', 'Status Potongan Awal berhasil diupdate.');
+            return redirect()->route('pinjaman.show', $pinjaman->uuid)->with('success', 'Status Potongan Awal berhasil diupdate.');
         } catch (\Throwable $th) {
             throw $th;
-            return redirect()->route('pinjaman.show', $pinjaman->kode)->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
+            return redirect()->route('pinjaman.show', $pinjaman->uuid)->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }
     }
 }

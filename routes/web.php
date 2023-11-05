@@ -164,6 +164,19 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 
     // panduan pinjaman
     Route::get('panduan/pinjaman', [PanduanController::class, 'pinjaman'])->name('panduan.pinjaman');
+    // panduan master data lama-angsuran
+
+    // panduan angsuran-pinjaman
+    Route::get('panduan/angsuran-pinjaman', [PanduanController::class, 'angsuran_pinjaman'])->name('panduan.angsuran-pinjaman');
+
+    // panduan simpanan-wajib
+    Route::get('panduan/simpanan-wajib', [PanduanController::class, 'simpanan_wajib'])->name('panduan.simpanan-wajib');
+
+    // panduan simpanan-shr
+    Route::get('panduan/simpanan-shr', [PanduanController::class, 'simpanan_shr'])->name('panduan.simpanan-shr');
+
+     // panduan pencairan-simpanan
+     Route::get('panduan/pencairan-simpanan', [PanduanController::class, 'pencairan_simpanan'])->name('panduan.pencairan-simpanan');
 
     // panduan dashboard anggota
     Route::get('panduan/dashboard-anggota', [PanduanController::class, 'dashboard_anggota'])->name('panduan.dashboard-anggota');
