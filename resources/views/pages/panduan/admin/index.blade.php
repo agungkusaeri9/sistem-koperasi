@@ -68,6 +68,16 @@
 
         <div class="col mb-4 stretch-card transparent">
             <div class="card card-dark-blue">
+                <a href="{{ route('panduan.anggota') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Manajemen Anggota</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
                 <a href="{{ route('panduan.pinjaman') }}">
                     <div class="card-body">
                         <p class="text-center text-white">Manajemen Pinjaman</p>
@@ -111,6 +121,24 @@
                 <a href="{{ route('panduan.pencairan-simpanan') }}">
                     <div class="card-body">
                         <p class="text-center text-white">Manajemen Pencairan Simpanan</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.laporan') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Laporan</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col mb-4 stretch-card transparent">
+            <div class="card card-dark-blue">
+                <a href="{{ route('panduan.pengaturan') }}">
+                    <div class="card-body">
+                        <p class="text-center text-white">Pengaturan Web</p>
                     </div>
                 </a>
             </div>

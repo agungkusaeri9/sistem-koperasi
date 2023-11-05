@@ -129,13 +129,13 @@ class PencairanSimpananShrController extends Controller
             ]);
 
             // notifikasi ke anggota
-            $whatsappService->anggota_pencairan_simpanan_shr($pencairan->id);
+            // $whatsappService->anggota_pencairan_simpanan_shr($pencairan->id);
             DB::commit();
 
 
             return redirect()->route('pencairan-simpanan-shr.index')->with('success', 'Pencairan Simpanan SHR berhasil dibuat.');
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             DB::rollBack();
             return redirect()->route('pencairan-simpanan-shr.index')->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
         }

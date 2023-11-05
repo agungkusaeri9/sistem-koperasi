@@ -36,7 +36,8 @@
                                 </li>
                                 <li>Selanjutnya muncul data Simpanan Wajib.</li>
                                 <li>Tekan tombol buat pencairan.</li>
-                                <li>Isi formulir seperti pilih anggota (Wajib), pilih metode pencairan (Wajib) dan muncul informasi saldo simpanan wajib.</li>
+                                <li>Isi formulir seperti pilih anggota (Wajib), pilih metode pencairan (Wajib) dan muncul
+                                    informasi saldo simpanan wajib.</li>
                                 <li>Kemudian tekan tombol Buat Pencairan</li>
                             </ol>
                         </div>
@@ -55,6 +56,21 @@
                         </div>
                     </div>
                 </div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h4 class="card-title">Memfilter Data Pencairan Simpanan SHR</h4>
+                            <ol>
+                                <li>Buka menu "Pencairan Dana" di dashboard Anda.</li>
+                                <li>Pilih sub menu Simpanan SHR
+                                </li>
+                                <li>Selanjutnya muncul data Pencairan Simpanan SHR.</li>
+                                <li>Pilih Anggota dan Periode kemudian tekan tombol filter.</li>
+                                <li>Selanjutnya muncul data Pencairan Simpanan SHR yang sudah di filterisasi.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card mb-2">
                     <div class="card-body">
@@ -66,7 +82,8 @@
                                 </li>
                                 <li>Selanjutnya muncul data Simpanan SHR.</li>
                                 <li>Tekan tombol buat pencairan.</li>
-                                <li>Isi formulir seperti pilih anggota (Wajib), pilih periode (Wajib), pilih metode pencairan (Wajib) dan muncul informasi saldo simpanan SHR.</li>
+                                <li>Isi formulir seperti pilih anggota (Wajib), pilih periode (Wajib), pilih metode
+                                    pencairan (Wajib) dan muncul informasi saldo simpanan SHR.</li>
                                 <li>Kemudian tekan tombol Buat Pencairan</li>
                             </ol>
                         </div>

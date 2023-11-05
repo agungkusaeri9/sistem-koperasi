@@ -108,6 +108,11 @@
                     <td style="text-align: center">{!! $simpanan->status() !!}</td>
                 </tr>
             @endforeach
+            <tr>
+                <th colspan="5" class="text-center font-weight-bold">Total</th>
+                <th class="text-left">{{ formatRupiah($items->sum('nominal')) }}</th>
+                <th></th>
+            </tr>
         </tbody>
     </table>
 </body>

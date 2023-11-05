@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Buat Pencairan Simpanan SHR</h4>
-                    <form action="{{ route('pencairan-simpanan-shr.index') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('pencairan-simpanan-shr.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class='form-group mb-3'>
                             <label for='anggota_id' class='mb-2'>Anggota <span class="text-danger">*</span></label>

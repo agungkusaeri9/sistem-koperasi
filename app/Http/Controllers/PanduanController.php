@@ -106,4 +106,22 @@ class PanduanController extends Controller
         $title = 'Panduan Simpanan Hari Raya';
         return view('pages.panduan.anggota.simpanan-shr', compact('title'));
     }
+
+    public function laporan()
+    {
+        $title = 'Panduan Laporan';
+        return view('pages.panduan.admin.laporan', compact('title'));
+    }
+
+    public function anggota()
+    {
+        $title = 'Panduan Manajemen Anggota';
+        return view('pages.panduan.admin.anggota', compact('title'));
+    }
+
+    public function pengaturan()
+    {
+        $title = 'Panduan Update Pengaturan';
+        return view('pages.panduan.admin.pengaturan', compact('title'));
+    }
 }

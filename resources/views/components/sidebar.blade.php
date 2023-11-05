@@ -86,10 +86,10 @@
                             <a class="nav-link" href="{{ route('laporan.pinjaman.index') }}"> Pinjaman </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('laporan.simpanan-shr.index') }}"> Simpanan SHR </a>
+                            <a class="nav-link" href="{{ route('laporan.simpanan-wajib.index') }}"> Simpanan Wajib </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('laporan.simpanan-wajib.index') }}"> Simpanan Wajib </a>
+                            <a class="nav-link" href="{{ route('laporan.simpanan-shr.index') }}"> Simpanan SHR </a>
                         </li>
                     </ul>
                 </div>
