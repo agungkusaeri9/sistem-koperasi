@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lama_angsuran', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->integer('durasi');
             $table->integer('potongan_awal_persen');
             $table->integer('jasa_pinjaman_bulan_persen');
+            $table->enum('jenis', ['Jangka Pendek', 'Jangka Panjang'])->default('Jangka Pendek');
             $table->timestamps();
         });
     }

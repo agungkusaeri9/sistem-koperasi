@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pinjaman', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->uuid('uuid')->unique();
             $table->string('kode', 20)->unique();
-            $table->foreignId('anggota_id')->constrained('anggota');
+            $table->unsignedInteger('anggota_id');
             $table->integer('besar_pinjaman');
             $table->string('keperluan', 100);
-            $table->foreignId('lama_angsuran_id')->constrained('lama_angsuran');
+            $table->unsignedInteger('lama_angsuran_id');
             $table->integer('bulan_mulai');
             $table->integer('tahun_mulai');
             $table->integer('bulan_sampai');
@@ -27,9 +28,15 @@ return new class extends Migration
             $table->integer('angsuran_pokok_bulan');
             $table->integer('jasa_pinjaman_bulan');
             $table->integer('total_jumlah_angsuran_bulan');
+            $table->boolean('status_potongan_awal')->default(0);
+            $table->integer('total_bayar');
             $table->date('tanggal_diterima')->nullable();
-            $table->foreignId('diterima_oleh')->nullable()->constrained('users');
+            $table->unsignedInteger('diterima_oleh')->nullable();
             $table->integer('status')->default(0);
+
+            $table->foreign('anggota_id')->references('id')->on('anggota');
+            $table->foreign('lama_angsuran_id')->references('id')->on('lama_angsuran');
+            $table->foreign('diterima_oleh')->references('id')->on('users');
             $table->timestamps();
         });
     }

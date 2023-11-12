@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaturan', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('nama_situs', 50);
             $table->string('email', 50)->nullable();
             $table->string('nomor_telepon', 50)->nullable();

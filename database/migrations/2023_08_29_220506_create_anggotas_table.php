@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('anggota', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('nama', 30);
             $table->string('nip', 20)->nullable()->unique();
             $table->string('jenis_kelamin', 20);
@@ -20,9 +20,13 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->text('alamat');
             $table->string('nomor_telepon', 20);
-            $table->foreignId('jabatan_id')->constrained('jabatan');
-            $table->foreignId('agama_id')->constrained('agama');
-            $table->foreignId('user_id')->constrained('users');
+            $table->unsignedInteger('jabatan_id');
+            $table->unsignedInteger('agama_id');
+            $table->unsignedInteger('user_id');
+
+            $table->foreign('jabatan_id')->references('id')->on('jabatan');
+            $table->foreign('agama_id')->references('id')->on('agama');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -12,14 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pinjaman_angsuran', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pinjaman_id')->constrained('pinjaman')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->increments('id');
+            $table->uuid('uuid')->unique();
+            $table->unsignedInteger('pinjaman_id');
             $table->integer('bulan');
             $table->integer('tahun');
             $table->date('tanggal_verifikasi')->nullable();
-            $table->string('bukti_pembayaran', 100)->nullable();
-            $table->foreignId('metode_pembayaran_id')->constrained('metode_pembayaran');
+            $table->unsignedInteger('metode_pembayaran_id')->nullable();
             $table->integer('status')->default(0);
+
+            $table->foreign('pinjaman_id')->references('id')->on('pinjaman');
+            $table->foreign('metode_pembayaran_id')->references('id')->on('metode_pembayaran');
             $table->timestamps();
         });
     }

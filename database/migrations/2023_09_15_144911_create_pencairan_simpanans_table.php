@@ -12,13 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pencairan_simpanan', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('jenis');
-            $table->foreignId('anggota_id')->constrained('anggota');
-            $table->foreignId('metode_pembayaran_id')->constrained('metode_pembayaran');
+            $table->unsignedInteger('anggota_id');
+            $table->unsignedInteger('metode_pembayaran_id')->nullable();
             $table->integer('nominal');
-            $table->string('bukti_pencairan', 100)->nullable();
             $table->integer('status')->default(0);
+            $table->unsignedInteger('periode_id')->nullable();
+
+            $table->foreign('anggota_id')->references('id')->on('anggota')->cascade('ondelete');
+            $table->foreign('metode_pembayaran_id')->references('id')->on('metode_pembayaran');
+            $table->foreign('periode_id')->references('id')->on('periode');
             $table->timestamps();
         });
     }

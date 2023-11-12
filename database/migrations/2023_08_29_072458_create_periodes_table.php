@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('periode', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->integer('bulan_awal');
             $table->integer('bulan_akhir');
             $table->integer('tahun_awal');
             $table->integer('tahun_akhir');
             $table->boolean('status')->default(0);
+            $table->integer('nominal_simpanan_shr')->default(0);
+            $table->integer('nominal_simpanan_wajib')->default(0);
             $table->timestamps();
         });
     }
