@@ -72,7 +72,12 @@
                                 </span>
                             </li>
                         @endif
-
+                        <li class="list-item mb-3 d-flex justify-content-between">
+                            <span class="font-weight-bold">Keterangan</span>
+                            <span>
+                                {{ $item->keterangan ?? '-' }}
+                            </span>
+                        </li>
                         <li class="list-item mb-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Status</span>
                             <span>
@@ -88,13 +93,13 @@
                                         @csrf
                                         @method('patch')
                                         @if ($item->status == 0)
+                                            <input type="text" name="type" value="disetujui" hidden>
                                             <button class="btn btn-sm btn-info btnStatusPinjaman"
                                                 data-id="{{ $item->id }}" data-status="1"
                                                 data-action="{{ route('pinjaman.update', $item->id) }}">Set
                                                 Disetujui</button>
-                                            <button class="btn btn-sm btn-danger btnStatusPinjaman"
-                                                data-id="{{ $item->id }}" data-status="3"
-                                                data-action="{{ route('pinjaman.update', $item->id) }}">Set
+                                            <button type="button" class="btn btn-sm btn-danger btnStatusPinjamanTolak"
+                                                data-id="{{ $item->id }}">Set
                                                 Ditolak</button>
                                         @elseif($item->status == 1)
                                             @if ($item->cekVerifikasiStatusAngsuran() == true)
@@ -214,11 +219,49 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="modalKeteranganDitolak" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Keterangan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class='form-group mb-3'>
+                        <label for='keterangan' class='mb-2'>Keterangan</label>
+                        <textarea id='keterangan' cols='30' rows='3'
+                            class='form-control @error('keterangan') is-invalid @enderror'>{{ old('keterangan') }}</textarea>
+                        @error('keterangan')
+                            <div class='invalid-feedback'>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btnSimpan">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 <x-Datatable />
 <x-Sweetalert />
+@push('styles')
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+@endpush
 @push('scripts')
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
     <script>
         // handle status pinjaman di klik
         $('body').on('click', '.btnStatusPinjaman', function(e) {
@@ -292,6 +335,58 @@
                     $('#formStatusAngsuran').attr('action', action);
                     $('#formStatusAngsuran').submit();
                 }
+            })
+        })
+
+        $('.btnStatusPinjamanTolak').on('click', function() {
+            let id = $(this).data('id');
+
+            $('#modalKeteranganDitolak').modal('show');
+
+            $('.btnSimpan').on('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: 'Anda akan menolak pinjaman tersebut!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Set Ditolak',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let keterangan = $('#keterangan').val();
+                        $.ajax({
+                            url: '{{ route('pinjaman.tolak') }}',
+                            type: 'POST',
+                            async: true,
+                            dataType: 'JSON',
+                            data: {
+                                keterangan,
+                                id
+                            },
+                            success: function(response) {
+                                if (response.status) {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'success',
+                                        title: 'Berhasil!',
+                                        text: response.message,
+                                        showConfirmButton: true,
+                                        timer: 4500
+                                    })
+                                    setInterval(() => {
+                                        location.reload();
+                                    }, 1000);
+                                }
+                            },
+                            errorr: function(err) {
+                                console.log(err);
+                            }
+                        })
+                    }
+                })
             })
         })
     </script>

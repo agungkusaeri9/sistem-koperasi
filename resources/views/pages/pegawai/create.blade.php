@@ -38,19 +38,6 @@
                             @enderror
                         </div>
                         <div class='form-group mb-3'>
-                            <label for='role' class='mb-2'>Role <span class="text-danger">*</span></label>
-                            <select name="role" id="role" class="form-control @error('role') is-invalid @enderror">
-                                <option value="" selected>Pilih</option>
-                                <option value="super admin">Super Admin</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                            @error('role')
-                                <div class='invalid-feedback'>
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class='form-group mb-3'>
                             <label for='password' class='mb-2'>Password <span class="text-danger">*</span></label>
                             <input type='password' name='password'
                                 class='form-control @error('password') is-invalid @enderror' value='{{ old('password') }}'>

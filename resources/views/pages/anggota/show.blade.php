@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row">
-        <div class="col-md-4 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-md-5 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5 text-center">Detail Anggota</h4>
@@ -71,13 +71,6 @@
                             </span>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-5 text-center">Aktivitas</h4>
                 </div>
             </div>
         </div>

@@ -163,6 +163,9 @@ class SimpananShrController extends Controller
     public function saldo()
     {
         $periode = Periode::where('status', 1)->first();
+        if (!$periode) {
+            return back()->with('error', 'Tidak Ada Periode yang aktif');
+        }
         $periode_id = request('periode_id');
         $simpanan = Simpanan::jenisShr()->where([
             'anggota_id' => auth()->user()->anggota->id,

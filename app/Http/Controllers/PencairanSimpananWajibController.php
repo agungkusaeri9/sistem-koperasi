@@ -59,11 +59,11 @@ class PencairanSimpananWajibController extends Controller
         ])->count();
 
         if ($cekSimpananBelumBayar > 0) {
-            return redirect()->back()->with('error', 'Anda masih mempunyai tagihan simpanan wajib/shr yang belum dibayarkan.');
+            return redirect()->back()->with('error', 'Amggpta masih mempunyai tagihan simpanan wajib/shr yang belum dibayarkan.');
         }
 
         if ($cekPinjamanAngsuran > 0) {
-            return redirect()->back()->with('error', 'Anda masih mempunyai tagihan pinjaman yang belum dibayarkan.');
+            return redirect()->back()->with('error', 'Anggota masih mempunyai tagihan pinjaman yang belum dibayarkan.');
         }
 
 

@@ -7,6 +7,11 @@
         <div class="content-wrapper d-flex align-items-center auth px-0">
             <div class="row w-100 mx-0">
                 <div class="col-lg-4 mx-auto">
+                    @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                         <div class="brand-logo text-center">
                             <img src="{{ $pengaturan ? $pengaturan->logo() : asset('assets/images/logo.svg') }}"
@@ -30,7 +35,7 @@
                                     class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SUBMIT</button>
                             </div>
                             <div class="text-center mt-4 font-weight-light">
-                                Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
+                                Sudah punya akun? <a href="{{ route('login') }}" class="text-primary">Login</a>
                             </div>
                         </form>
                     </div>

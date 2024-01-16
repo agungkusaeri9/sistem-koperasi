@@ -127,7 +127,7 @@
                                     class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SUBMIT</button>
                             </div>
                             <div class="text-center mt-4 font-weight-light">
-                                Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
+                                Sudah punya akun? <a href="{{ route('login') }}" class="text-primary">Login</a>
                             </div>
                         </form>
                     </div>

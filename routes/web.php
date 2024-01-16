@@ -80,6 +80,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     Route::resource('pinjaman', PinjamanController::class)->except('store');
     Route::post('pinjaman/create', [PinjamanController::class, 'store'])->name('pinjaman.store');
     Route::post('pinjaman/export-pdf/{kode}', [PinjamanController::class, 'export_pdf'])->name('pinjaman.export-pdf');
+    Route::post('/pinjaman/tolak', [PinjamanController::class, 'tolak'])->name('pinjaman.tolak');
 
     // kalkukasi pinjaman
     Route::post('pinjaman-kalkulasi', [PinjamanController::class, 'kalkulasi'])->name('pinjaman.kalkulasi');

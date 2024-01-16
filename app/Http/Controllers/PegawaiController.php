@@ -37,14 +37,13 @@ class PegawaiController extends Controller
             'name' => ['required', 'min:3'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['min:6', 'confirmed'],
-            'role' => ['required', 'in:super admin,admin'],
             'is_active' => ['required', 'in:0,1'],
             'avatar' => ['image', 'mimes:jpg,jpeg,png,svg', 'max:2048']
         ]);
 
         DB::beginTransaction();
         try {
-            $data = request()->only(['name', 'email', 'role', 'is_active']);
+            $data = request()->only(['name', 'email', 'is_active']);
             $data['password'] = bcrypt(request('password'));
             request()->file('avatar') ? $data['avatar'] = request()->file('avatar')->store('users', 'public') : NULL;
             User::create($data);
@@ -71,7 +70,6 @@ class PegawaiController extends Controller
         request()->validate([
             'name' => ['required', 'min:3'],
             'email' => ['required', 'email', 'unique:users,email,' . $id . ''],
-            'role' => ['required', 'in:super admin,admin'],
             'is_active' => ['required', 'in:0,1'],
             'avatar' => ['image', 'mimes:jpg,jpeg,png,svg', 'max:2048']
         ]);
@@ -86,7 +84,7 @@ class PegawaiController extends Controller
         DB::beginTransaction();
         try {
             $item = User::findOrFail($id);
-            $data = request()->only(['name', 'email', 'role', 'is_active']);
+            $data = request()->only(['name', 'email', 'is_active']);
 
             // cek jika ada password
             if (request('password'))

@@ -142,6 +142,7 @@ class PinjamanController extends Controller
 
     public function update(WhatsappService $whatsappService, $id)
     {
+
         request()->validate([
             'status' => ['required', 'numeric']
         ]);
@@ -150,6 +151,7 @@ class PinjamanController extends Controller
         DB::beginTransaction();
         try {
             $status = request('status');
+            $type = request('type');
             $item = Pinjaman::findOrFail($id);
 
             if ($status == 1) {
@@ -196,10 +198,13 @@ class PinjamanController extends Controller
                 $item->tahun_sampai = $tahun_sampai;
             }
             $item->status = $status;
+            $item->keterangan = request('keterangan');
             $item->save();
             DB::commit();
-
-            return redirect()->back()->with('success', 'Pinjaman berhasil diupdate.');
+            if ($type === 'disetujui')
+                return redirect()->back()->with('success', 'Pinjaman berhasil disetujui.');
+            else
+                return redirect()->back()->with('success', 'Pinjaman berhasil diselesaikan.');
         } catch (\Throwable $th) {
             // throw $th;
             DB::rollBack();
@@ -271,6 +276,34 @@ class PinjamanController extends Controller
         } catch (\Throwable $th) {
             throw $th;
             return redirect()->route('pinjaman.show', $pinjaman->uuid)->with('error', 'Mohon Maaf Ada Kesalahan Sistem!');
+        }
+    }
+
+    public function tolak()
+    {
+        request()->validate([
+            'id' => ['required']
+        ]);
+
+        $item = Pinjaman::find(request('id'));
+        DB::beginTransaction();
+
+        try {
+            $item->status = 3;
+            $item->keterangan = request('keterangan');
+            $item->save();
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Pinjaman berhasil ditolak!'
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
         }
     }
 }

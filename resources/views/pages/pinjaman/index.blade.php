@@ -40,8 +40,8 @@
                                 <th>Kode</th>
                                 <th>Nama Anggota</th>
                                 <th>Besar Pinjaman</th>
-                                <th>Keperluan</th>
                                 <th>Tanggal Pengajuan</th>
+                                <th>Keterangan</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -53,8 +53,8 @@
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->anggota->nama }}</td>
                                     <td>Rp {{ number_format($item->besar_pinjaman, 0, '.', '.') }}</td>
-                                    <td>{{ $item->keperluan }}</td>
                                     <td>{{ formatTanggalBulanTahun($item->created_at) }}</td>
+                                    <td>{{ $item->keterangan ?? '-' }}</td>
                                     <td>{!! $item->status() !!}</td>
                                     <td>
                                         <a href="{{ route('pinjaman.show', $item->uuid) }}"
@@ -70,14 +70,16 @@
                                             </form>
                                         @endif
 
-                                        @if ((auth()->user()->role !== 'anggota' && $item->status == 0) || $item->status == 3)
-                                            <form action="javascript:void(0)" method="post" class="d-inline"
-                                                id="formDelete">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btnDelete btn-sm py-2 btn-danger"
-                                                    data-action="{{ route('pinjaman.destroy', $item->id) }}">Hapus</button>
-                                            </form>
+                                        @if ($item->status == 0 || $item->status == 3)
+                                            @if (auth()->user()->role !== 'anggota')
+                                                <form action="javascript:void(0)" method="post" class="d-inline"
+                                                    id="formDelete">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                        data-action="{{ route('pinjaman.destroy', $item->id) }}">Hapus</button>
+                                                </form>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
