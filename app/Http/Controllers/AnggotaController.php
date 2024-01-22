@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\AnggotaImport;
 use App\Models\Agama;
 use App\Models\Anggota;
 use App\Models\Jabatan;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AnggotaController extends Controller
 {
@@ -187,6 +189,22 @@ class AnggotaController extends Controller
                     'data' => $anggota
                 ]);
             }
+        }
+    }
+
+    public function import()
+    {
+        request()->validate([
+            'file' => ['file', 'mimes:xlsx']
+        ]);
+
+        try {
+            ini_set('memory_limit', '-1');
+            Excel::import(new AnggotaImport, request()->file('file')->store('temp'));
+
+            return redirect()->back()->with('success', 'Anggota berhasil diimport');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

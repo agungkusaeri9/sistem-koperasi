@@ -28,7 +28,7 @@
                         </li>
                         <li class="list-item mt-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Tanggal Lahir</span>
-                            <span>{{ $item->tanggal_lahir->translatedFormat('d-m-Y') }}</span>
+                            <span>{{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d-m-Y') : '-' }}</span>
                         </li>
                         <li class="list-item mt-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Alamat</span>
@@ -44,11 +44,11 @@
                         </li>
                         <li class="list-item mt-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Agama</span>
-                            <span>{{ $item->agama->nama }}</span>
+                            <span>{{ $item->agama ? $item->agama->nama : '-' }}</span>
                         </li>
                         <li class="list-item mt-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Jabatan</span>
-                            <span>{{ $item->jabatan->nama }}</span>
+                            <span>{{ $item->jabatan ? $item->jabatan->nama : '-' }}</span>
                         </li>
                         <li class="list-item mt-3 d-flex justify-content-between">
                             <span class="font-weight-bold">Role</span>

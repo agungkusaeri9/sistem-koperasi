@@ -16,7 +16,7 @@ class PeriodeController extends Controller
 
     public function index()
     {
-        $items = Periode::latest()->get();
+        $items = Periode::orderBy('id', 'DESC')->get();
         return view('pages.periode.index', [
             'title' => 'Periode',
             'items' => $items

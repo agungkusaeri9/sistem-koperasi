@@ -70,7 +70,7 @@
                                     class="text-danger">*</span></label>
                             <input type='date' name='tanggal_lahir'
                                 class='form-control @error('tanggal_lahir') is-invalid @enderror'
-                                value='{{ $item->tanggal_lahir->translatedFormat('Y-m-d') ?? old('tanggal_lahir') }}'>
+                                value='{{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('Y-m-d') : old('tanggal_lahir') }}'>
                             @error('tanggal_lahir')
                                 <div class='invalid-feedback'>
                                     {{ $message }}

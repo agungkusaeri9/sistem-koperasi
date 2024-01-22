@@ -67,6 +67,7 @@ Route::middleware(['auth', 'is_active'])->group(function () {
     // anggota
     Route::get('anggota/{id}/json', [AnggotaController::class, 'detail_json'])->name('anggota.detail-json');
     Route::resource('anggota', AnggotaController::class);
+    Route::post('/anggota/import', [AnggotaController::class, 'import'])->name('anggota.import');
 
     // pengaturan
     Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
